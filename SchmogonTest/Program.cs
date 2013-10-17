@@ -9,7 +9,9 @@ namespace SchmogonTest
     {
       var s = new SchmogonClient();
 
-      Task.WaitAll(s.getAllMoves());
+      Task.WaitAll(s.SearchMovesAsync("fire"));
+
+      return;
     }
   }
 }
