@@ -17,18 +17,20 @@ namespace Schmogon
     private const string CompHeader = "Competitive Use";
     private const string RelHeader = "Related Moves";
 
-    private IEnumerable<Move> _moveCache; 
+    private IEnumerable<Move> _moveCache;
+    
+    public async Task<IEnumerable<Move>> GetAllMovesAsync()
+    {
+      return _moveCache ?? (_moveCache = await getAllMoves());
+    }
 
     public async Task<IEnumerable<Move>> SearchMovesAsync(string query)
     {
       query = query.Trim().ToLowerInvariant();
 
-      if (_moveCache == null)
-      {
-        _moveCache = await getAllMoves();
-      }
+      var moves = await GetAllMovesAsync();
 
-      var res = _moveCache.Where(m => m.Name.ToLowerInvariant().Contains(query));
+      var res = moves.Where(m => m.Name.ToLowerInvariant().Contains(query));
 
       return res;
     }
@@ -146,5 +148,6 @@ namespace Schmogon
 
       return list.Elements("li").Aggregate(string.Empty, (current, elem) => current + ("* " + elem.InnerText.Trim() + "\n"));
     }
+
   }
 }
