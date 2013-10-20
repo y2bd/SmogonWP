@@ -7,6 +7,8 @@ namespace Schmogon
 {
   public interface ISchmogonClient
   {
+    Task<IEnumerable<Move>> GetAllMovesAsync();
+
     Task<IEnumerable<Move>> SearchMovesAsync(string query);
 
     Task<MoveData> GetMoveDataAsync(Move move);
