@@ -4,7 +4,7 @@ namespace Schmogon.Data.Moves
 {
   public class MoveData
   {
-    internal MoveData(string name, MoveStats stats, string description, string competitive, IEnumerable<Move> relatedMoves)
+    public MoveData(string name, MoveStats stats, string description, string competitive, IEnumerable<Move> relatedMoves)
     {
       RelatedMoves = relatedMoves;
       Competitive = competitive;

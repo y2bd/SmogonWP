@@ -2,7 +2,7 @@
 {
   public class Move : ISearchItem
   {
-    internal Move(string name, string desc, string pageLocation)
+    public Move(string name, string desc, string pageLocation)
     {
       PageLocation = pageLocation;
       Description = desc;
