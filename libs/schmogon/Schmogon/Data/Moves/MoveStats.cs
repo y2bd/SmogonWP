@@ -2,7 +2,7 @@
 {
   public class MoveStats
   {
-    internal MoveStats(string type, string power, string accuracy, string pp, string priority, string damage, string target)
+    public MoveStats(string type, string power, string accuracy, string pp, string priority, string damage, string target)
     {
       Damage = damage;
       Target = target;
