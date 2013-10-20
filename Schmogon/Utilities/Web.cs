@@ -20,7 +20,7 @@ namespace Schmogon.Utilities
       var hc = MakeHttpClient();
 
       var doc = new HtmlDocument();
-      doc.Load(await hc.GetStreamAsync(uri));
+      doc.LoadHtml(await hc.GetStringAsync(uri));
 
       hc.Dispose();
 
