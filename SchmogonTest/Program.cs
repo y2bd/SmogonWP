@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Schmogon;
 
 namespace SchmogonTest
@@ -7,11 +9,20 @@ namespace SchmogonTest
   {
     static void Main(string[] args)
     {
-      var s = new SchmogonClient();
-
-      Task.WaitAll(s.SearchMovesAsync("fire"));
+      Task.WaitAll(test());
 
       return;
+    }
+
+    static async Task test()
+    {
+      var s = new SchmogonClient();
+
+      Console.Write("Please enter a query: ");
+      var query = Console.ReadLine();
+
+      var moves = await s.SearchMovesAsync(query);
+      var x = await s.GetMoveDataAsync(moves.ElementAt(0));
     }
   }
 }

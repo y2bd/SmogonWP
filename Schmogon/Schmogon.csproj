@@ -38,10 +38,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ISearchItem.cs" />
-    <Compile Include="Data\Move.cs" />
+    <Compile Include="Data\Moves\Move.cs" />
+    <Compile Include="Data\Moves\MoveData.cs" />
+    <Compile Include="Data\Moves\MoveStats.cs" />
     <Compile Include="ISchmogonClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchmogonClient.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack-PCL">

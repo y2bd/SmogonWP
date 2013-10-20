@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-
-namespace Schmogon.Data
+﻿namespace Schmogon.Data.Moves
 {
   public class Move : ISearchItem
   {
