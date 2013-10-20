@@ -1,6 +1,4 @@
-﻿using System.Dynamic;
-
-namespace Schmogon.Data.Moves
+﻿namespace Schmogon.Data.Moves
 {
   public class MoveStats
   {

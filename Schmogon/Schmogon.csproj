@@ -45,6 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchmogonClient.cs" />
     <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\Web.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack-PCL">

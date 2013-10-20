@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using HtmlAgilityPack;
 using Schmogon.Data.Moves;
 using Schmogon.Utilities;
@@ -36,23 +33,46 @@ namespace Schmogon
       return res;
     }
 
+    private async Task<IEnumerable<Move>> getAllMoves()
+    {
+      var doc = await Web.GetDocumentAsync(MoveSearch);
+
+      var table = doc.DocumentNode.Descendants("table")
+        .First(n => n.Id.Contains("move_list"));
+
+      var tbody = table.Descendants("tbody").First();
+
+      var moves = (from row in tbody.Descendants("tr") 
+                   select row.Descendants("td") into data 
+                     let name = data.ElementAt(0).InnerText.Trim() 
+                     let desc = data.ElementAt(5).InnerText.Trim() 
+                     let path = data.ElementAt(0).Element("a").GetAttributeValue("href", "")
+                     select new Move(name, desc, path))
+                  .ToList();
+
+      return moves;
+    }
+
     public async Task<MoveData> GetMoveDataAsync(Move move)
     {
       var path = SitePrefix + move.PageLocation;
 
-      var hc = new HttpClient();
-
-      var stream = await hc.GetStreamAsync(path);
-
-      var doc = new HtmlDocument();
-      doc.Load(stream);
+      var doc = await Web.GetDocumentAsync(path);
 
       var content = doc.DocumentNode.Descendants("div").First(d => d.Id.Equals("content_wrapper"));
-      var children = content.ChildNodes;
-
+      
       // first get the stats
-      var table = content.Element("table");
-      var tds = table.Descendants("td").ToList();
+      var stats = scrapeStats(content.Element("table"));
+
+      // now get the text parts
+      Tuple<string, string, IEnumerable<Move>> descParts = scrapeDescriptions(content);
+
+      return new MoveData(move.Name, stats, descParts.Item1, descParts.Item2, descParts.Item3);
+    }
+
+    private static MoveStats scrapeStats(HtmlNode statTable)
+    {
+      var tds = statTable.Descendants("td").ToList();
 
       var type = tds[0].InnerText.Trim();
       var power = tds[1].InnerText.Trim();
@@ -64,7 +84,15 @@ namespace Schmogon
 
       var stats = new MoveStats(type, power, acc, pp, prio, dam, tar);
 
-      // now get the text parts
+      return stats;
+    }
+
+    private static Tuple<string, string, IEnumerable<Move>> scrapeDescriptions(HtmlNode content)
+    {
+      // we need access to the children so we can get indices
+      var children = content.ChildNodes;
+
+      // find the indices of the headers so we know where the relevant paragraphs lie
       var descIndex = children.FindIndex(h => h.InnerText.Trim().Equals(DescHeader));
       var compIndex = children.FindIndex(h => h.InnerText.Trim().Equals(CompHeader));
       var relIndex = children.FindIndex(h => h.InnerText.Trim().Equals(RelHeader));
@@ -77,14 +105,14 @@ namespace Schmogon
 
       var descParas = new List<String>();
       var compParas = new List<String>();
-
       var relMoves = new List<Move>();
 
+      // now cycle through all of the child nodes
       for (int i = 0; i < children.Count; i++)
       {
         var child = children[i];
 
-        // we only want matching paragraphs
+        // we only want matching paragraphs or unordered lists
         if (!child.Name.Equals("p") && !child.Name.Equals("ul")) continue;
 
         if (i.IsBetween(descIndex, compIndex))
@@ -109,44 +137,14 @@ namespace Schmogon
         }
       }
 
-      return new MoveData(move.Name, stats, String.Join("\n\n", descParas), String.Join("\n\n", compParas), relMoves);
+      return new Tuple<string, string, IEnumerable<Move>>(String.Join("\n\n", descParas), String.Join("\n\n", compParas), relMoves);
     }
-
-    private string processUL(HtmlNode list)
+    
+    private static string processUL(HtmlNode list)
     {
+      if (list.Name.Equals("ul") != true) throw new ArgumentException("param must be of the node type UL", "list");
+
       return list.Elements("li").Aggregate(string.Empty, (current, elem) => current + ("* " + elem.InnerText.Trim() + "\n"));
-    }
-
-    private async Task<IEnumerable<Move>> getAllMoves()
-    {
-      var moves = new List<Move>();
-
-      var hc = new HttpClient();
-
-      var stream = await hc.GetStreamAsync(MoveSearch);
-
-      var doc = new HtmlDocument();
-      doc.Load(stream);
-
-      var table = doc.DocumentNode.Descendants("table")
-        .First(n => n.Id.Contains("move_list"));
-
-      var tbody = table.Descendants("tbody").First();
-
-      foreach (var row in tbody.Descendants("tr"))
-      {
-        var data = row.Descendants("td");
-
-        var name = data.ElementAt(0).InnerText.Trim();
-        var desc = data.ElementAt(5).InnerText.Trim();
-        var path = data.ElementAt(0).Descendants("a").First().Attributes["href"].Value;
-        
-        moves.Add(new Move(name, desc, path));
-      }
-      
-      hc.Dispose();
-
-      return moves;
     }
   }
 }
