@@ -167,7 +167,7 @@ namespace SmogonWP.ViewModel
 
       FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(move));
     }
-
+    
     private void onBackKeyPressed(CancelEventArgs args)
     {
       if (_moveStack.Count <= 0)
