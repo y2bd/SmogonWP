@@ -96,17 +96,17 @@
 
                 <Border Grid.Row="1"
                         Grid.ColumnSpan="2"
-                        Background="{StaticResource PhoneBackgroundBrush}"
+                        Background="Black"
                         Opacity="0.3" />
 
                 <Border Grid.Row="3"
                         Grid.ColumnSpan="2"
-                        Background="{StaticResource PhoneBackgroundBrush}"
+                        Background="Black"
                         Opacity="0.3" />
 
                 <Border Grid.Row="5"
                         Grid.ColumnSpan="2"
-                        Background="{StaticResource PhoneBackgroundBrush}"
+                        Background="Black"
                         Opacity="0.3" />
 
                 <Border Grid.RowSpan="7"
