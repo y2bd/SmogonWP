@@ -109,7 +109,10 @@ namespace Schmogon
       // we fold over the non-existant ones
       relIndex = relIndex == -1 ? children.Count : relIndex;
       compIndex = compIndex == -1 ? relIndex : compIndex;
-      descIndex = descIndex == -1 ? compIndex : descIndex;
+
+      // sometimes for whatever reason move pages don't have the description header
+      // so instead we'll make the stat table the description header
+      descIndex = descIndex == -1 ? children.FindIndex(n => n.Id.Equals("info")) : descIndex;
 
       var descParas = new List<String>();
       var compParas = new List<String>();
@@ -137,9 +140,17 @@ namespace Schmogon
         }
         else if (i > relIndex)
         {
-          var name = child.Element("a").InnerText.Trim();
+          // parse fix!
+          // sometimes there are bits in the related index that aren't related moves, but commentary
+          // like on extremespeed
+          // they don't have anchors, so only add ones that have anchors
+          var anchor = child.Element("a");
+
+          if (anchor == null) continue;
+
+          var name = anchor.InnerText.Trim();
           var desc = child.InnerText.Trim();
-          var page = child.Element("a").GetAttributeValue("href", null);
+          var page = anchor.GetAttributeValue("href", null);
 
           relMoves.Add(new Move(name, desc, page));
         }
