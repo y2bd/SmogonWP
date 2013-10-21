@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Schmogon.Data.Moves;
@@ -69,7 +70,12 @@ namespace Schmogon
       // now get the text parts
       Tuple<string, string, IEnumerable<Move>> descParts = scrapeDescriptions(content);
 
-      return new MoveData(move.Name, stats, descParts.Item1, descParts.Item2, descParts.Item3);
+      return new MoveData(
+        WebUtility.HtmlDecode(move.Name), 
+        stats, 
+        WebUtility.HtmlDecode(descParts.Item1),
+        WebUtility.HtmlDecode(descParts.Item2), 
+        descParts.Item3);
     }
 
     private static MoveStats scrapeStats(HtmlNode statTable)
