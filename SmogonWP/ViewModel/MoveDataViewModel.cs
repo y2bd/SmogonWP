@@ -1,5 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
 using Schmogon;
 using Schmogon.Data.Moves;
@@ -15,7 +20,9 @@ namespace SmogonWP.ViewModel
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonClient _schmogonClient;
 
-    private readonly MessageReceiver<MoveSearchMessage> _moveSearchReceiver; 
+    private readonly MessageReceiver<MoveSearchMessage> _moveSearchReceiver;
+
+    private readonly Stack<MoveDataItemViewModel> _moveStack; 
 
     #region props
 
@@ -24,7 +31,7 @@ namespace SmogonWP.ViewModel
     {
       get
       {
-        return _name.ToLower();
+        return _name.ToUpper();
       }
       set
       {
@@ -51,6 +58,25 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => MDVM);
         }
       }
+    }
+
+    private Move _selectedRelatedMove;
+    public Move SelectedRelatedMove
+    {
+      get
+      {
+        return _selectedRelatedMove;
+      }
+      set
+      {
+        if (_selectedRelatedMove != value)
+        {
+          onRelatedMoveSelected(value);
+
+          _selectedRelatedMove = null;
+          RaisePropertyChanged(() => SelectedRelatedMove);
+        }
+      }
     }			
 
     private TrayService _trayService;
@@ -72,6 +98,20 @@ namespace SmogonWP.ViewModel
 
     #endregion props
 
+    #region commands
+
+    private RelayCommand<CancelEventArgs> _backKeyPressCommand;
+    public RelayCommand<CancelEventArgs> BackKeyPressCommand
+    {
+      get
+      {
+        return _backKeyPressCommand ??
+               (_backKeyPressCommand = new RelayCommand<CancelEventArgs>(onBackKeyPressed));
+      }
+    }
+
+    #endregion commands
+
     #region async handlers
 
     public INotifyTaskCompletion FetchMoveDataNotifier { get; private set; }
@@ -86,6 +126,8 @@ namespace SmogonWP.ViewModel
 
       _moveSearchReceiver = new MessageReceiver<MoveSearchMessage>(onMoveSearched, true);
 
+      _moveStack = new Stack<MoveDataItemViewModel>();
+
       if (IsInDesignMode || IsInDesignModeStatic)
       {
         FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(null));
@@ -95,6 +137,9 @@ namespace SmogonWP.ViewModel
     private async Task fetchMoveData(Move move)
     {
       TrayService.AddJob("fetchdata", "Fetching move data...");
+
+      // push the current move onto the move stack if there is one
+      if (MDVM != null) _moveStack.Push(MDVM);
 
       var moveData = await _schmogonClient.GetMoveDataAsync(move);
 
@@ -106,9 +151,35 @@ namespace SmogonWP.ViewModel
 
     private void onMoveSearched(MoveSearchMessage msg)
     {
+      // clear the current move if it exists
+      // otherwise we run into stack issues
+
+      MDVM = null;
+
       Name = msg.Move.Name;
 
       FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(msg.Move));
+    }
+
+    private void onRelatedMoveSelected(Move move)
+    {
+      Name = move.Name;
+
+      FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(move));
+    }
+
+    private void onBackKeyPressed(CancelEventArgs args)
+    {
+      if (_moveStack.Count <= 0)
+      {
+        return;
+      }
+
+      // stop from going to the last page
+      args.Cancel = true;
+
+      MDVM = _moveStack.Pop();
+      Name = MDVM.Name;
     }
   }
 }

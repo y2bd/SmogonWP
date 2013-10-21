@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using GalaSoft.MvvmLight;
 using SmogonWP.Services;
 using SmogonWP.ViewModel.Items;
@@ -91,7 +92,11 @@ namespace SmogonWP.ViewModel
     {
       if (item == null) return;
 
-      if (string.IsNullOrEmpty(item.NavigationPath)) return;
+      if (string.IsNullOrEmpty(item.NavigationPath))
+      {
+        MessageBox.Show("That feature isn't available yet! Stay tuned though, it should be coming soon.");
+        return;
+      }
 
       _navigationService.Navigate(item.NavigationPath);
     }
