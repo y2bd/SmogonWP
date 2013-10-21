@@ -14,6 +14,7 @@ namespace SmogonWP.ViewModel
   {
     public const string HomePath = "/View/HomeView.xaml";
     public const string MoveSearchViewModel = "/View/MoveSearchView.xaml";
+    public const string MoveDataViewModel = "/View/MoveDataView.xaml";
 
     /// <summary>
     /// Initializes a new instance of the ViewModelLocator class.
@@ -24,11 +25,11 @@ namespace SmogonWP.ViewModel
 
       if (ViewModelBase.IsInDesignModeStatic)
       {
-        SimpleIoc.Default.Register<ISchmogonClient, Design.DesisgnSchmogonClient>();
+        RegisterIfUnregistered<ISchmogonClient, Design.DesisgnSchmogonClient>();
       }
       else
       {
-        SimpleIoc.Default.Register<ISchmogonClient, SchmogonClient>();
+        RegisterIfUnregistered<ISchmogonClient, SchmogonClient>();
       }
 
       SimpleIoc.Default.Register<SimpleNavigationService>();
@@ -37,6 +38,7 @@ namespace SmogonWP.ViewModel
 
       SimpleIoc.Default.Register<HomeViewModel>();
       SimpleIoc.Default.Register<MoveSearchViewModel>();
+      SimpleIoc.Default.Register<MoveDataViewModel>();
     }
 
     public HomeViewModel Home
@@ -53,6 +55,26 @@ namespace SmogonWP.ViewModel
       {
         return ServiceLocator.Current.GetInstance<MoveSearchViewModel>();
       }
+    }
+
+    public MoveDataViewModel MoveData
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<MoveDataViewModel>();
+      }
+    }
+
+    private void RegisterIfUnregistered<T>() where T : class
+    {
+      if (SimpleIoc.Default.IsRegistered<T>() != true) SimpleIoc.Default.Register<T>();
+    }
+
+    private void RegisterIfUnregistered<TI, TV>()
+      where TI : class
+      where TV : class
+    {
+      if (SimpleIoc.Default.IsRegistered<TI>() != true) SimpleIoc.Default.Register<TI, TV>();
     }
 
     public static void Cleanup()

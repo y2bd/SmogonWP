@@ -5,13 +5,30 @@
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:util="clr-namespace:SmogonWP.Utilities"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             mc:Ignorable="d"
-                            shell:SystemTray.IsVisible="True">
+                            shell:SystemTray.IsVisible="True"
+                            DataContext="{Binding MoveSearch, Source={StaticResource Locator}}">
+    <phone:PhoneApplicationPage.Resources>
+        <DataTemplate x:Key="MoveItemTemplate">
+            <StackPanel Margin="0,0,24,12">
+                <TextBlock Text="{Binding Name}"
+                           Style="{StaticResource PhoneTextTitle2Style}"
+                           Margin="12,0,12,3" />
+                <TextBlock Text="{Binding Description}"
+                           Style="{StaticResource PhoneTextSmallStyle}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
 
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsIndeterminate="True"
@@ -28,15 +45,38 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0"
-                   Margin="24,17,24,28"
+        <TextBlock x:Name="FilterText"
+                   Grid.Row="0"
+                   Margin="24,17,24,12"
                    Text="MOVES"
                    Style="{StaticResource PhoneTextNormalStyle}" />
 
-        <TextBox x:Name="SearchBox"
-                 Grid.Row="1"
-                 Margin="12,0"
-                 InputScope="Search" />
+        <toolkit:PhoneTextBox x:Name="SearchBox"
+                              Grid.Row="1"
+                              Margin="12,0,12,12"
+                              InputScope="Search"
+                              Text="{Binding Filter, Mode=TwoWay}"
+                              PlaceholderText="Search for a move..."
+                              KeyUp="SearchBox_OnKeyUp">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="KeyUp">
+                    <gala:EventToCommand Command="{Binding FilterChangedCommand}"
+                                         PassEventArgsToCommand="True" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <i:Interaction.Behaviors>
+                <util:UpdateTextBindingOnPropertyChanged />
+            </i:Interaction.Behaviors>
+        </toolkit:PhoneTextBox>
+
+        <util:BindableLongListSelector x:Name="MoveList"
+                                       Grid.Row="2"
+                                       Margin="12,0,0,0"
+                                       ItemsSource="{Binding FilteredMoves}"
+                                       ItemTemplate="{StaticResource MoveItemTemplate}"
+                                       SelectedItem="{Binding SelectedMove, Mode=TwoWay}"
+                                       toolkit:TiltEffect.IsTiltEnabled="True" />
     </Grid>
 
 </phone:PhoneApplicationPage>

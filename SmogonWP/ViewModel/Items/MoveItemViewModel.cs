@@ -1,11 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
 using Schmogon.Data.Moves;
 
-namespace SmogonWP.ViewModel.Search
+namespace SmogonWP.ViewModel.Items
 {
   public class MoveItemViewModel : ViewModelBase
   {
-    private readonly Move _move;
+    internal readonly Move Move;
 
     #region props
 
@@ -13,7 +13,7 @@ namespace SmogonWP.ViewModel.Search
     {
       get
       {
-        return _move.Name;
+        return Move.Name.ToLowerInvariant();
       }
     }
 
@@ -21,7 +21,7 @@ namespace SmogonWP.ViewModel.Search
     {
       get
       {
-        return _move.Description;
+        return Move.Description.ToLowerInvariant().Trim(new [] {'.'});
       }
     }
 
@@ -29,7 +29,7 @@ namespace SmogonWP.ViewModel.Search
     {
       get
       {
-        return _move.PageLocation;
+        return Move.PageLocation;
       }
     }
 
@@ -37,7 +37,7 @@ namespace SmogonWP.ViewModel.Search
 
     public MoveItemViewModel(Move move)
     {
-      _move = move;
+      Move = move;
     }
   }
 }

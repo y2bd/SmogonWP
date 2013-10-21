@@ -1,13 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
 using SmogonWP.Services;
-using SmogonWP.ViewModel.Home;
+using SmogonWP.ViewModel.Items;
 
 namespace SmogonWP.ViewModel
 {
   public class HomeViewModel : ViewModelBase
   {
-    private SimpleNavigationService _navigationService;
+    private readonly SimpleNavigationService _navigationService;
 
     #region props
     private NavigationItemViewModel _selectedNavItem;

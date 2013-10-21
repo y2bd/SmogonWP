@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
+﻿using System.Windows.Input;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 
 namespace SmogonWP.View
 {
@@ -15,6 +8,11 @@ namespace SmogonWP.View
     public MoveSearchView()
     {
       InitializeComponent();
+    }
+
+    private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Enter) MoveList.Focus();
     }
   }
 }

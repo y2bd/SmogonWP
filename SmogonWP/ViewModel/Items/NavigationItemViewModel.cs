@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 
-namespace SmogonWP.ViewModel.Home
+namespace SmogonWP.ViewModel.Items
 {
   public class NavigationItemViewModel : ViewModelBase
   {
