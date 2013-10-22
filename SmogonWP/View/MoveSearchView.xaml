@@ -57,6 +57,7 @@
                               InputScope="Search"
                               Text="{Binding Filter, Mode=TwoWay}"
                               PlaceholderText="Search for a move..."
+                              IsEnabled="{Binding FetchMovesNotifier.IsSuccessfullyCompleted}"
                               KeyUp="SearchBox_OnKeyUp">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="KeyUp">

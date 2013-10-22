@@ -126,7 +126,7 @@ namespace SmogonWP.ViewModel
 
       _moveSearchSender = new MessageSender<MoveSearchMessage>();
 
-      FetchMovesNotifier = NotifyTaskCompletion.Create(fetchMoves());
+      scheduleDataFetch();
     }
 
     private async Task fetchMoves()
@@ -162,6 +162,19 @@ namespace SmogonWP.ViewModel
     {
       _moveSearchSender.SendMessage(new MoveSearchMessage(mivm.Move));
       _navigationService.Navigate(ViewModelLocator.MoveDataViewModel);
+    }
+
+    private void scheduleDataFetch()
+    {
+      FetchMovesNotifier = NotifyTaskCompletion.Create(fetchMoves());
+
+      FetchMovesNotifier.PropertyChanged += (sender, args) =>
+      {
+        if (FetchMovesNotifier.IsFaulted)
+        {
+          throw FetchMovesNotifier.Exception;
+        }
+      };
     }
   }
 }
