@@ -9,6 +9,7 @@
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:converters="clr-namespace:SmogonWP.Converters"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -18,6 +19,8 @@
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding MoveSearch, Source={StaticResource Locator}}">
     <phone:PhoneApplicationPage.Resources>
+        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        
         <DataTemplate x:Key="MoveItemTemplate">
             <StackPanel Margin="0,0,24,12">
                 <TextBlock Text="{Binding Name}"
@@ -78,6 +81,13 @@
                                        ItemTemplate="{StaticResource MoveItemTemplate}"
                                        SelectedItem="{Binding SelectedMove, Mode=TwoWay}"
                                        toolkit:TiltEffect.IsTiltEnabled="True" />
+        
+        <Button x:Name="ReloadButton"
+                Grid.Row="2"
+                Margin="12,0"
+                VerticalAlignment="Top"
+                Visibility="{Binding LoadFailed, Converter={StaticResource BooleanVisibilityConverter}}"
+                Command="{Binding ReloadCommand}">reload moves</Button>
     </Grid>
 
 </phone:PhoneApplicationPage>

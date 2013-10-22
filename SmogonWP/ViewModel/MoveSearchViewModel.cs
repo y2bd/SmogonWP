@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
 using Schmogon;
+using Schmogon.Data.Moves;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
+using SmogonWP.Utilities;
 using SmogonWP.ViewModel.Items;
 
 namespace SmogonWP.ViewModel
@@ -20,7 +25,9 @@ namespace SmogonWP.ViewModel
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonClient _schmogonClient;
 
-    private readonly MessageSender<MoveSearchMessage> _moveSearchSender; 
+    private readonly MessageSender<MoveSearchMessage> _moveSearchSender;
+
+    private bool _failedOnce;
 
     private List<MoveItemViewModel> _moves;
 
@@ -96,6 +103,23 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private bool _loadFailed;
+    public bool LoadFailed
+    {
+      get
+      {
+        return _loadFailed;
+      }
+      set
+      {
+        if (_loadFailed != value)
+        {
+          _loadFailed = value;
+          RaisePropertyChanged(() => LoadFailed);
+        }
+      }
+    }			
+
     #endregion props
 
     #region commands
@@ -109,7 +133,18 @@ namespace SmogonWP.ViewModel
                (_filterChangedCommand = new RelayCommand<KeyEventArgs>(onFilterChanged));
       }
     }
-    
+
+    private RelayCommand _reloadCommand;
+
+    public RelayCommand ReloadCommand
+    {
+      get
+      {
+        return _reloadCommand ??
+               (_reloadCommand = new RelayCommand(onReloadPressed));
+      }
+    }
+
     #endregion commands
 
     #region async handlers
@@ -126,24 +161,9 @@ namespace SmogonWP.ViewModel
 
       _moveSearchSender = new MessageSender<MoveSearchMessage>();
 
-      scheduleDataFetch();
+      scheduleMoveListFetch();
     }
-
-    private async Task fetchMoves()
-    {
-      TrayService.AddJob("movefetch", "Fetching moves");
-
-      var rawMoves = (await _schmogonClient.GetAllMovesAsync()).ToList();
-
-      _moves = (from rawMove in rawMoves
-                select new MoveItemViewModel(rawMove))
-        .ToList();
-
-      FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
-
-      TrayService.RemoveJob("movefetch");
-    }
-
+    
     private void onFilterChanged(KeyEventArgs args)
     {
       if (_moves == null || Filter == null) return;
@@ -164,17 +184,97 @@ namespace SmogonWP.ViewModel
       _navigationService.Navigate(ViewModelLocator.MoveDataViewModel);
     }
 
-    private void scheduleDataFetch()
+    private void onReloadPressed()
+    {
+      LoadFailed = false;
+
+      scheduleMoveListFetch();
+    }
+
+    private void scheduleMoveListFetch()
     {
       FetchMovesNotifier = NotifyTaskCompletion.Create(fetchMoves());
 
       FetchMovesNotifier.PropertyChanged += (sender, args) =>
       {
+        if (FetchMovesNotifier == null) return;
+
         if (FetchMovesNotifier.IsFaulted)
         {
-          throw FetchMovesNotifier.Exception;
+          throw FetchMovesNotifier.InnerException;
         }
       };
+    }
+
+    private async Task fetchMoves()
+    {
+      TrayService.AddJob("movefetch", "Fetching moves");
+
+      List<Move> rawMoves;
+
+      try
+      {
+        rawMoves = (await _schmogonClient.GetAllMovesAsync()).ToList();
+      }
+      catch (HttpRequestException)
+      {
+        reloadMoves();
+        return;
+      }
+
+      _moves = (from rawMove in rawMoves
+                select new MoveItemViewModel(rawMove))
+        .ToList();
+
+      FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
+
+      TrayService.RemoveJob("movefetch");
+    }
+
+    private void reloadMoves()
+    {
+      if (_failedOnce)
+      {
+        // we failed, give up
+        cleanup();
+        
+        MessageBox.Show(
+          "I'm sorry, but we couldn't load the move data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+
+        _failedOnce = false;
+
+        LoadFailed = true;
+      }
+      else if (!NetUtilities.IsNetwork())
+      {
+        // crafty bastard somehow lost network connectivity midway
+        cleanup();
+
+        MessageBox.Show(
+          "Downloading move data requires an internet connection. Please get one of those and try again later.",
+          "No internet!", MessageBoxButton.OK);
+
+        LoadFailed = true;
+      }
+      else
+      {
+        // let's try again
+        Debug.WriteLine("Move load failed once.");
+
+        _failedOnce = true;
+
+        scheduleMoveListFetch();
+      }
+    }
+
+    private void cleanup()
+    {
+      _moves = null;
+      FilteredMoves = null;
+      FetchMovesNotifier = null;
+      Filter = null;
+      TrayService.RemoveAllJobs();
     }
   }
 }
