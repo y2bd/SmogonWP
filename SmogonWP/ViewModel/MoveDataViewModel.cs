@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
 using Schmogon;
 using Schmogon.Data.Moves;
@@ -13,12 +18,16 @@ using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
+using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 
 namespace SmogonWP.ViewModel
 {
   public class MoveDataViewModel : ViewModelBase
   {
+    private const string SmogonPrefix = "http://www.smogon.com";
+    private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
+
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonClient _schmogonClient;
 
@@ -29,6 +38,8 @@ namespace SmogonWP.ViewModel
     // if a network request fails, we'll try again one more time
     // otherwise we'll give up and tell the user
     private bool _failedOnce;
+
+    private string _pageLocation;
 
     #region props
 
@@ -102,6 +113,23 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private ObservableCollection<MenuItemViewModel> _menuItems;
+    public ObservableCollection<MenuItemViewModel> MenuItems
+    {
+      get
+      {
+        return _menuItems;
+      }
+      set
+      {
+        if (_menuItems != value)
+        {
+          _menuItems = value;
+          RaisePropertyChanged(() => MenuItems);
+        }
+      }
+    }			
+
     #endregion props
 
     #region commands
@@ -115,7 +143,7 @@ namespace SmogonWP.ViewModel
                (_backKeyPressCommand = new RelayCommand<CancelEventArgs>(onBackKeyPressed));
       }
     }
-
+    
     #endregion commands
 
     #region async handlers
@@ -138,6 +166,8 @@ namespace SmogonWP.ViewModel
       {
         FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(null));
       }
+
+      setupAppBar();
     }
 
     #region event handlers
@@ -177,6 +207,55 @@ namespace SmogonWP.ViewModel
 
     #endregion event handlers
 
+    #region appbar
+
+    private void setupAppBar()
+    {
+      var smogon = new MenuItemViewModel
+      {
+        Command = new RelayCommand(onOpenSmogonPressed),
+        Text = "open Smogon in browser..."
+      };
+
+      var bulb = new MenuItemViewModel
+      {
+        Command = new RelayCommand(onOpenBulbapediaPressed),
+        Text = "open Bulbapedia in browser..."
+      };
+
+      MenuItems = new ObservableCollection<MenuItemViewModel> {smogon, bulb};
+    }
+
+    private void onOpenSmogonPressed()
+    {
+      var wbt = new WebBrowserTask
+      {
+        Uri = new Uri(SmogonPrefix + _pageLocation)
+      };
+
+      wbt.Show();
+    }
+
+    private void onOpenBulbapediaPressed()
+    {
+      var wbt = new WebBrowserTask
+      {
+        Uri = new Uri(BulbaPrefix + Uri.EscapeDataString(toTitleCase(Name)))
+      };
+
+      wbt.Show();
+    }
+
+    private static string toTitleCase(string word)
+    {
+      IEnumerable<string> split = word.Split(' ').ToList();
+      split = split.Select(s => s.Substring(0, 1).ToUpper() + s.Substring(1).ToLower());
+
+      return string.Join(" ", split);
+    }
+
+    #endregion appbar
+    
     private void scheduleMoveFetch(Move move)
     {
       FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(move));
@@ -214,6 +293,8 @@ namespace SmogonWP.ViewModel
 
       MDVM = new MoveDataItemViewModel(moveData);
       Name = MDVM.Name;
+
+      _pageLocation = move.PageLocation;
 
       TrayService.RemoveJob("fetchdata");
     }

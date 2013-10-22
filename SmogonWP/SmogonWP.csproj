@@ -115,6 +115,7 @@
     <Compile Include="Utilities\BindableLongListSelector.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
+    <Compile Include="ViewModel\AppBar\MenuItemViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveItemViewModel.cs" />
@@ -202,6 +203,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="BindableApplicationBar">
+      <HintPath>..\packages\BindableApplicationBar.1.0.0\lib\sl4-windowsphone71\BindableApplicationBar.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight.Extras.WP8">
       <HintPath>..\packages\MvvmLightLibs.4.1.27.1\lib\wp8\GalaSoft.MvvmLight.Extras.WP8.dll</HintPath>
     </Reference>

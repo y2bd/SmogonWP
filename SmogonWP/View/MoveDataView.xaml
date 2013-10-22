@@ -10,6 +10,7 @@
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -46,6 +47,13 @@
                                  Text="{Binding Path=TrayService.CurrentMessage}" />
     </shell:SystemTray.ProgressIndicator>
 
+    <bindable:Bindable.ApplicationBar>
+        <bindable:BindableApplicationBar BindableOpacity="0.75" 
+                                         Mode="Minimized"
+                                         MenuItemsSource="{Binding MenuItems}">
+        </bindable:BindableApplicationBar>
+    </bindable:Bindable.ApplicationBar>
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="BackKeyPress">
             <gala:EventToCommand Command="{Binding BackKeyPressCommand}"
@@ -251,7 +259,7 @@
                     Margin="-12"
                     Background="{StaticResource PhoneBackgroundBrush}" 
                     Opacity="0.5"
-                    Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}}"/>
+                    Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, FallbackValue=Collapsed}"/>
         </Grid>
     </Grid>
 
