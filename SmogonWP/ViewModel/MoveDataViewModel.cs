@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.Diagnostics;
+using System.Net.Http;
 using System.Threading.Tasks;
-using System.Xml;
+using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
@@ -11,6 +12,7 @@ using Schmogon.Data.Moves;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
+using SmogonWP.Utilities;
 using SmogonWP.ViewModel.Items;
 
 namespace SmogonWP.ViewModel
@@ -22,7 +24,11 @@ namespace SmogonWP.ViewModel
 
     private readonly MessageReceiver<MoveSearchMessage> _moveSearchReceiver;
 
-    private readonly Stack<MoveDataItemViewModel> _moveStack; 
+    private readonly Stack<MoveDataItemViewModel> _moveStack;
+
+    // if a network request fails, we'll try again one more time
+    // otherwise we'll give up and tell the user
+    private bool _failedOnce;
 
     #region props
 
@@ -134,20 +140,7 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private async Task fetchMoveData(Move move)
-    {
-      TrayService.AddJob("fetchdata", "Fetching move data...");
-
-      // push the current move onto the move stack if there is one
-      if (MDVM != null) _moveStack.Push(MDVM);
-
-      var moveData = await _schmogonClient.GetMoveDataAsync(move);
-
-      MDVM = new MoveDataItemViewModel(moveData);
-      Name = MDVM.Name;
-
-      TrayService.RemoveJob("fetchdata");
-    }
+    #region event handlers
 
     private void onMoveSearched(MoveSearchMessage msg)
     {
@@ -158,16 +151,16 @@ namespace SmogonWP.ViewModel
 
       Name = msg.Move.Name;
 
-      FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(msg.Move));
+      scheduleMoveFetch(msg.Move);
     }
 
     private void onRelatedMoveSelected(Move move)
     {
       Name = move.Name;
 
-      FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(move));
+      scheduleMoveFetch(move);
     }
-    
+
     private void onBackKeyPressed(CancelEventArgs args)
     {
       if (_moveStack.Count <= 0)
@@ -180,6 +173,93 @@ namespace SmogonWP.ViewModel
 
       MDVM = _moveStack.Pop();
       Name = MDVM.Name;
+    }
+
+    #endregion event handlers
+
+    private void scheduleMoveFetch(Move move)
+    {
+      FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(move));
+
+      FetchMoveDataNotifier.PropertyChanged += (sender, args) =>
+      {
+        // we broked
+        if (FetchMoveDataNotifier == null) return;
+
+        if (FetchMoveDataNotifier.IsFaulted)
+        {
+          throw FetchMoveDataNotifier.InnerException;
+        }
+      };
+    }
+
+    private async Task fetchMoveData(Move move)
+    {
+      TrayService.AddJob("fetchdata", "Fetching move data...");
+      
+      MoveData moveData;
+
+      try
+      {
+        moveData = await _schmogonClient.GetMoveDataAsync(move);
+      }
+      catch (HttpRequestException)
+      {
+        reloadMoveData(move);
+        return;
+      }
+
+      // push the current move onto the move stack if there is one
+      if (MDVM != null) _moveStack.Push(MDVM);
+
+      MDVM = new MoveDataItemViewModel(moveData);
+      Name = MDVM.Name;
+
+      TrayService.RemoveJob("fetchdata");
+    }
+
+    private void reloadMoveData(Move move)
+    {
+      if (_failedOnce)
+      {
+        // we failed, give up
+        cleanup();
+
+        Name = "Sorry :(";
+
+        MessageBox.Show(
+          "I'm sorry, but we couldn't load the move data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+
+        _failedOnce = false;
+      }
+      else if (!NetUtilities.IsNetwork())
+      {
+        // crafty bastard somehow lost network connectivity midway
+        cleanup();
+
+        Name = "Sorry :(";
+
+        MessageBox.Show(
+          "Downloading move data requires an internet connection. Please get one of those and try again later.",
+          "No internet!", MessageBoxButton.OK);
+      }
+      else {
+        // let's try again
+        Debug.WriteLine("Move load failed once.");
+
+        _failedOnce = true;
+
+        scheduleMoveFetch(move);
+      }
+    }
+
+    private void cleanup()
+    {
+      MDVM = null;
+      FetchMoveDataNotifier = null;
+      _moveStack.Clear();
+      TrayService.RemoveAllJobs();
     }
   }
 }

@@ -26,16 +26,8 @@ namespace SmogonWP.Services
 
     public string CurrentMessage
     {
-      get
-      {
-        if (_jobs.Count > 0)
-        {
-          return _jobs.Last().Item2;
-        }
-        else
-        {
-          return string.Empty;
-        }
+      get {
+        return _jobs.Count > 0 ? _jobs.Last().Item2 : string.Empty;
       }
     }
 
@@ -47,6 +39,9 @@ namespace SmogonWP.Services
 
     public void AddJob(string key, string message)
     {
+      // don't add duplicate jobs you fool!
+      if (_jobs.Any(t => t.Item1.Equals(key))) return;
+
       _jobs.Add(new Tuple<string, string>(key, message));
 
       if (!IsLoading) IsLoading = true;
@@ -62,6 +57,15 @@ namespace SmogonWP.Services
       {
         IsLoading = false;
       }
+
+      RaisePropertyChanged(() => CurrentMessage);
+    }
+
+    public void RemoveAllJobs()
+    {
+      _jobs.Clear();
+
+      IsLoading = false;
 
       RaisePropertyChanged(() => CurrentMessage);
     }
