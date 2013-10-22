@@ -2,7 +2,7 @@
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US" />
   <App xmlns="" ProductID="{87b3d66c-02f7-4a50-8a08-569117b54ba8}" Title="SmogonWP Alpha" RuntimeType="Silverlight" Version="0.1.0.0" Genre="apps.normal" Author="y2bd" Description="Sample description" Publisher="y2bd" PublisherID="{fae5bf52-17fd-470b-a501-f1119139d5c2}">
-    <IconPath IsRelative="true" IsResource="false">Assets\AppIcon_Koff.png</IconPath>
+    <IconPath IsRelative="true" IsResource="false">Assets\AppIcon_Smogon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_MEDIALIB_AUDIO" />
@@ -16,9 +16,9 @@
     <Tokens>
       <PrimaryToken TokenID="SmogonWPToken" TaskName="_default">
         <TemplateFlip>
-          <SmallImageURI IsRelative="true" IsResource="false">Assets\Tiles\SmallTile.png</SmallImageURI>
+          <SmallImageURI IsRelative="true" IsResource="false">Assets\Tiles\smogon_smalltile.png</SmallImageURI>
           <Count>0</Count>
-          <BackgroundImageURI IsRelative="true" IsResource="false">Assets\Tiles\MedTile.png</BackgroundImageURI>
+          <BackgroundImageURI IsRelative="true" IsResource="false">Assets\Tiles\smogon_medtile.png</BackgroundImageURI>
           <Title>SmogonWP</Title>
           <BackContent>
           </BackContent>
@@ -26,10 +26,13 @@
           </BackBackgroundImageURI>
           <BackTitle>
           </BackTitle>
+          <LargeBackgroundImageURI IsRelative="true" IsResource="false">Assets\Tiles\smogon_widetile.png</LargeBackgroundImageURI>
+          <LargeBackContent />
+          <LargeBackBackgroundImageURI IsRelative="true" IsResource="false">
+          </LargeBackBackgroundImageURI>
           <DeviceLockImageURI>
           </DeviceLockImageURI>
-          <HasLarge>
-          </HasLarge>
+          <HasLarge>True</HasLarge>
         </TemplateFlip>
       </PrimaryToken>
     </Tokens>
