@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Schmogon.Data.Abilities;
 using Schmogon.Data.Moves;
 using Schmogon.Utilities;
 
@@ -19,7 +20,9 @@ namespace Schmogon
     private const string RelHeader = "Related Moves";
 
     private IEnumerable<Move> _moveCache;
-    
+
+    #region moves
+
     public async Task<IEnumerable<Move>> GetAllMovesAsync()
     {
       return _moveCache ?? (_moveCache = await getAllMoves());
@@ -65,10 +68,10 @@ namespace Schmogon
       var content = doc.DocumentNode.Descendants("div").First(d => d.Id.Equals("content_wrapper"));
       
       // first get the stats
-      var stats = scrapeStats(content.Element("table"));
+      var stats = scrapeMoveStats(content.Element("table"));
 
       // now get the text parts
-      Tuple<string, string, IEnumerable<Move>> descParts = scrapeDescriptions(content);
+      Tuple<string, string, IEnumerable<Move>> descParts = scrapeMoveDescriptions(content);
 
       return new MoveData(
         WebUtility.HtmlDecode(move.Name), 
@@ -78,7 +81,7 @@ namespace Schmogon
         descParts.Item3);
     }
 
-    private static MoveStats scrapeStats(HtmlNode statTable)
+    private static MoveStats scrapeMoveStats(HtmlNode statTable)
     {
       var tds = statTable.Descendants("td").ToList();
 
@@ -95,7 +98,7 @@ namespace Schmogon
       return stats;
     }
 
-    private static Tuple<string, string, IEnumerable<Move>> scrapeDescriptions(HtmlNode content)
+    private static Tuple<string, string, IEnumerable<Move>> scrapeMoveDescriptions(HtmlNode content)
     {
       // we need access to the children so we can get indices
       var children = content.ChildNodes;
@@ -159,6 +162,27 @@ namespace Schmogon
       return new Tuple<string, string, IEnumerable<Move>>(String.Join("\n\n", descParas), String.Join("\n\n", compParas), relMoves);
     }
     
+    #endregion moves
+
+    #region abilities
+
+    public Task<IEnumerable<Ability>> GetAllAbilitiesAsync()
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<Ability>> SearchAbilitiesAsync(string query)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<AbilityData> GetAbilityDataAsync(Ability ability)
+    {
+      throw new NotImplementedException();
+    }
+
+    #endregion abilities
+
     private static string processUL(HtmlNode list)
     {
       if (list.Name.Equals("ul") != true) throw new ArgumentException("param must be of the node type UL", "list");

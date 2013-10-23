@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Schmogon.Data;
+using Schmogon.Data.Abilities;
 using Schmogon.Data.Moves;
 
 namespace Schmogon
@@ -12,5 +12,11 @@ namespace Schmogon
     Task<IEnumerable<Move>> SearchMovesAsync(string query);
 
     Task<MoveData> GetMoveDataAsync(Move move);
+
+    Task<IEnumerable<Ability>> GetAllAbilitiesAsync();
+
+    Task<IEnumerable<Ability>> SearchAbilitiesAsync(string query);
+
+    Task<AbilityData> GetAbilityDataAsync(Ability ability);
   }
 }
