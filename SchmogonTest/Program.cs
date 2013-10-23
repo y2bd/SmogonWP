@@ -21,8 +21,12 @@ namespace SchmogonTest
       Console.Write("Please enter a query: ");
       var query = Console.ReadLine();
 
+      /*
       var moves = await s.SearchMovesAsync(query);
       var x = await s.GetMoveDataAsync(moves.ElementAt(0));
+      */
+
+      var abilties = await s.GetAllAbilitiesAsync();
     }
   }
 }

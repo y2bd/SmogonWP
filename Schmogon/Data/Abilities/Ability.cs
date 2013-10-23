@@ -14,5 +14,10 @@
     public string Description { get; private set; }
 
     public string PageLocation { get; private set; }
+
+    public override string ToString()
+    {
+      return Name;
+    }
   }
 }
