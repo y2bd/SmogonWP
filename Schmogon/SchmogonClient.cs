@@ -204,9 +204,50 @@ namespace Schmogon
       return abilities;
     }
 
-    public Task<AbilityData> GetAbilityDataAsync(Ability ability)
+    public async Task<AbilityData> GetAbilityDataAsync(Ability ability)
     {
-      throw new NotImplementedException();
+      var path = SitePrefix + ability.PageLocation;
+
+      var doc = await Web.GetDocumentAsync(path);
+      
+      var content = doc.DocumentNode.Descendants("div").First(d => d.Id.Equals("content_wrapper"));
+
+      var descParts = await scrapeAbilityDescription(content);
+
+      return new AbilityData(
+        WebUtility.HtmlDecode(ability.Name),
+        WebUtility.HtmlDecode(descParts.Item1),
+        WebUtility.HtmlDecode(descParts.Item2));
+    }
+
+    private async Task<Tuple<string, string>> scrapeAbilityDescription(HtmlNode content)
+    {
+      var children = content.ChildNodes;
+
+      var descIndex = children.FindIndex(n => n.InnerText.Trim().Equals(DescHeader));
+      var compIndex = children.FindIndex(n => n.InnerText.Trim().Equals(CompHeader));
+
+      var descParas = new List<String>();
+      var compParas = new List<String>();
+
+      for (int i = 0; i < children.Count; i++)
+      {
+        var child = children[i];
+
+        // we only want matching paragraphs or unordered lists
+        if (!child.Name.Equals("p")) continue;
+
+        if (i.IsBetween(descIndex, compIndex))
+        {
+          descParas.Add(child.InnerText.Trim());
+        }
+        else if (i.IsBetween(compIndex, children.Count))
+        {
+          compParas.Add(child.InnerText.Trim());
+        }
+      }
+
+      return new Tuple<string, string>(String.Join("\n\n", descParas), String.Join("\n\n", compParas));
     }
 
     #endregion abilities
