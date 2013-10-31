@@ -39,6 +39,8 @@
     <Compile Include="Data\Moves\Move.cs" />
     <Compile Include="Data\Moves\MoveData.cs" />
     <Compile Include="Data\Moves\MoveStats.cs" />
+    <Compile Include="Data\Natures\Nature.cs" />
+    <Compile Include="Data\Natures\NatureEffect.cs" />
     <Compile Include="Data\Stats\StatType.cs" />
     <Compile Include="ISchmogonClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,9 +68,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Natures\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
