@@ -17,20 +17,20 @@ namespace Schmogon
       return NatureEffect.NatureEffects.First(n => n.Nature == nature);
     }
 
-    public IEnumerable<NatureEffect> GetNatureEffectWhere(StatType increased, StatType decreased)
+    public IEnumerable<NatureEffect> GetNatureEffectsWhere(StatType increased, StatType decreased)
     {
       return NatureEffect.NatureEffects.Where(n => n.Increased == increased &&
                                               n.Decreased == decreased &&
                                               !n.IsNeutral);
     }
 
-    public IEnumerable<NatureEffect> GetNatureEffectWhereIncreased(StatType increased)
+    public IEnumerable<NatureEffect> GetNatureEffectsWhereIncreased(StatType increased)
     {
       return NatureEffect.NatureEffects.Where(n => n.Increased == increased &&
                                               !n.IsNeutral);
     }
 
-    public IEnumerable<NatureEffect> GetNatureEffectWhereDecreased(StatType decreased)
+    public IEnumerable<NatureEffect> GetNatureEffectsWhereDecreased(StatType decreased)
     {
       return NatureEffect.NatureEffects.Where(n => n.Decreased == decreased &&
                                               !n.IsNeutral);
