@@ -77,7 +77,7 @@ namespace SmogonWP.ViewModel
         {
           Title = "Natures",
           Description = "See how natures affect your Pokemon",
-          NavigationPath = string.Empty
+          NavigationPath = ViewModelLocator.NaturePath
         },
         new NavigationItemViewModel
         {

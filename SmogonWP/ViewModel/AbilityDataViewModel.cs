@@ -27,7 +27,6 @@ namespace SmogonWP.ViewModel
     private const string SmogonPrefix = "http://www.smogon.com";
     private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
 
-    private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonClient _schmogonClient;
 
     private readonly MessageReceiver<AbilitySearchMessage> _abilitySearchReceiver;
@@ -130,9 +129,8 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public AbilityDataViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService)
+    public AbilityDataViewModel(ISchmogonClient schmogonClient, TrayService trayService)
     {
-      _navigationService = navigationService;
       _schmogonClient = schmogonClient;
       _trayService = trayService;
 

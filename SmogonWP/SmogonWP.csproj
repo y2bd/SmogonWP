@@ -123,10 +123,12 @@
     <Compile Include="ViewModel\Items\AbilityDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\AbilityItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NatureItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NavigationItemViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />
     <Compile Include="ViewModel\MoveSearchViewModel.cs" />
+    <Compile Include="ViewModel\NatureViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AbilityDataView.xaml.cs">
       <DependentUpon>AbilityDataView.xaml</DependentUpon>
@@ -142,6 +144,9 @@
     </Compile>
     <Compile Include="View\MoveSearchView.xaml.cs">
       <DependentUpon>MoveSearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\NatureView.xaml.cs">
+      <DependentUpon>NatureView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MoveSearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\NatureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
