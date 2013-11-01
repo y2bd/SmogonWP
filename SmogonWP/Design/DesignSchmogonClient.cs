@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Schmogon;
+using Schmogon.Data.Abilities;
 using Schmogon.Data.Moves;
+using Schmogon.Data.Natures;
+using Schmogon.Data.Stats;
+using Schmogon.Data.Types;
 
 namespace SmogonWP.Design
 {
@@ -60,6 +64,85 @@ namespace SmogonWP.Design
       return data;
     }
 
-    
+    public async Task<IEnumerable<Ability>> GetAllAbilitiesAsync()
+    {
+      await Task.Delay(0);
+
+      return new List<Ability>
+      {
+        new Ability("kung pao", "throws chicken at the opponent, causing confusion", ""),
+        new Ability("drum machine", "quick strikes, can hit two to five times", ""),
+        new Ability("stackflip", "damage builds as move is used in succession", ""),
+        new Ability("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
+        new Ability("whiplash", "quick strike that does more damage the slower the opponent", ""),
+        new Ability("kung pao", "throws chicken at the opponent, causing confusion", ""),
+      };
+    }
+
+    public async Task<IEnumerable<Ability>> SearchAbilitiesAsync(string query)
+    {
+      return await GetAllAbilitiesAsync();
+    }
+
+    public async Task<AbilityData> GetAbilityDataAsync(Ability ability)
+    {
+      await Task.Delay(0);
+
+      return new AbilityData("lime", "makes pokemon super sour", "it's super good because sour pokemon are the worst.");
+    }
+
+    public IEnumerable<NatureEffect> GetAllNatureEffects()
+    {
+      var s = new SchmogonClient();
+      return s.GetAllNatureEffects();
+    }
+
+    public NatureEffect GetNatureEffect(Nature nature)
+    {
+      var s = new SchmogonClient();
+      return s.GetNatureEffect(Nature.Adamant);
+    }
+
+    public IEnumerable<NatureEffect> GetNatureEffectsWhere(StatType increased, StatType decreased)
+    {
+      var s = new SchmogonClient();
+      return s.GetNatureEffectsWhere(StatType.Attack, StatType.Speed);
+    }
+
+    public IEnumerable<NatureEffect> GetNatureEffectsWhereIncreased(StatType increased)
+    {
+      var s = new SchmogonClient();
+      return s.GetNatureEffectsWhereIncreased(StatType.SpecialAttack);
+    }
+
+    public IEnumerable<NatureEffect> GetNatureEffectsWhereDecreased(StatType decreased)
+    {
+      var s = new SchmogonClient();
+      return s.GetNatureEffectsWhereDecreased(StatType.Defense);
+    }
+
+    public IEnumerable<TypeOffenseEffect> GetAllTypeOffenseEffects()
+    {
+      var s = new SchmogonClient();
+      return s.GetAllTypeOffenseEffects();
+    }
+
+    public IEnumerable<TypeDefenseEffect> GetAllTypeDefenseEffects()
+    {
+      var s = new SchmogonClient();
+      return s.GetAllTypeDefenseEffects();
+    }
+
+    public TypeOffenseEffect GetTypeOffenseEffect(Type type)
+    {
+      var s = new SchmogonClient();
+      return s.GetTypeOffenseEffect(Type.Fairy);
+    }
+
+    public TypeDefenseEffect GetTypeDefenseEffect(Type type)
+    {
+      var s = new SchmogonClient();
+      return s.GetTypeDefenseEffect(Type.Steel);
+    }
   }
 }

@@ -13,8 +13,10 @@ namespace SmogonWP.ViewModel
   public class ViewModelLocator
   {
     public const string HomePath = "/View/HomeView.xaml";
-    public const string MoveSearchViewModel = "/View/MoveSearchView.xaml";
-    public const string MoveDataViewModel = "/View/MoveDataView.xaml";
+    public const string MoveSearchPath = "/View/MoveSearchView.xaml";
+    public const string MoveDataPath = "/View/MoveDataView.xaml";
+    public const string AbilitySearchPath = "/View/AbilitySearchView.xaml";
+    public const string AbilityDataPath = "/View/AbilityDataView.xaml";
 
     /// <summary>
     /// Initializes a new instance of the ViewModelLocator class.
@@ -39,6 +41,8 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<HomeViewModel>();
       SimpleIoc.Default.Register<MoveSearchViewModel>();
       SimpleIoc.Default.Register<MoveDataViewModel>();
+      SimpleIoc.Default.Register<AbilitySearchViewModel>();
+      SimpleIoc.Default.Register<AbilityDataViewModel>();
     }
 
     public HomeViewModel Home
@@ -62,6 +66,22 @@ namespace SmogonWP.ViewModel
       get
       {
         return ServiceLocator.Current.GetInstance<MoveDataViewModel>();
+      }
+    }
+
+    public AbilitySearchViewModel AbilitySearch
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<AbilitySearchViewModel>();
+      }
+    }
+
+    public AbilityDataViewModel AbilityData
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<AbilityDataViewModel>();
       }
     }
 

@@ -10,7 +10,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
 using Schmogon;
-using Schmogon.Data.Moves;
+using Schmogon.Data.Abilities;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
@@ -19,16 +19,16 @@ using SmogonWP.ViewModel.Items;
 
 namespace SmogonWP.ViewModel
 {
-  public class MoveSearchViewModel : ViewModelBase
+  public class AbilitySearchViewModel : ViewModelBase
   {
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonClient _schmogonClient;
 
-    private readonly MessageSender<MoveSearchMessage> _moveSearchSender;
+    private readonly MessageSender<AbilitySearchMessage> _abilitySearchSender;
 
     private bool _failedOnce;
 
-    private List<MoveItemViewModel> _moves;
+    private List<AbilityItemViewModel> _abilities;
 
     #region props
 
@@ -66,38 +66,38 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private MoveItemViewModel _selectedMove;
-    public MoveItemViewModel SelectedMove
+    private AbilityItemViewModel _selectedAbility;
+    public AbilityItemViewModel SelectedAbility
     {
       get
       {
-        return _selectedMove;
+        return _selectedAbility;
       }
       set
       {
-        if (_selectedMove != value)
+        if (_selectedAbility != value)
         {
-          onMoveSelected(value);
+          onAbilitySelected(value);
 
-          _selectedMove = null;
-          RaisePropertyChanged(() => SelectedMove);
+          _selectedAbility = null;
+          RaisePropertyChanged(() => SelectedAbility);
         }
       }
     }			
 
-    private ObservableCollection<MoveItemViewModel> _filteredMoves;
-    public ObservableCollection<MoveItemViewModel> FilteredMoves
+    private ObservableCollection<AbilityItemViewModel> _filteredAbilities;
+    public ObservableCollection<AbilityItemViewModel> FilteredAbilities
     {
       get
       {
-        return _filteredMoves;
+        return _filteredAbilities;
       }
       set
       {
-        if (_filteredMoves != value)
+        if (_filteredAbilities != value)
         {
-          _filteredMoves = value;
-          RaisePropertyChanged(() => FilteredMoves);
+          _filteredAbilities = value;
+          RaisePropertyChanged(() => FilteredAbilities);
         }
       }
     }
@@ -148,89 +148,89 @@ namespace SmogonWP.ViewModel
 
     #region async handlers
 
-    public INotifyTaskCompletion FetchMovesNotifier { get; private set; }
+    public INotifyTaskCompletion FetchAbilitiesNotifier { get; private set; }
 
     #endregion
 
-    public MoveSearchViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService)
+    public AbilitySearchViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService)
     {
       _navigationService = navigationService;
       _schmogonClient = schmogonClient;
       _trayService = trayService;
 
-      _moveSearchSender = new MessageSender<MoveSearchMessage>();
+      _abilitySearchSender = new MessageSender<AbilitySearchMessage>();
 
-      scheduleMoveListFetch();
+      scheduleAbilityListFetch();
     }
     
     private void onFilterChanged(KeyEventArgs args)
     {
-      if (_moves == null || Filter == null) return;
+      if (_abilities == null || Filter == null) return;
       if (args.Key != Key.Enter) return;
 
-      if (string.IsNullOrWhiteSpace(Filter)) FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
+      if (string.IsNullOrWhiteSpace(Filter)) FilteredAbilities = new ObservableCollection<AbilityItemViewModel>(_abilities);
       
-      FilteredMoves = new ObservableCollection<MoveItemViewModel>(
-        _moves.Where(
+      FilteredAbilities = new ObservableCollection<AbilityItemViewModel>(
+        _abilities.Where(
           m => m.Name.ToLower().Contains(Filter.ToLower().Trim())
         ).OrderBy(m => m.Name)
       );
     }
 
-    private void onMoveSelected(MoveItemViewModel mivm)
+    private void onAbilitySelected(AbilityItemViewModel mivm)
     {
-      _moveSearchSender.SendMessage(new MoveSearchMessage(mivm.Move));
-      _navigationService.Navigate(ViewModelLocator.MoveDataPath);
+      _abilitySearchSender.SendMessage(new AbilitySearchMessage(mivm.Ability));
+      _navigationService.Navigate(ViewModelLocator.AbilityDataPath);
     }
 
     private void onReloadPressed()
     {
       LoadFailed = false;
 
-      scheduleMoveListFetch();
+      scheduleAbilityListFetch();
     }
 
-    private void scheduleMoveListFetch()
+    private void scheduleAbilityListFetch()
     {
-      FetchMovesNotifier = NotifyTaskCompletion.Create(fetchMoves());
+      FetchAbilitiesNotifier = NotifyTaskCompletion.Create(fetchAbilities());
 
-      FetchMovesNotifier.PropertyChanged += (sender, args) =>
+      FetchAbilitiesNotifier.PropertyChanged += (sender, args) =>
       {
-        if (FetchMovesNotifier == null) return;
+        if (FetchAbilitiesNotifier == null) return;
 
-        if (FetchMovesNotifier.IsFaulted)
+        if (FetchAbilitiesNotifier.IsFaulted)
         {
-          throw FetchMovesNotifier.InnerException;
+          throw FetchAbilitiesNotifier.InnerException;
         }
       };
     }
 
-    private async Task fetchMoves()
+    private async Task fetchAbilities()
     {
-      TrayService.AddJob("movefetch", "Fetching moves");
+      TrayService.AddJob("abilityfetch", "Fetching abilities");
 
-      List<Move> rawMoves;
+      List<Ability> rawAbilities;
 
       try
       {
-        rawMoves = (await _schmogonClient.GetAllMovesAsync()).ToList();
+        rawAbilities = (await _schmogonClient.GetAllAbilitiesAsync()).ToList();
       }
       catch (HttpRequestException)
       {
-        reloadMoves();
+        reloadAbilities();
         return;
       }
 
-      _moves = (from rawMove in rawMoves
-                select new MoveItemViewModel(rawMove))
+      _abilities = (from rawAbility in rawAbilities
+                select new AbilityItemViewModel(rawAbility))
         .ToList();
 
-      FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
+      FilteredAbilities = new ObservableCollection<AbilityItemViewModel>(_abilities);
 
-      TrayService.RemoveJob("movefetch");
+      TrayService.RemoveJob("abilityfetch");
     }
 
-    private void reloadMoves()
+    private void reloadAbilities()
     {
       if (_failedOnce)
       {
@@ -238,7 +238,7 @@ namespace SmogonWP.ViewModel
         cleanup();
         
         MessageBox.Show(
-          "I'm sorry, but we couldn't load the move data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+          "I'm sorry, but we couldn't load the ability data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
           "Oh no!", MessageBoxButton.OK);
 
         _failedOnce = false;
@@ -251,7 +251,7 @@ namespace SmogonWP.ViewModel
         cleanup();
 
         MessageBox.Show(
-          "Downloading move data requires an internet connection. Please get one of those and try again later.",
+          "Downloading ability data requires an internet connection. Please get one of those and try again later.",
           "No internet!", MessageBoxButton.OK);
 
         LoadFailed = true;
@@ -263,15 +263,15 @@ namespace SmogonWP.ViewModel
 
         _failedOnce = true;
 
-        scheduleMoveListFetch();
+        scheduleAbilityListFetch();
       }
     }
 
     private void cleanup()
     {
-      _moves = null;
-      FilteredMoves = null;
-      FetchMovesNotifier = null;
+      _abilities = null;
+      FilteredAbilities = null;
+      FetchAbilitiesNotifier = null;
       Filter = null;
       TrayService.RemoveAllJobs();
     }

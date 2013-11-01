@@ -65,24 +65,24 @@ namespace SmogonWP.ViewModel
         {
           Title = "Moves",
           Description = "Search for moves and their relevance",
-          NavigationPath = ViewModelLocator.MoveSearchViewModel
+          NavigationPath = ViewModelLocator.MoveSearchPath
         },
         new NavigationItemViewModel
         {
-          Title = "Pokémon",
-          Description = "Search for Pokémon and their strategies",
+          Title = "Abilities",
+          Description = "Search for abilities and how they change the field",
+          NavigationPath = ViewModelLocator.AbilitySearchPath
+        },
+        new NavigationItemViewModel
+        {
+          Title = "Natures",
+          Description = "See how natures affect your Pokemon",
           NavigationPath = string.Empty
         },
         new NavigationItemViewModel
         {
-          Title = "Items",
-          Description = "Search for items and when to equip them",
-          NavigationPath = string.Empty
-        },
-        new NavigationItemViewModel
-        {
-          Title = "Favorites",
-          Description = "Look at entries you've marked as favorites",
+          Title = "Types",
+          Description = "Compare types and how they interact with each other",
           NavigationPath = string.Empty
         }
       };
