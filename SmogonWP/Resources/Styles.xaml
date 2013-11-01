@@ -1,0 +1,54 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                    mc:Ignorable="d">
+  
+  <Style x:Key="LLSFloatingScrollbarStyle"
+                 TargetType="phone:LongListSelector">
+    <Setter Property="Background"
+            Value="Transparent" />
+    <Setter Property="Foreground"
+            Value="{StaticResource PhoneForegroundBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="phone:LongListSelector">
+          <Grid Background="{TemplateBinding Background}"
+                d:DesignWidth="480"
+                d:DesignHeight="800">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="ScrollStates">
+                <VisualStateGroup.Transitions>
+                  <VisualTransition GeneratedDuration="00:00:00.5" />
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="Scrolling">
+                  <Storyboard>
+                    <DoubleAnimation Duration="0"
+                                     To="1"
+                                     Storyboard.TargetProperty="Opacity"
+                                     Storyboard.TargetName="VerticalScrollBar" />
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="NotScrolling" />
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid Margin="{TemplateBinding Padding}">
+
+              <ViewportControl x:Name="ViewportControl"
+                               HorizontalContentAlignment="Stretch"
+                               VerticalAlignment="Top" />
+
+              <ScrollBar x:Name="VerticalScrollBar"
+                         Margin="4,0,-12,0"
+                         Opacity="0"
+                         HorizontalAlignment="Right"
+                         Orientation="Vertical" />
+            </Grid>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

@@ -83,7 +83,7 @@ namespace SmogonWP.ViewModel
         {
           Title = "Types",
           Description = "Compare types and how they interact with each other",
-          NavigationPath = string.Empty
+          NavigationPath = ViewModelLocator.TypePath
         }
       };
     }

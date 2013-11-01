@@ -101,6 +101,8 @@
     </Compile>
     <Compile Include="Messages\MoveSearchMessage.cs" />
     <Compile Include="Messages\AbilitySearchMessage.cs" />
+    <Compile Include="Model\DefenseTypeGroup.cs" />
+    <Compile Include="Model\OffenseTypeGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -126,9 +128,11 @@
     <Compile Include="ViewModel\Items\AbilityItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NatureItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NavigationItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\TypeItemViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />
     <Compile Include="ViewModel\MoveSearchViewModel.cs" />
     <Compile Include="ViewModel\NatureViewModel.cs" />
+    <Compile Include="ViewModel\TypeViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AbilityDataView.xaml.cs">
       <DependentUpon>AbilityDataView.xaml</DependentUpon>
@@ -148,6 +152,9 @@
     <Compile Include="View\NatureView.xaml.cs">
       <DependentUpon>NatureView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\TypeView.xaml.cs">
+      <DependentUpon>TypeView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -155,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -182,6 +193,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\TypeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -193,6 +208,7 @@
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\AppBar\feature.search.png" />
+    <Content Include="Assets\AppBar\questionmark.png" />
     <Content Include="Assets\AppIcon_Koff.png" />
     <Content Include="Assets\AppIcon_Smogon.png" />
     <Content Include="Assets\ApplicationIcon.png">

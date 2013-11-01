@@ -136,13 +136,13 @@ namespace SmogonWP.Design
     public TypeOffenseEffect GetTypeOffenseEffect(Type type)
     {
       var s = new SchmogonClient();
-      return s.GetTypeOffenseEffect(Type.Fairy);
+      return s.GetTypeOffenseEffect(type);
     }
 
     public TypeDefenseEffect GetTypeDefenseEffect(Type type)
     {
       var s = new SchmogonClient();
-      return s.GetTypeDefenseEffect(Type.Steel);
+      return s.GetTypeDefenseEffect(type);
     }
   }
 }

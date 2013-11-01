@@ -18,6 +18,7 @@ namespace SmogonWP.ViewModel
     public const string AbilitySearchPath = "/View/AbilitySearchView.xaml";
     public const string AbilityDataPath = "/View/AbilityDataView.xaml";
     public const string NaturePath = "/View/NatureView.xaml";
+    public const string TypePath = "/View/TypeView.xaml";
 
     /// <summary>
     /// Initializes a new instance of the ViewModelLocator class.
@@ -45,6 +46,7 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<AbilitySearchViewModel>();
       SimpleIoc.Default.Register<AbilityDataViewModel>();
       SimpleIoc.Default.Register<NatureViewModel>();
+      SimpleIoc.Default.Register<TypeViewModel>();
     }
 
     public HomeViewModel Home
@@ -92,6 +94,14 @@ namespace SmogonWP.ViewModel
       get
       {
         return ServiceLocator.Current.GetInstance<NatureViewModel>();
+      }
+    }
+
+    public TypeViewModel Type
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<TypeViewModel>();
       }
     }
 
