@@ -100,6 +100,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Messages\MoveSearchMessage.cs" />
+    <Compile Include="Messages\AbilitySearchMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -115,14 +116,24 @@
     <Compile Include="Utilities\BindableLongListSelector.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
+    <Compile Include="ViewModel\AbilityDataViewModel.cs" />
+    <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
     <Compile Include="ViewModel\AppBar\MenuItemViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\Items\AbilityDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\NatureItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NavigationItemViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />
     <Compile Include="ViewModel\MoveSearchViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\AbilityDataView.xaml.cs">
+      <DependentUpon>AbilityDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AbilitySearchView.xaml.cs">
+      <DependentUpon>AbilitySearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
@@ -139,6 +150,14 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AbilityDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AbilitySearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -252,7 +271,6 @@
       <HintPath>..\packages\MvvmLightLibs.4.1.27.1\lib\wp8\System.Windows.Interactivity.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\libs\schmogon\Schmogon\Schmogon.csproj">
       <Project>{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}</Project>
