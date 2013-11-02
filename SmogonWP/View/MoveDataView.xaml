@@ -22,6 +22,7 @@
 
     <phone:PhoneApplicationPage.Resources>
         <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
 
         <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
             <Grid>
@@ -48,8 +49,7 @@
     </shell:SystemTray.ProgressIndicator>
 
     <bindable:Bindable.ApplicationBar>
-        <bindable:BindableApplicationBar BindableOpacity="0.75"
-                                         Mode="Minimized"
+        <bindable:BindableApplicationBar Mode="Minimized"
                                          MenuItemsSource="{Binding MenuItems}">
         </bindable:BindableApplicationBar>
     </bindable:Bindable.ApplicationBar>
@@ -87,179 +87,186 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Grid x:Name="StatGrid"
-                  Margin="24,0,24,24"
-                  Background="{StaticResource PhoneAccentBrush}">
-
-                <Grid.Resources>
-                    <Style BasedOn="{StaticResource PhoneTextTitle3Style}"
-                           TargetType="TextBlock">
-                        <Setter Property="Foreground"
-                                Value="White" />
-                        <Setter Property="Margin"
-                                Value="12,-2,12,0" />
-                    </Style>
-                </Grid.Resources>
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Border Grid.Row="0"
-                        Grid.ColumnSpan="2"
-                        Background="{Binding TypeBackgroundBrush}" />
-                
-                <Border Grid.Row="1"
-                        Grid.ColumnSpan="2"
-                        Background="Black"
-                        Opacity="0.3" />
-
-                <Border Grid.Row="3"
-                        Grid.ColumnSpan="2"
-                        Background="Black"
-                        Opacity="0.3" />
-
-                <Border Grid.Row="5"
-                        Grid.ColumnSpan="2"
-                        Background="Black"
-                        Opacity="0.3" />
-
-                <Border Grid.RowSpan="7"
-                        Grid.Column="1"
-                        Background="{StaticResource PhoneBackgroundBrush}"
-                        Opacity="0.1" />
-
-                <TextBlock Grid.Row="0"
-                           Grid.Column="0"
-                           Text="type"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <Button Grid.Row="0"
-                        Grid.Column="1"
-                        Style="{StaticResource BorderlessButtonStyle}"
-                        Foreground="White"
-                        FontSize="{StaticResource PhoneFontSizeMedium}"
-                        Margin="12,0"
-                        Content="{Binding Path=MDVM.Type}"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Left" 
-                        toolkit:TiltEffect.IsTiltEnabled="True"
-                        Command="{Binding MoveTypeSelected}"/>
-
-                <TextBlock Grid.Row="1"
-                           Grid.Column="0"
-                           Text="power"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="1"
-                           Grid.Column="1"
-                           Text="{Binding Path=MDVM.Power}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="2"
-                           Grid.Column="0"
-                           Text="accuracy"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="2"
-                           Grid.Column="1"
-                           Text="{Binding Path=MDVM.Accuracy}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="3"
-                           Grid.Column="0"
-                           Text="pp"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="3"
-                           Grid.Column="1"
-                           Text="{Binding Path=MDVM.PP}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="4"
-                           Grid.Column="0"
-                           Text="priority"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="4"
-                           Grid.Column="1"
-                           Text="{Binding Path=MDVM.Priority}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="5"
-                           Grid.Column="0"
-                           Text="damage"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="5"
-                           Grid.Column="1"
-                           Text="{Binding Path=MDVM.Damage}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="6"
-                           Grid.Column="0"
-                           Text="target"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-
-                <TextBlock Grid.Row="6"
-                           Grid.Column="1"
-                           Text="{Binding Path=MDVM.Target}"
-                           TextWrapping="Wrap"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
-            </Grid>
-
             <phone:Pivot x:Name="DescriptionPivot"
                          Grid.Row="1"
                          Margin="-1,-12,0,0"
                          HeaderTemplate="{StaticResource DescriptionPivotHeaderTemplate}">
+                <phone:PivotItem Header="STATS">
+                    <Grid x:Name="StatGrid"
+                          Margin="12,0,12,24"
+                          Background="{StaticResource PhoneAccentBrush}"
+                          VerticalAlignment="Top">
+
+                        <Grid.Resources>
+                            <Style BasedOn="{StaticResource PhoneTextTitle3Style}"
+                                   TargetType="TextBlock">
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                                <Setter Property="Margin"
+                                        Value="12,-2,12,0" />
+                            </Style>
+                        </Grid.Resources>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Row="0"
+                                Grid.ColumnSpan="2"
+                                Background="{Binding TypeBackgroundBrush}" />
+
+                        <Border Grid.Row="1"
+                                Grid.ColumnSpan="2"
+                                Background="Black"
+                                Opacity="0.3" />
+
+                        <Border Grid.Row="3"
+                                Grid.ColumnSpan="2"
+                                Background="Black"
+                                Opacity="0.3" />
+
+                        <Border Grid.Row="5"
+                                Grid.ColumnSpan="2"
+                                Background="Black"
+                                Opacity="0.3" />
+
+                        <Border Grid.RowSpan="7"
+                                Grid.Column="1"
+                                Background="{StaticResource PhoneBackgroundBrush}"
+                                Opacity="0.1" />
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="type"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <Button Grid.Row="0"
+                                Grid.Column="1"
+                                Style="{StaticResource BorderlessButtonStyle}"
+                                Foreground="White"
+                                FontSize="{StaticResource PhoneFontSizeMedium}"
+                                Margin="12,0"
+                                Content="{Binding Path=MDVM.Type}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                toolkit:TiltEffect.IsTiltEnabled="True"
+                                Command="{Binding MoveTypeSelected}" />
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="power"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   Text="{Binding Path=MDVM.Power}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="0"
+                                   Text="accuracy"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="1"
+                                   Text="{Binding Path=MDVM.Accuracy}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="3"
+                                   Grid.Column="0"
+                                   Text="pp"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="3"
+                                   Grid.Column="1"
+                                   Text="{Binding Path=MDVM.PP}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="4"
+                                   Grid.Column="0"
+                                   Text="priority"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="4"
+                                   Grid.Column="1"
+                                   Text="{Binding Path=MDVM.Priority}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="5"
+                                   Grid.Column="0"
+                                   Text="damage"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="5"
+                                   Grid.Column="1"
+                                   Text="{Binding Path=MDVM.Damage}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="6"
+                                   Grid.Column="0"
+                                   Text="target"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="6"
+                                   Grid.Column="1"
+                                   Text="{Binding Path=MDVM.Target}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                    </Grid>
+                </phone:PivotItem>
                 <phone:PivotItem Header="DESCRIPTION"
                                  Margin="12,12,12,0">
-                    <ScrollViewer>
-                        <TextBlock Text="{Binding Path=MDVM.Description}"
-                                   TextWrapping="Wrap"
-                                   Style="{StaticResource PhoneTextTitle3Style}"
-                                   Margin="12,0,12,24" />
-                    </ScrollViewer>
+                    <ListBox x:Name="DescList"
+                             ItemsSource="{Binding Path=MDVM.Description}"
+                             ItemTemplate="{StaticResource TextElementTemplate}"
+                             Margin="0,0,-12,0">
+                    </ListBox>
                 </phone:PivotItem>
                 <phone:PivotItem Header="COMPETITIVE USE"
                                  Margin="12,12,12,0">
-                    <ScrollViewer>
-                        <TextBlock Text="{Binding Path=MDVM.Competitive}"
-                                   TextWrapping="Wrap"
-                                   Style="{StaticResource PhoneTextTitle3Style}"
-                                   Margin="12,0,12,24" />
-                    </ScrollViewer>
+                    <ListBox x:Name="CompList"
+                             ItemsSource="{Binding Path=MDVM.Competitive}"
+                             ItemTemplate="{StaticResource TextElementTemplate}"
+                             Margin="0,0,-12,0">
+                    </ListBox>
                 </phone:PivotItem>
                 <phone:PivotItem Header="RELATED MOVES"
                                  Margin="12,12,12,0">
-                    <util:BindableLongListSelector x:Name="RelatedList"
-                                                   ItemsSource="{Binding Path=MDVM.RelatedMoves}"
-                                                   SelectedItem="{Binding SelectedRelatedMove, Mode=TwoWay}"
-                                                   ItemTemplate="{StaticResource RelatedItemTemplate}"
-                                                   toolkit:TiltEffect.IsTiltEnabled="True" />
+                    <Grid>
+                        <util:BindableLongListSelector x:Name="RelatedList"
+                                                       ItemsSource="{Binding Path=MDVM.RelatedMoves}"
+                                                       SelectedItem="{Binding SelectedRelatedMove, Mode=TwoWay}"
+                                                       ItemTemplate="{StaticResource RelatedItemTemplate}"
+                                                       toolkit:TiltEffect.IsTiltEnabled="True" />
+                    
+                        <TextBlock Style="{StaticResource PhoneTextSmallStyle}"
+                                   Text="(no related moves)"
+                                   Visibility="{Binding Path=MDVM.RelatedMoves, Converter={StaticResource EmptinessVisibilityConverter}}" />    
+                    </Grid>
                 </phone:PivotItem>
             </phone:Pivot>
 
@@ -269,7 +276,7 @@
                     Margin="-12"
                     Background="{StaticResource PhoneBackgroundBrush}"
                     Opacity="0.5"
-                    Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, FallbackValue=Collapsed}" />
+                    Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, TargetNullValue=Collapsed}" />
         </Grid>
     </Grid>
 

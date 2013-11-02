@@ -1,0 +1,59 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                    xmlns:controls="clr-namespace:SmogonWP.Controls"
+                    mc:Ignorable="d">
+
+    <DataTemplate x:Key="TextElementTemplate">
+        <controls:TextElementTemplateSelector Content="{Binding}"
+                                              HorizontalContentAlignment="Stretch">
+            <controls:TextElementTemplateSelector.Paragraph>
+                <DataTemplate>
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="{Binding Content}"
+                                   TextWrapping="Wrap"
+                                   Style="{StaticResource PhoneTextTitle3Style}" />
+                    </Grid>
+                </DataTemplate>
+            </controls:TextElementTemplateSelector.Paragraph>
+            <controls:TextElementTemplateSelector.UnorderedList>
+                <DataTemplate>
+                    <ItemsControl ItemsSource="{Binding Elements}"
+                                  Margin="0,0,0,12">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="12,0,12,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="18" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Border Grid.Column="0"
+                                            Width="6"
+                                            Height="6"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Background="{StaticResource PhoneAccentBrush}" />
+                                    
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding}"
+                                               TextWrapping="Wrap"
+                                               Margin="0"
+                                               Style="{StaticResource PhoneTextTitle3Style}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DataTemplate>
+            </controls:TextElementTemplateSelector.UnorderedList>
+        </controls:TextElementTemplateSelector>
+    </DataTemplate>
+
+</ResourceDictionary>

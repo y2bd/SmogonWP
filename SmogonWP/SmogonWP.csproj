@@ -93,7 +93,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TextElementTemplateSelector.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
+    <Compile Include="Converters\EmptinessVisibilityConverter.cs" />
     <Compile Include="Design\DesignSchmogonClient.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -118,6 +120,7 @@
     <Compile Include="Services\TombstoneService.cs" />
     <Compile Include="Services\TrayService.cs" />
     <Compile Include="Utilities\BindableLongListSelector.cs" />
+    <Compile Include="Utilities\DataTemplateSelector.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
     <Compile Include="ViewModel\AbilityDataViewModel.cs" />
@@ -166,6 +169,10 @@
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Templates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Styles.xaml">
       <SubType>Designer</SubType>

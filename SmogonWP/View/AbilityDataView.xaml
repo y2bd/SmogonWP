@@ -22,6 +22,14 @@
 
     <phone:PhoneApplicationPage.Resources>
         <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+
+        <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
+            <Grid>
+                <TextBlock Text="{Binding}"
+                           Margin="2,0,0,0"
+                           Style="{StaticResource PhoneTextTitle3Style}" />
+            </Grid>
+        </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
     <shell:SystemTray.ProgressIndicator>
@@ -31,8 +39,7 @@
     </shell:SystemTray.ProgressIndicator>
 
     <bindable:Bindable.ApplicationBar>
-        <bindable:BindableApplicationBar BindableOpacity="0.75"
-                                         Mode="Minimized"
+        <bindable:BindableApplicationBar Mode="Minimized"
                                          MenuItemsSource="{Binding MenuItems}">
         </bindable:BindableApplicationBar>
     </bindable:Bindable.ApplicationBar>
@@ -64,27 +71,26 @@
         <Grid x:Name="ContentPanel"
               Grid.Row="1"
               Margin="0,0,0,0">
-            <ScrollViewer>
-                <StackPanel Margin="12,0,0,12">
-                    <TextBlock Text="DESCRIPTION"
-                               Style="{StaticResource PhoneTextTitle3Style}"
-                               Margin="12,0,12,12" />
-                    
-                    <TextBlock Text="{Binding ADVM.Description}"
-                               Style="{StaticResource PhoneTextTitle3Style}"
-                               Margin="12,0,12,24" 
-                               TextWrapping="Wrap"/> 
-
-                    <TextBlock Text="COMPETITIVE USE"
-                               Style="{StaticResource PhoneTextTitle3Style}"
-                               Margin="12,0,12,12" />
-
-                    <TextBlock Text="{Binding ADVM.Competitive}"
-                               Style="{StaticResource PhoneTextTitle3Style}"
-                               Margin="12,0,12,24" 
-                               TextWrapping="Wrap"/>
-                </StackPanel>
-            </ScrollViewer>
+            <phone:Pivot x:Name="DescriptionPivot"
+                         Margin="-1,-12,0,0"
+                         HeaderTemplate="{StaticResource DescriptionPivotHeaderTemplate}">
+                <phone:PivotItem Header="DESCRIPTION"
+                                 Margin="12,12,12,0">
+                    <ListBox x:Name="DescList"
+                             ItemsSource="{Binding Path=ADVM.Description}"
+                             ItemTemplate="{StaticResource TextElementTemplate}"
+                             Margin="0,0,-12,0">
+                    </ListBox>
+                </phone:PivotItem>
+                <phone:PivotItem Header="COMPETITIVE USE"
+                                 Margin="12,12,12,0">
+                    <ListBox x:Name="CompList"
+                             ItemsSource="{Binding Path=ADVM.Competitive}"
+                             ItemTemplate="{StaticResource TextElementTemplate}"
+                             Margin="0,0,-12,0">
+                    </ListBox>
+                </phone:PivotItem>
+            </phone:Pivot>
         </Grid>
 
         <Border x:Name="BusyShade"

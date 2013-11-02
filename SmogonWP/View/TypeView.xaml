@@ -48,8 +48,7 @@
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar Opacity="0.75"
-                              Mode="Minimized">
+        <shell:ApplicationBar Mode="Minimized">
             <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/questionmark.png"
                                             IsEnabled="True"
                                             Text="help" 
@@ -151,7 +150,7 @@
               Visibility="Collapsed">
             
             <ScrollViewer x:Name="HelpContent"
-                          Margin="12,12,12,42"
+                          Margin="12"
                           Background="{StaticResource PhoneChromeBrush}">
                 <StackPanel Margin="0,12">
                     <StackPanel Margin="0,0,0,24">

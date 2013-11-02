@@ -64,7 +64,8 @@ namespace SmogonWP.Design
       var compData = new List<ITextElement>
       {
         new Paragraph(
-          "Hypertension is an interesting move. It seems that it would best suit power sweepers, but the problem is that not only does it spend a turn, but many power sweeper builds have low defense to begin with, so a health penalty isn't always the best choice. For most setups, Swords Dance is a better choice if the pokemon can learn it.")
+          "Hypertension is an interesting move. It seems that it would best suit power sweepers, but the problem is that not only does it spend a turn, but many power sweeper builds have low defense to begin with, so a health penalty isn't always the best choice."),
+        new Paragraph("For most setups, Dragon Dance or Swords Dance is a better choice if the pokemon can learn it.")
       };
 
       var data = new MoveData(
