@@ -2,6 +2,7 @@
 using System.Linq;
 using GalaSoft.MvvmLight;
 using Schmogon.Data.Moves;
+using Schmogon.Model.Text;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -16,12 +17,12 @@ namespace SmogonWP.ViewModel.Items
       get { return MoveData.Name.ToLower(); }
     }
 
-    public string Description
+    public IEnumerable<ITextElement> Description
     {
       get { return MoveData.Description; }
     }
 
-    public string Competitive
+    public IEnumerable<ITextElement> Competitive
     {
       get { return MoveData.Competitive; }
     }

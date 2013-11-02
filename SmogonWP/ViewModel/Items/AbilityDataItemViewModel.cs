@@ -1,4 +1,6 @@
-﻿using Schmogon.Data.Abilities;
+﻿using System.Collections.Generic;
+using Schmogon.Data.Abilities;
+using Schmogon.Model.Text;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -13,12 +15,12 @@ namespace SmogonWP.ViewModel.Items
       get { return AbilityData.Name.ToLower(); }
     }
 
-    public string Description
+    public IEnumerable<ITextElement> Description
     {
       get { return AbilityData.Description; }
     }
 
-    public string Competitive
+    public IEnumerable<ITextElement> Competitive
     {
       get { return AbilityData.Competitive; }
     }

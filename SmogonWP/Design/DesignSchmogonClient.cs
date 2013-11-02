@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Schmogon;
 using Schmogon.Data.Abilities;
@@ -6,6 +7,7 @@ using Schmogon.Data.Moves;
 using Schmogon.Data.Natures;
 using Schmogon.Data.Stats;
 using Schmogon.Data.Types;
+using Schmogon.Model.Text;
 
 namespace SmogonWP.Design
 {
@@ -54,11 +56,22 @@ namespace SmogonWP.Design
         "-",
         "Single non-user");
 
+      var descData = new List<ITextElement>
+      {
+        new Paragraph("Boosts the attack of the user by three stages at the cost of 1/8 the user's max HP.")
+      };
+
+      var compData = new List<ITextElement>
+      {
+        new Paragraph(
+          "Hypertension is an interesting move. It seems that it would best suit power sweepers, but the problem is that not only does it spend a turn, but many power sweeper builds have low defense to begin with, so a health penalty isn't always the best choice. For most setups, Swords Dance is a better choice if the pokemon can learn it.")
+      };
+
       var data = new MoveData(
         "Hypertension",
         stats,
-        "Boosts the attack of the user by three stages at the cost of 1/8 the user's max HP.",
-        "Hypertension is an interesting move. It seems that it would best suit power sweepers, but the problem is that not only does it spend a turn, but many power sweeper builds have low defense to begin with, so a health penalty isn't always the best choice. For most setups, Swords Dance is a better choice if the pokemon can learn it.",
+        descData,
+        compData,
         new List<Move> { new Move("Swords Dance", "Swords Dance raises attack by two stages without a health penalty.", "") });
 
       return data;
@@ -88,7 +101,25 @@ namespace SmogonWP.Design
     {
       await Task.Delay(0);
 
-      return new AbilityData("lime", "makes pokemon super sour", "it's super good because sour pokemon are the worst.");
+      var descData = new List<ITextElement>
+      {
+        new Paragraph("makes pokemon super sour"),
+        new Paragraph("does not work on the following pokemon"),
+        new UnorderedList(
+          new List<string>
+          {
+            "chingling",
+            "chimecho",
+            "chocobo"
+          })
+      };
+
+      var compData = new List<ITextElement>
+      {
+        new Paragraph("it's super good because sour pokemon are the worst.")
+      };
+
+      return new AbilityData("lime", descData, compData);
     }
 
     public IEnumerable<NatureEffect> GetAllNatureEffects()
