@@ -77,7 +77,8 @@
               Grid.Row="1"
               Margin="0">
             <phone:Pivot HeaderTemplate="{StaticResource NaturePivotHeaderTemplate}"
-                         Margin="0,-12,0,0">
+                         Margin="0,-12,0,0"
+                         x:Name="PhasePivot">
                 <phone:PivotItem Header="I'M ATTACKING WITH">
                     <Grid Margin="0,0">
                         <Grid.RowDefinitions>

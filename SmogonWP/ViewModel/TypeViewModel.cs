@@ -3,7 +3,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using Schmogon;
+using Schmogon.Data.Types;
+using SmogonWP.Messages;
 using SmogonWP.Model;
+using SmogonWP.Services.Messaging;
+using SmogonWP.View;
 using SmogonWP.ViewModel.Items;
 using Type = Schmogon.Data.Types.Type;
 
@@ -12,6 +16,8 @@ namespace SmogonWP.ViewModel
   public class TypeViewModel : ViewModelBase
   {
     private readonly ISchmogonClient _schmogonClient;
+
+    private readonly MessageReceiver<MoveTypeSelectedMessage> _moveTypeSelectedMessage; 
 
     private ObservableCollection<string> _typeChoices;
     public ObservableCollection<string> TypeChoices
@@ -106,6 +112,8 @@ namespace SmogonWP.ViewModel
     {
       _schmogonClient = schmogonClient;
 
+      _moveTypeSelectedMessage = new MessageReceiver<MoveTypeSelectedMessage>(onMoveTypeSelected, true);
+
       setup();
 
       if (IsInDesignMode || IsInDesignModeStatic)
@@ -169,6 +177,15 @@ namespace SmogonWP.ViewModel
           effect.FullDefenseAgainst.Select(t => new TypeItemViewModel(t)),
           DefenseType.FullDefense),
       };
+    }
+
+    private void onMoveTypeSelected(MoveTypeSelectedMessage msg)
+    {
+      var type = msg.Type;
+
+      MessengerInstance.Send(new VmToViewMessage<string, TypeView>("switchToOffense"));
+
+      SelectedOffensiveType = (int) type;
     }
   }
 }

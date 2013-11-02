@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
@@ -20,6 +20,7 @@ using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
+using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -32,6 +33,7 @@ namespace SmogonWP.ViewModel
     private readonly ISchmogonClient _schmogonClient;
 
     private readonly MessageReceiver<MoveSearchMessage> _moveSearchReceiver;
+    private readonly MessageSender<MoveTypeSelectedMessage> _moveTypeSelectedSender; 
 
     private readonly Stack<MoveDataItemViewModel> _moveStack;
 
@@ -128,6 +130,23 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => MenuItems);
         }
       }
+    }
+
+    private SolidColorBrush _typeBackgroundBrush;
+    public SolidColorBrush TypeBackgroundBrush
+    {
+      get
+      {
+        return _typeBackgroundBrush;
+      }
+      set
+      {
+        if (_typeBackgroundBrush != value)
+        {
+          _typeBackgroundBrush = value;
+          RaisePropertyChanged(() => TypeBackgroundBrush);
+        }
+      }
     }			
 
     #endregion props
@@ -141,6 +160,17 @@ namespace SmogonWP.ViewModel
       {
         return _backKeyPressCommand ??
                (_backKeyPressCommand = new RelayCommand<CancelEventArgs>(onBackKeyPressed));
+      }
+    }
+
+    private RelayCommand _moveTypeSelected;
+
+    public RelayCommand MoveTypeSelected
+    {
+      get
+      {
+        return _moveTypeSelected ??
+               (_moveTypeSelected = new RelayCommand(onMoveTypeSelected));
       }
     }
     
@@ -159,6 +189,7 @@ namespace SmogonWP.ViewModel
       _trayService = trayService;
 
       _moveSearchReceiver = new MessageReceiver<MoveSearchMessage>(onMoveSearched, true);
+      _moveTypeSelectedSender = new MessageSender<MoveTypeSelectedMessage>();
 
       _moveStack = new Stack<MoveDataItemViewModel>();
 
@@ -203,6 +234,19 @@ namespace SmogonWP.ViewModel
 
       MDVM = _moveStack.Pop();
       Name = MDVM.Name;
+    }
+
+    private void onMoveTypeSelected()
+    {
+      if (MDVM == null || string.IsNullOrEmpty(MDVM.Type)) return;
+
+      Type type;
+
+      // if the parse fails, just ignore it :(
+      if (!Enum.TryParse(MDVM.Type, true, out type)) return;
+
+      _moveTypeSelectedSender.SendMessage(new MoveTypeSelectedMessage(type));
+      _navigationService.Navigate(ViewModelLocator.TypePath);
     }
 
     #endregion event handlers
@@ -295,6 +339,13 @@ namespace SmogonWP.ViewModel
       Name = MDVM.Name;
 
       _pageLocation = move.PageLocation;
+
+      Type type;
+
+      if (Enum.TryParse(MDVM.Type, true, out type))
+      {
+        TypeBackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[type]);
+      }
 
       TrayService.RemoveJob("fetchdata");
     }

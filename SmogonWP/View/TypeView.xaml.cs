@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Phone.Controls;
+using SmogonWP.Messages;
 
 namespace SmogonWP.View
 {
@@ -10,6 +12,15 @@ namespace SmogonWP.View
     public TypeView()
     {
       InitializeComponent();
+
+      Messenger.Default.Register<VmToViewMessage<string, TypeView>>(this, onVmMessage);
+
+      Unloaded += OnUnloaded;
+    }
+    
+    private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
+    {
+      Messenger.Default.Unregister(this);
     }
 
     private void ApplicationBarIconButton_OnClick(object sender, EventArgs e)
@@ -23,6 +34,14 @@ namespace SmogonWP.View
       {
         HelpPanel.Visibility = Visibility.Collapsed;
         e.Cancel = true;
+      }
+    }
+
+    private void onVmMessage(VmToViewMessage<string, TypeView> msg)
+    {
+      if (msg.Content.Equals("switchToOffense"))
+      {
+        PhasePivot.SelectedIndex = 0;
       }
     }
   }

@@ -21,8 +21,8 @@
                             DataContext="{Binding MoveData, Source={StaticResource Locator}}">
 
     <phone:PhoneApplicationPage.Resources>
-        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter"/>
-        
+        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+
         <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
             <Grid>
                 <TextBlock Text="{Binding}"
@@ -48,12 +48,12 @@
     </shell:SystemTray.ProgressIndicator>
 
     <bindable:Bindable.ApplicationBar>
-        <bindable:BindableApplicationBar BindableOpacity="0.75" 
+        <bindable:BindableApplicationBar BindableOpacity="0.75"
                                          Mode="Minimized"
                                          MenuItemsSource="{Binding MenuItems}">
         </bindable:BindableApplicationBar>
     </bindable:Bindable.ApplicationBar>
-    
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="BackKeyPress">
             <gala:EventToCommand Command="{Binding BackKeyPressCommand}"
@@ -86,7 +86,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            
+
             <Grid x:Name="StatGrid"
                   Margin="24,0,24,24"
                   Background="{StaticResource PhoneAccentBrush}">
@@ -115,6 +115,10 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
+                <Border Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        Background="{Binding TypeBackgroundBrush}" />
+                
                 <Border Grid.Row="1"
                         Grid.ColumnSpan="2"
                         Background="Black"
@@ -141,11 +145,17 @@
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left" />
 
-                <TextBlock Grid.Row="0"
-                           Grid.Column="1"
-                           Text="{Binding Path=MDVM.Type}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
+                <Button Grid.Row="0"
+                        Grid.Column="1"
+                        Style="{StaticResource BorderlessButtonStyle}"
+                        Foreground="White"
+                        FontSize="{StaticResource PhoneFontSizeMedium}"
+                        Margin="12,0"
+                        Content="{Binding Path=MDVM.Type}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left" 
+                        toolkit:TiltEffect.IsTiltEnabled="True"
+                        Command="{Binding MoveTypeSelected}"/>
 
                 <TextBlock Grid.Row="1"
                            Grid.Column="0"
@@ -257,9 +267,9 @@
                     Grid.Row="0"
                     Grid.RowSpan="2"
                     Margin="-12"
-                    Background="{StaticResource PhoneBackgroundBrush}" 
+                    Background="{StaticResource PhoneBackgroundBrush}"
                     Opacity="0.5"
-                    Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, FallbackValue=Collapsed}"/>
+                    Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, FallbackValue=Collapsed}" />
         </Grid>
     </Grid>
 

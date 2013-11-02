@@ -101,6 +101,8 @@
     </Compile>
     <Compile Include="Messages\MoveSearchMessage.cs" />
     <Compile Include="Messages\AbilitySearchMessage.cs" />
+    <Compile Include="Messages\MoveTypeSelectedMessage.cs" />
+    <Compile Include="Messages\VMToViewMessage.cs" />
     <Compile Include="Model\DefenseTypeGroup.cs" />
     <Compile Include="Model\OffenseTypeGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
