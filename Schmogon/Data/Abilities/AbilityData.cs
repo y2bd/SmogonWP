@@ -1,8 +1,11 @@
-﻿namespace Schmogon.Data.Abilities
+﻿using System.Collections.Generic;
+using Schmogon.Model.Text;
+
+namespace Schmogon.Data.Abilities
 {
   public class AbilityData
   {
-    public AbilityData(string name, string description, string competitive)
+    public AbilityData(string name, IEnumerable<ITextElement> description, IEnumerable<ITextElement> competitive)
     {
       Name = name;
       Description = description;
@@ -10,7 +13,7 @@
     }
 
     public string Name { get; private set; }
-    public string Description { get; private set; }
-    public string Competitive { get; private set; }
+    public IEnumerable<ITextElement> Description { get; private set; }
+    public IEnumerable<ITextElement> Competitive { get; private set; }
   }
 }

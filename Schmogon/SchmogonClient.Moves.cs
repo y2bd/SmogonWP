@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Schmogon.Data.Moves;
+using Schmogon.Model.Text;
 using Schmogon.Utilities;
 
 namespace Schmogon
@@ -65,13 +66,13 @@ namespace Schmogon
       var stats = scrapeMoveStats(content.Element("table"));
 
       // now get the text parts
-      Tuple<string, string, IEnumerable<Move>> descParts = scrapeMoveDescriptions(content);
+      Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>, IEnumerable<Move>> descParts = scrapeMoveDescriptions(content);
 
       return new MoveData(
         WebUtility.HtmlDecode(move.Name),
         stats,
-        WebUtility.HtmlDecode(descParts.Item1),
-        WebUtility.HtmlDecode(descParts.Item2),
+        descParts.Item1,
+        descParts.Item2,
         descParts.Item3);
     }
 
@@ -92,7 +93,7 @@ namespace Schmogon
       return stats;
     }
 
-    private static Tuple<string, string, IEnumerable<Move>> scrapeMoveDescriptions(HtmlNode content)
+    private static Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>, IEnumerable<Move>> scrapeMoveDescriptions(HtmlNode content)
     {
       // we need access to the children so we can get indices
       var children = content.ChildNodes;
@@ -111,8 +112,8 @@ namespace Schmogon
       // so instead we'll make the stat table the description header
       descIndex = descIndex == -1 ? children.FindIndex(n => n.Id.Equals("info")) : descIndex;
 
-      var descParas = new List<String>();
-      var compParas = new List<String>();
+      var descParas = new List<ITextElement>();
+      var compParas = new List<ITextElement>();
       var relMoves = new List<Move>();
 
       // now cycle through all of the child nodes
@@ -129,11 +130,36 @@ namespace Schmogon
           // these are usually used for listing abilities that may interact with the move
           // we need to convert those to plaintext for now
           // in the future they might be parsed into seperate objects that the client can recognize
-          descParas.Add(child.Name.Equals("ul") ? processUL(child).Trim() : child.InnerText.Trim());
+          // descParas.Add(child.Name.Equals("ul") ? processUL(child).Trim() : child.InnerText.Trim());
+
+          // this is the future, they are now parsed into seperate elements!
+          ITextElement element;
+
+          if (child.Name.Equals("ul"))
+          {
+            element = processIntoUnorderedList(child);
+          }
+          else
+          {
+            element = processIntoParagraph(child);
+          }
+
+          descParas.Add(element);
         }
         else if (i.IsBetween(compIndex, relIndex))
         {
-          compParas.Add(child.Name.Equals("ul") ? processUL(child).Trim() : child.InnerText.Trim());
+          ITextElement element;
+
+          if (child.Name.Equals("ul"))
+          {
+            element = processIntoUnorderedList(child);
+          }
+          else
+          {
+            element = processIntoParagraph(child);
+          }
+
+          compParas.Add(element);
         }
         else if (i > relIndex)
         {
@@ -153,7 +179,7 @@ namespace Schmogon
         }
       }
 
-      return new Tuple<string, string, IEnumerable<Move>>(String.Join("\n\n", descParas), String.Join("\n\n", compParas), relMoves);
+      return new Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>, IEnumerable<Move>>(descParas, compParas, relMoves);
     }
   }
 }

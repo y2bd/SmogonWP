@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Schmogon.Data.Abilities;
+using Schmogon.Model.Text;
 using Schmogon.Utilities;
 
 namespace Schmogon
@@ -63,38 +64,60 @@ namespace Schmogon
 
       return new AbilityData(
         WebUtility.HtmlDecode(ability.Name),
-        WebUtility.HtmlDecode(descParts.Item1),
-        WebUtility.HtmlDecode(descParts.Item2));
+        descParts.Item1,
+        descParts.Item2);
     }
 
-    private static Tuple<string, string> scrapeAbilityDescription(HtmlNode content)
+    private static Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>> scrapeAbilityDescription(HtmlNode content)
     {
       var children = content.ChildNodes;
 
       var descIndex = children.FindIndex(n => n.InnerText.Trim().Equals(DescHeader));
       var compIndex = children.FindIndex(n => n.InnerText.Trim().Equals(CompHeader));
 
-      var descParas = new List<String>();
-      var compParas = new List<String>();
+      var descParas = new List<ITextElement>();
+      var compParas = new List<ITextElement>();
 
       for (int i = 0; i < children.Count; i++)
       {
         var child = children[i];
 
         // we only want matching paragraphs or unordered lists
-        if (!child.Name.Equals("p")) continue;
+        if (!child.Name.Equals("p") && !child.Name.Equals("ul")) continue;
 
         if (i.IsBetween(descIndex, compIndex))
         {
-          descParas.Add(child.InnerText.Trim());
+          ITextElement element;
+
+          if (child.Name.Equals("ul"))
+          {
+            element = processIntoUnorderedList(child);
+          }
+          else
+          {
+            element = processIntoParagraph(child);
+          }
+
+          descParas.Add(element);
         }
         else if (i.IsBetween(compIndex, children.Count))
         {
-          compParas.Add(child.InnerText.Trim());
+          ITextElement element;
+
+          if (child.Name.Equals("ul"))
+          {
+            element = processIntoUnorderedList(child);
+          }
+          else
+          {
+            element = processIntoParagraph(child);
+          }
+
+          compParas.Add(element);
         }
       }
 
-      return new Tuple<string, string>(String.Join("\n\n", descParas), String.Join("\n\n", compParas));
+      return new Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>>(descParas, compParas);
     }
   }
 }
