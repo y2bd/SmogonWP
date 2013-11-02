@@ -44,6 +44,9 @@
     <Compile Include="Data\Stats\StatType.cs" />
     <Compile Include="Data\Types\Type.cs" />
     <Compile Include="ISchmogonClient.cs" />
+    <Compile Include="Model\Text\ITextElement.cs" />
+    <Compile Include="Model\Text\Paragraph.cs" />
+    <Compile Include="Model\Text\UnorderedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchmogonClient.Abilities.cs" />
     <Compile Include="SchmogonClient.cs" />

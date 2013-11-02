@@ -30,11 +30,7 @@ namespace SchmogonTest
 
       var d = await s.GetAbilityDataAsync(abilties.First());
 
-      Console.WriteLine(d.Name);
-      Console.WriteLine("");
-      Console.WriteLine(d.Description);
-      Console.WriteLine("");
-      Console.WriteLine(d.Competitive);
+      var x = d;
     }
   }
 }
