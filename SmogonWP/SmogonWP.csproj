@@ -216,6 +216,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />
+    <Content Include="Assets\AppBar\appbar.email.png" />
+    <Content Include="Assets\AppBar\appbar.filter.png" />
+    <Content Include="Assets\AppBar\appbar.social.reddit.png" />
     <Content Include="Assets\AppBar\feature.search.png" />
     <Content Include="Assets\AppBar\questionmark.png" />
     <Content Include="Assets\AppIcon_Koff.png" />

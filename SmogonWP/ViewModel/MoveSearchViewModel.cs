@@ -1,12 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
 using Schmogon;
@@ -16,6 +8,17 @@ using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
 using SmogonWP.ViewModel.Items;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -49,19 +52,19 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private string _filter;
-    public string Filter
+    private string _query;
+    public string Query
     {
       get
       {
-        return _filter;
+        return _query;
       }
       set
       {
-        if (_filter != value)
+        if (_query != value)
         {
-          _filter = value;
-          RaisePropertyChanged(() => Filter);
+          _query = value;
+          RaisePropertyChanged(() => Query);
         }
       }
     }
@@ -117,6 +120,76 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => LoadFailed);
         }
       }
+    }
+
+    private ObservableCollection<string> _filters;
+    public ObservableCollection<string> Filters
+    {
+      get
+      {
+        return _filters;
+      }
+      set
+      {
+        if (_filters != value)
+        {
+          _filters = value;
+          RaisePropertyChanged(() => Filters);
+        }
+      }
+    }
+
+    private int _selectedFilter;
+    public int SelectedFilter
+    {
+      get
+      {
+        return _selectedFilter;
+      }
+      set
+      {
+        if (_selectedFilter != value)
+        {
+          _selectedFilter = value;
+          RaisePropertyChanged(() => SelectedFilter);
+
+          onFilterChanged();
+        }
+      }
+    }
+
+    private string _typeName;
+    public string TypeName
+    {
+      get
+      {
+        return _typeName;
+      }
+      set
+      {
+        if (_typeName != value)
+        {
+          _typeName = value;
+          RaisePropertyChanged(() => TypeName);
+        }
+      }
+    }
+
+    private SolidColorBrush _typeBrush;
+    public SolidColorBrush TypeBrush
+    {
+      get
+      {
+        return _typeBrush;
+      }
+      set
+      {
+        if (_typeBrush != value)
+        {
+          _typeBrush = value;
+          RaisePropertyChanged(() => TypeBrush);
+        }
+      }
     }			
 
     #endregion props
@@ -129,7 +202,7 @@ namespace SmogonWP.ViewModel
       get
       {
         return _filterChangedCommand ??
-               (_filterChangedCommand = new RelayCommand<KeyEventArgs>(onFilterChanged));
+               (_filterChangedCommand = new RelayCommand<KeyEventArgs>(onQueryChanged));
       }
     }
 
@@ -160,21 +233,40 @@ namespace SmogonWP.ViewModel
 
       _moveSearchSender = new MessageSender<MoveSearchMessage>();
 
+      Filters = new ObservableCollection<string> {"none"};
+
+      foreach (var type in Enum.GetNames(typeof (Type)).Where(s => !s.Equals("Fairy")))
+      {
+        Filters.Add(type.ToLower());
+      }
+
       scheduleMoveListFetch();
     }
     
-    private void onFilterChanged(KeyEventArgs args)
+    private void onQueryChanged(KeyEventArgs args)
     {
-      if (_moves == null || Filter == null) return;
+      if (_moves == null || Query == null) return;
       if (args.Key != Key.Enter) return;
 
-      if (string.IsNullOrWhiteSpace(Filter)) FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
+      if (string.IsNullOrWhiteSpace(Query)) FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
       
       FilteredMoves = new ObservableCollection<MoveItemViewModel>(
         _moves.Where(
-          m => m.Name.ToLower().Contains(Filter.ToLower().Trim())
+          m => m.Name.ToLower().Contains(Query.ToLower().Trim())
         ).OrderBy(m => m.Name)
       );
+    }
+
+    private void onFilterChanged()
+    {
+      var filter = SelectedFilter - 1;
+
+      TypeName = filter == -1 ? string.Empty : Enum.GetName(typeof (Type), (Type) filter).ToUpper();
+      TypeBrush = filter == -1 ? null : new SolidColorBrush(TypeItemViewModel.TypeColors[(Type) filter]);
+
+      Query = string.Empty;
+
+      scheduleMoveListFetch();
     }
 
     private void onMoveSelected(MoveItemViewModel mivm)
@@ -211,9 +303,14 @@ namespace SmogonWP.ViewModel
 
       List<Move> rawMoves;
 
+      var filter = SelectedFilter - 1;
+
       try
       {
-        rawMoves = (await _schmogonClient.GetAllMovesAsync()).ToList();
+        // filter of -1 means no filter
+        rawMoves = filter == -1 ? 
+          (await _schmogonClient.GetAllMovesAsync()).ToList() : 
+          (await _schmogonClient.GetMovesOfTypeAsync((Type)filter)).ToList();
       }
       catch (HttpRequestException)
       {
@@ -272,7 +369,7 @@ namespace SmogonWP.ViewModel
       _moves = null;
       FilteredMoves = null;
       FetchMovesNotifier = null;
-      Filter = null;
+      Query = null;
       TrayService.RemoveAllJobs();
     }
   }

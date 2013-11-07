@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Schmogon;
 using Schmogon.Data.Abilities;
@@ -8,6 +7,7 @@ using Schmogon.Data.Natures;
 using Schmogon.Data.Stats;
 using Schmogon.Data.Types;
 using Schmogon.Model.Text;
+using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.Design
 {
@@ -29,6 +29,36 @@ namespace SmogonWP.Design
     }
 
     public async Task<IEnumerable<Move>> SearchMovesAsync(string query)
+    {
+      await Task.Delay(0);
+
+      return new List<Move>
+      {
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", ""),
+        new Move("drum machine", "quick strikes, can hit two to five times", ""),
+        new Move("stackflip", "damage builds as move is used in succession", ""),
+        new Move("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
+        new Move("whiplash", "quick strike that does more damage the slower the opponent", ""),
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", ""),
+      };
+    }
+
+    public async Task<IEnumerable<Move>> GetMovesOfTypeAsync(Type type)
+    {
+      await Task.Delay(0);
+
+      return new List<Move>
+      {
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", ""),
+        new Move("drum machine", "quick strikes, can hit two to five times", ""),
+        new Move("stackflip", "damage builds as move is used in succession", ""),
+        new Move("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
+        new Move("whiplash", "quick strike that does more damage the slower the opponent", ""),
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", ""),
+      };
+    }
+
+    public async Task<IEnumerable<Move>> SearchMovesOfTypeAsync(Type type, string query)
     {
       await Task.Delay(0);
 
