@@ -12,7 +12,11 @@ namespace Schmogon
   {
     Task<IEnumerable<Move>> GetAllMovesAsync();
 
+    Task<IEnumerable<Move>> GetMovesOfTypeAsync(Type type);
+
     Task<IEnumerable<Move>> SearchMovesAsync(string query);
+
+    Task<IEnumerable<Move>> SearchMovesOfTypeAsync(Type type, string query);
 
     Task<MoveData> GetMoveDataAsync(Move move);
 
