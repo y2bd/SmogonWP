@@ -116,10 +116,11 @@
 
         <util:BindableLongListSelector x:Name="MoveList"
                                        Grid.Row="3"
-                                       Margin="12,0,0,0"
+                                       Margin="12,0,12,0"
                                        ItemsSource="{Binding FilteredMoves}"
                                        ItemTemplate="{StaticResource MoveItemTemplate}"
                                        SelectedItem="{Binding SelectedMove, Mode=TwoWay}"
+                                       Style="{StaticResource LLSFloatingScrollbarStyle}"
                                        toolkit:TiltEffect.IsTiltEnabled="True" />
 
         <Button x:Name="ReloadButton"

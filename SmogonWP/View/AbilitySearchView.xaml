@@ -98,10 +98,11 @@
 
         <util:BindableLongListSelector x:Name="AbilityList"
                                        Grid.Row="2"
-                                       Margin="12,0,0,0"
+                                       Margin="12,0,12,0"
                                        ItemsSource="{Binding FilteredAbilities}"
                                        ItemTemplate="{StaticResource AbilityItemTemplate}"
                                        SelectedItem="{Binding SelectedAbility, Mode=TwoWay}"
+                                       Style="{StaticResource LLSFloatingScrollbarStyle}"
                                        toolkit:TiltEffect.IsTiltEnabled="True" />
 
         <Button x:Name="ReloadButton"
