@@ -7,16 +7,19 @@ using HtmlAgilityPack;
 using Schmogon.Data.Moves;
 using Schmogon.Model.Text;
 using Schmogon.Utilities;
+using Type = Schmogon.Data.Types.Type;
 
 namespace Schmogon
 {
   public partial class SchmogonClient
   {
     private const string MoveSearch = "http://www.smogon.com/bw/moves/";
+    private const string MoveTypeSearch = "http://www.smogon.com/bw/types/";
     
     private const string RelMovesHeader = "Related Moves";
 
     private IEnumerable<Move> _moveCache;
+    private IDictionary<Type, IEnumerable<Move>> _typedMoveCache; 
     
     public async Task<IEnumerable<Move>> GetAllMovesAsync()
     {
@@ -49,6 +52,51 @@ namespace Schmogon
                      let desc = data.ElementAt(5).InnerText.Trim()
                      let path = data.ElementAt(0).Element("a").GetAttributeValue("href", "")
                      select new Move(name, desc, path))
+                  .ToList();
+
+      return moves;
+    }
+
+    public async Task<IEnumerable<Move>> GetMovesOfTypeAsync(Type type)
+    {
+      _typedMoveCache = _typedMoveCache ?? new Dictionary<Type, IEnumerable<Move>>();
+
+      if (!_typedMoveCache.ContainsKey(type))
+      {
+        _typedMoveCache.Add(type, await getMovesOfType(type));
+      }
+
+      return _typedMoveCache[type];
+    }
+
+    public async Task<IEnumerable<Move>> SearchMovesOfTypeAsync(Type type, string query)
+    {
+      query = query.Trim().ToLowerInvariant();
+
+      var moves = await GetMovesOfTypeAsync(type);
+
+      var res = moves.Where(m => m.Name.ToLowerInvariant().Contains(query));
+
+      return res;
+    }
+
+    private async Task<IEnumerable<Move>> getMovesOfType(Type type)
+    {
+      var page = MoveTypeSearch + Enum.GetName(typeof(Type), type).ToLower();
+
+      var doc = await Web.GetDocumentAsync(page);
+
+      var table = doc.DocumentNode.Descendants("table")
+        .First(n => n.Id.Contains("move_list"));
+
+      var tbody = table.Descendants("tbody").First();
+
+      var moves = (from row in tbody.Descendants("tr")
+                   select row.Descendants("td") into data
+                   let name = data.ElementAt(0).InnerText.Trim()
+                   let desc = data.ElementAt(5).InnerText.Trim()
+                   let path = data.ElementAt(0).Element("a").GetAttributeValue("href", "")
+                   select new Move(name, desc, path))
                   .ToList();
 
       return moves;
