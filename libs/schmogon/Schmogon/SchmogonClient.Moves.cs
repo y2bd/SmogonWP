@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Schmogon.Data.Moves;
 using Schmogon.Model.Text;
 using Schmogon.Utilities;
@@ -229,5 +230,41 @@ namespace Schmogon
 
       return new Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>, IEnumerable<Move>>(descParas, compParas, relMoves);
     }
+
+    #region serialization
+
+    public async Task<string> SerializeMoveListAsync()
+    {
+      var moves = await GetAllMovesAsync();
+
+      var cereal = await JsonConvert.SerializeObjectAsync(moves);
+
+      return cereal;
+    }
+
+    public async Task<string> SerializeMoveListAsync(Type type)
+    {
+      var moves = await GetMovesOfTypeAsync(type);
+
+      var cereal = await JsonConvert.SerializeObjectAsync(moves);
+
+      return cereal;
+    }
+
+    public async Task<IEnumerable<Move>> DeserializeMoveListAsync(string moves)
+    {
+      return (_moveCache = await JsonConvert.DeserializeObjectAsync<IEnumerable<Move>>(moves));
+    }
+
+    public async Task<IEnumerable<Move>> DeserializeMoveListAsync(Type type, string moves)
+    {
+      _typedMoveCache = _typedMoveCache ?? new Dictionary<Type, IEnumerable<Move>>();
+
+      _typedMoveCache[type] = await JsonConvert.DeserializeObjectAsync<IEnumerable<Move>>(moves);
+
+      return _typedMoveCache[type];
+    }
+
+    #endregion serialization
   }
 }

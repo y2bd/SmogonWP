@@ -24,8 +24,12 @@ namespace SmogonWP.ViewModel
 {
   public class MoveSearchViewModel : ViewModelBase
   {
+    private const string MoveListFilename = "moves.txt";
+    private const string TypedMoveListFilename = "movetype_{0}.txt";
+
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonClient _schmogonClient;
+    private readonly IsolatedStorageService _storageService;
 
     private readonly MessageSender<MoveSearchMessage> _moveSearchSender;
 
@@ -225,11 +229,12 @@ namespace SmogonWP.ViewModel
 
     #endregion
 
-    public MoveSearchViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService)
+    public MoveSearchViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService, IsolatedStorageService storageService)
     {
       _navigationService = navigationService;
       _schmogonClient = schmogonClient;
       _trayService = trayService;
+      _storageService = storageService;
 
       _moveSearchSender = new MessageSender<MoveSearchMessage>();
 
@@ -261,7 +266,9 @@ namespace SmogonWP.ViewModel
     {
       var filter = SelectedFilter - 1;
 
-      TypeName = filter == -1 ? string.Empty : Enum.GetName(typeof (Type), (Type) filter).ToUpper();
+      var name = Enum.GetName(typeof (Type), (Type) filter);
+      if (name != null)
+        TypeName = filter == -1 ? string.Empty : name.ToUpper();
       TypeBrush = filter == -1 ? null : new SolidColorBrush(TypeItemViewModel.TypeColors[(Type) filter]);
 
       Query = string.Empty;
@@ -300,22 +307,37 @@ namespace SmogonWP.ViewModel
     private async Task fetchMoves()
     {
       TrayService.AddJob("movefetch", "Fetching moves");
-
-      List<Move> rawMoves;
-
+      
       var filter = SelectedFilter - 1;
 
-      try
+      var rawMoves = filter == -1
+        ? (await fetchMovesFromStorage())
+        : (await fetchMovesFromStorage((Type)filter));
+
+      // if we couldn't get moves from the cache...
+      if (rawMoves == null)
       {
-        // filter of -1 means no filter
-        rawMoves = filter == -1 ? 
-          (await _schmogonClient.GetAllMovesAsync()).ToList() : 
-          (await _schmogonClient.GetMovesOfTypeAsync((Type)filter)).ToList();
+        Debug.WriteLine("Reading moves from internetland!");
+
+        try
+        {
+          // filter of -1 means no filter
+          rawMoves = filter == -1
+            ? (await _schmogonClient.GetAllMovesAsync())
+            : (await _schmogonClient.GetMovesOfTypeAsync((Type) filter));
+        }
+        catch (HttpRequestException)
+        {
+          reloadMoves();
+          return;
+        }
+
+        if (filter == -1) await cacheMoves();
+        else await cacheMoves((Type) filter);
       }
-      catch (HttpRequestException)
+      else
       {
-        reloadMoves();
-        return;
+        Debug.WriteLine("Reading moves from fileland!");
       }
 
       _moves = (from rawMove in rawMoves
@@ -324,7 +346,66 @@ namespace SmogonWP.ViewModel
 
       FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
 
+      LoadFailed = false;
+
       TrayService.RemoveJob("movefetch");
+    }
+
+    private async Task<IEnumerable<Move>> fetchMovesFromStorage()
+    {
+      IEnumerable<Move> moveCache = null;
+
+      if (await _storageService.FileExistsAsync(MoveListFilename))
+      {
+        var cereal = await _storageService.ReadStringFromFileAsync(MoveListFilename);
+
+        moveCache = (await _schmogonClient.DeserializeMoveListAsync(cereal));
+      }
+
+      return moveCache;
+    }
+
+    private async Task<IEnumerable<Move>> fetchMovesFromStorage(Type type)
+    {
+      IEnumerable<Move> moveCache = null;
+
+      var name = Enum.GetName(typeof (Type), type);
+      if (name != null)
+      {
+        var typeName = name.ToLower();
+        var filename = string.Format(TypedMoveListFilename, typeName);
+
+        if (await _storageService.FileExistsAsync(filename))
+        {
+          var cereal = await _storageService.ReadStringFromFileAsync(filename);
+
+          moveCache = await _schmogonClient.DeserializeMoveListAsync(type, cereal);
+        }
+      }
+
+      return moveCache;
+    }
+
+    private async Task cacheMoves()
+    {
+      var cereal = await _schmogonClient.SerializeMoveListAsync();
+
+      await _storageService.WriteStringToFileAsync(MoveListFilename, cereal);
+    }
+
+    private async Task cacheMoves(Type type)
+    {
+      var name = Enum.GetName(typeof (Type), type);
+      if (name != null)
+      {
+        var typeName = name.ToLower();
+        var filename = string.Format(TypedMoveListFilename, typeName);
+
+        var cereal = await _schmogonClient.SerializeMoveListAsync(type);
+
+        await _storageService.WriteStringToFileAsync(filename, cereal);
+
+      }
     }
 
     private void reloadMoves()

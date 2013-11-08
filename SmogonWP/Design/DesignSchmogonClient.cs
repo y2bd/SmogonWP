@@ -11,7 +11,7 @@ using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.Design
 {
-  public class DesisgnSchmogonClient : ISchmogonClient
+  public class DesignSchmogonClient : ISchmogonClient
   {
     public async Task<IEnumerable<Move>> GetAllMovesAsync()
     {
@@ -108,6 +108,50 @@ namespace SmogonWP.Design
       return data;
     }
 
+    public async Task<string> SerializeMoveListAsync()
+    {
+      await Task.Delay(0);
+
+      return "[]";
+    }
+
+    public async Task<string> SerializeMoveListAsync(Type type)
+    {
+      await Task.Delay(0);
+
+      return "[]";
+    }
+
+    public async Task<IEnumerable<Move>> DeserializeMoveListAsync(string moves)
+    {
+      await Task.Delay(0);
+
+      return new List<Move>
+      {
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", ""),
+        new Move("drum machine", "quick strikes, can hit two to five times", ""),
+        new Move("stackflip", "damage builds as move is used in succession", ""),
+        new Move("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
+        new Move("whiplash", "quick strike that does more damage the slower the opponent", ""),
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", ""),
+      };
+    }
+
+    public async Task<IEnumerable<Move>> DeserializeMoveListAsync(Type type, string moves)
+    {
+      await Task.Delay(0);
+
+      return new List<Move>
+      {
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", ""),
+        new Move("drum machine", "quick strikes, can hit two to five times", ""),
+        new Move("stackflip", "damage builds as move is used in succession", ""),
+        new Move("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
+        new Move("whiplash", "quick strike that does more damage the slower the opponent", ""),
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", ""),
+      };
+    }
+
     public async Task<IEnumerable<Ability>> GetAllAbilitiesAsync()
     {
       await Task.Delay(0);
@@ -151,6 +195,28 @@ namespace SmogonWP.Design
       };
 
       return new AbilityData("lime", descData, compData);
+    }
+
+    public async Task<string> SerializeAbilityListAsync()
+    {
+      await Task.Delay(0);
+
+      return "[]";
+    }
+
+    public async Task<IEnumerable<Ability>> DeserializeAbilityListAsync(string abilities)
+    {
+      await Task.Delay(0);
+
+      return new List<Ability>
+      {
+        new Ability("kung pao", "throws chicken at the opponent, causing confusion", ""),
+        new Ability("drum machine", "quick strikes, can hit two to five times", ""),
+        new Ability("stackflip", "damage builds as move is used in succession", ""),
+        new Ability("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
+        new Ability("whiplash", "quick strike that does more damage the slower the opponent", ""),
+        new Ability("kung pao", "throws chicken at the opponent, causing confusion", ""),
+      };
     }
 
     public IEnumerable<NatureEffect> GetAllNatureEffects()

@@ -29,7 +29,7 @@ namespace SmogonWP.ViewModel
 
       if (ViewModelBase.IsInDesignModeStatic)
       {
-        RegisterIfUnregistered<ISchmogonClient, Design.DesisgnSchmogonClient>();
+        RegisterIfUnregistered<ISchmogonClient, Design.DesignSchmogonClient>();
       }
       else
       {
@@ -39,6 +39,7 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<SimpleNavigationService>();
       SimpleIoc.Default.Register<TombstoneService>();
       SimpleIoc.Default.Register<TrayService>();
+      SimpleIoc.Default.Register<IsolatedStorageService>();
 
       SimpleIoc.Default.Register<HomeViewModel>();
       SimpleIoc.Default.Register<MoveSearchViewModel>();
