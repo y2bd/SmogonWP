@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Schmogon.Data.Abilities;
 using Schmogon.Model.Text;
 using Schmogon.Utilities;
@@ -119,5 +120,23 @@ namespace Schmogon
 
       return new Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>>(descParas, compParas);
     }
+
+    #region serialization
+
+    public async Task<string> SerializeAbilityListAsync()
+    {
+      var abilities = await GetAllAbilitiesAsync();
+
+      var cereal = await JsonConvert.SerializeObjectAsync(abilities);
+
+      return cereal;
+    }
+
+    public async Task<IEnumerable<Ability>> DeserializeAbilityListAsync(string abilities)
+    {
+      return (_abilityCache = await JsonConvert.DeserializeObjectAsync<IEnumerable<Ability>>(abilities));
+    }
+
+    #endregion serialization
   }
 }
