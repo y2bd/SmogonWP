@@ -41,6 +41,9 @@
     <Compile Include="Data\Moves\MoveStats.cs" />
     <Compile Include="Data\Natures\Nature.cs" />
     <Compile Include="Data\Natures\NatureEffect.cs" />
+    <Compile Include="Data\Pokemon\Pokemon.cs" />
+    <Compile Include="Data\Pokemon\Tier.cs" />
+    <Compile Include="Data\Stats\BaseStat.cs" />
     <Compile Include="Data\Stats\StatType.cs" />
     <Compile Include="Data\Types\Type.cs" />
     <Compile Include="ISchmogonClient.cs" />
@@ -52,6 +55,7 @@
     <Compile Include="SchmogonClient.cs" />
     <Compile Include="SchmogonClient.Moves.cs" />
     <Compile Include="SchmogonClient.Natures.cs" />
+    <Compile Include="SchmogonClient.Pokemon.cs" />
     <Compile Include="SchmogonClient.Types.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Web.cs" />

@@ -39,12 +39,14 @@ namespace SchmogonTest
       await s.SerializeMoveListAsync(Type.Psychic);
        * */
 
-
+      /*
       var abilties = await s.GetAllAbilitiesAsync();
 
       var d = await s.GetAbilityDataAsync(abilties.First());
 
-      var c = await s.SerializeAbilityListAsync();
+      var c = await s.SerializeAbilityListAsync();*/
+
+      var pokemon = await s.GetAllPokemonAsync();
     }
   }
 }
