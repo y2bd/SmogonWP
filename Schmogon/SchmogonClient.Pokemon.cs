@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Schmogon.Data.Abilities;
 using Schmogon.Data.Pokemon;
 using Schmogon.Data.Stats;
@@ -112,5 +113,23 @@ namespace Schmogon
 
       return result;
     }
+
+    #region serialization
+
+    public async Task<string> SerializePokemonListAsync()
+    {
+      var pokemon = await GetAllPokemonAsync();
+
+      var cereal = await JsonConvert.SerializeObjectAsync(pokemon);
+
+      return cereal;
+    }
+
+    public async Task<IEnumerable<Pokemon>> DeserializePokemonListAsync(string pokemon)
+    {
+      return (_pokemonCache = await JsonConvert.DeserializeObjectAsync<IEnumerable<Pokemon>>(pokemon));
+    }
+
+    #endregion serialization
   }
 }
