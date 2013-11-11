@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Schmogon.Data.Abilities;
 using Schmogon.Data.Moves;
 using Schmogon.Data.Natures;
+using Schmogon.Data.Pokemon;
 using Schmogon.Data.Stats;
 using Schmogon.Data.Types;
 
@@ -71,5 +72,17 @@ namespace Schmogon
     TypeDefenseEffect GetTypeDefenseEffect(Type type);
 
     #endregion types
+
+    #region pokemon
+
+    Task<IEnumerable<Pokemon>> GetAllPokemonAsync();
+
+    Task<string> SerializePokemonListAsync();
+
+    Task<PokemonData> GetPokemonDataAsync(Pokemon pokemon);
+
+    Task<IEnumerable<Pokemon>> DeserializePokemonListAsync(string pokemon);
+
+    #endregion pokemon
   }
 }

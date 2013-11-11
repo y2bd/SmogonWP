@@ -14,7 +14,7 @@ namespace Schmogon.Utilities
 
       return hc;
     }
-
+    
     public static async Task<HtmlDocument> GetDocumentAsync(string uri)
     {
       var hc = MakeHttpClient();
