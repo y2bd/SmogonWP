@@ -79,6 +79,8 @@ namespace Schmogon
 
     Task<string> SerializePokemonListAsync();
 
+    Task<PokemonData> GetPokemonDataAsync(Pokemon pokemon);
+
     Task<IEnumerable<Pokemon>> DeserializePokemonListAsync(string pokemon);
 
     #endregion pokemon

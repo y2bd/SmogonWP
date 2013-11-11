@@ -5,22 +5,22 @@ namespace Schmogon.Data.Stats
   public struct BaseStat
   {
     [JsonProperty("HP")]
-    public int HP { get; private set; }
+    public int HP { get; internal set; }
 
     [JsonProperty("Attack")]
-    public int Attack { get; private set; }
+    public int Attack { get; internal set; }
 
     [JsonProperty("Defense")]
-    public int Defense { get; private set; }
+    public int Defense { get; internal set; }
 
     [JsonProperty("SpecialAttack")]
-    public int SpecialAttack { get; private set; }
+    public int SpecialAttack { get; internal set; }
 
     [JsonProperty("SpecialDefense")]
-    public int SpecialDefense { get; private set; }
+    public int SpecialDefense { get; internal set; }
 
     [JsonProperty("Speed")]
-    public int Speed { get; private set; }
+    public int Speed { get; internal set; }
 
     [JsonIgnore]
     public int BaseStatTotal
@@ -39,6 +39,12 @@ namespace Schmogon.Data.Stats
       SpecialAttack = specialAttack;
       SpecialDefense = specialDefense;
       Speed = speed;
+    }
+
+    public override string ToString()
+    {
+      return string.Format("{0} / {1} / {2} / {3} / {4} / {5}", 
+        HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed);
     }
   }
 }

@@ -36,12 +36,15 @@
     <Compile Include="Data\Abilities\Ability.cs" />
     <Compile Include="Data\Abilities\AbilityData.cs" />
     <Compile Include="Data\ISearchItem.cs" />
+    <Compile Include="Data\Items\Item.cs" />
     <Compile Include="Data\Moves\Move.cs" />
     <Compile Include="Data\Moves\MoveData.cs" />
     <Compile Include="Data\Moves\MoveStats.cs" />
     <Compile Include="Data\Natures\Nature.cs" />
     <Compile Include="Data\Natures\NatureEffect.cs" />
+    <Compile Include="Data\Pokemon\Moveset.cs" />
     <Compile Include="Data\Pokemon\Pokemon.cs" />
+    <Compile Include="Data\Pokemon\PokemonData.cs" />
     <Compile Include="Data\Pokemon\Tier.cs" />
     <Compile Include="Data\Stats\BaseStat.cs" />
     <Compile Include="Data\Stats\StatType.cs" />
