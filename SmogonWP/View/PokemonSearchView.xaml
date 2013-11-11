@@ -1,0 +1,179 @@
+﻿<phone:PhoneApplicationPage x:Class="SmogonWP.View.PokemonSearchView"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:util="clr-namespace:SmogonWP.Utilities"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
+                            SupportedOrientations="Portrait"
+                            Orientation="Portrait"
+                            mc:Ignorable="d"
+                            shell:SystemTray.IsVisible="True"
+                            DataContext="{Binding PokemonSearch, Source={StaticResource Locator}}">
+
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideDownFadeIn" />
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeIn" />
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideDownFadeOut" />
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
+
+    <phone:PhoneApplicationPage.Resources>
+        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        <converters:UppercaseConverter x:Key="UppercaseConverter" />
+        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter" />
+
+        <DataTemplate x:Key="PokemonItemTemplate">
+            <StackPanel Margin="0,0,24,15">
+                <TextBlock Text="{Binding Name}"
+                           Style="{StaticResource PhoneTextTitle2Style}"
+                           Margin="12,0,12,6" />
+                <ItemsControl ItemsSource="{Binding Types}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" 
+                                                    Margin="12,0,0,0"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding BackgroundBrush}">
+                                <TextBlock Text="{Binding Name}"
+                                           Style="{StaticResource PhoneTextNormalStyle}"
+                                           Foreground="White"
+                                           Margin="9,3,9,6"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
+    
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar>
+            <shell:ApplicationBarIconButton x:Name="FilterButton"
+                IconUri="/Assets/AppBar/appbar.filter.png"
+                                            IsEnabled="True"
+                                            Text="filter" 
+                                            Click="FilterButton_OnClick"
+                                            />
+            
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+    
+    
+
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator IsIndeterminate="True"
+                                 IsVisible="{Binding Path=TrayService.IsLoading}"
+                                 Text="{Binding Path=TrayService.CurrentMessage}" />
+    </shell:SystemTray.ProgressIndicator>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot"
+          Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1"
+                    Margin="24,17,24,12">
+            <TextBlock Margin="0,0,6,0"
+                       Text="POKEMON"
+                       Style="{StaticResource PhoneTextNormalStyle}" />
+
+            <TextBlock Margin="0,0,6,0"
+                       Text="{Binding SelectedType.Name, Converter={StaticResource UppercaseConverter}}"
+                       Style="{StaticResource PhoneTextNormalStyle}"
+                       FontFamily="{StaticResource PhoneFontFamilySemiBold}"
+                       Foreground="{Binding SelectedType.BackgroundBrush}" 
+                       Visibility="{Binding SelectedType, Converter={StaticResource NullVisibilityConverter}}"/>
+
+            <TextBlock Margin="0,0,6,0"
+                       Text="{Binding SelectedTier, Converter={StaticResource UppercaseConverter}}"
+                       Style="{StaticResource PhoneTextNormalStyle}"
+                       FontFamily="{StaticResource PhoneFontFamilySemiBold}"
+                       Visibility="{Binding SelectedTier, Converter={StaticResource NullVisibilityConverter}}" />
+        </StackPanel>
+
+        <toolkit:PhoneTextBox x:Name="SearchBox"
+                              Grid.Row="2"
+                              Margin="12,0,12,12"
+                              InputScope="Search"
+                              Text="{Binding Query, Mode=TwoWay}"
+                              PlaceholderText="Search for a Pokemon..."
+                              IsEnabled="{Binding FetchPokemonNotifier.IsSuccessfullyCompleted}"
+                              KeyUp="SearchBox_OnKeyUp"
+                              GotFocus="SearchBox_OnGotFocus">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="KeyUp">
+                    <gala:EventToCommand Command="{Binding QueryChangedCommand}"
+                                         PassEventArgsToCommand="True" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <i:Interaction.Behaviors>
+                <util:UpdateTextBindingOnPropertyChanged />
+            </i:Interaction.Behaviors>
+        </toolkit:PhoneTextBox>
+
+        <util:BindableLongListSelector x:Name="PokemonList"
+                                       Grid.Row="3"
+                                       Margin="12,0,12,0"
+                                       HorizontalContentAlignment="Left"
+                                       ItemsSource="{Binding FilteredPokemon}"
+                                       ItemTemplate="{StaticResource PokemonItemTemplate}"
+                                       SelectedItem="{Binding SelectedPokemon, Mode=TwoWay}"
+                                       Style="{StaticResource LLSFloatingScrollbarStyle}"
+                                       toolkit:TiltEffect.IsTiltEnabled="True" />
+
+        <Button x:Name="ReloadButton"
+                Grid.Row="3"
+                Margin="12,0"
+                VerticalAlignment="Top"
+                Visibility="{Binding LoadFailed, Converter={StaticResource BooleanVisibilityConverter}}"
+                Command="{Binding ReloadCommand}">reload pokemon</Button>
+
+        <toolkit:PickerBox x:Name="TypePicker"
+                           Header="Choose a Pokemon type..."
+                           Grid.Row="0"
+                           ItemsSource="{Binding TypeFilters}"
+                           SelectedIndex="{Binding SelectedTypeFilter, Mode=TwoWay}" 
+                           SelectionChanged="FilterPicker_OnSelectionChanged"/>
+
+        <toolkit:PickerBox x:Name="TierPicker"
+                           Header="Choose a Smogon tier..."
+                           Grid.Row="0"
+                           ItemsSource="{Binding TierFilters}"
+                           SelectedIndex="{Binding SelectedTierFilter, Mode=TwoWay}"
+                           SelectionChanged="FilterPicker_OnSelectionChanged"/>
+    </Grid>
+
+</phone:PhoneApplicationPage>

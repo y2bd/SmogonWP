@@ -211,7 +211,6 @@ namespace SmogonWP.ViewModel
     }
 
     private RelayCommand _reloadCommand;
-
     public RelayCommand ReloadCommand
     {
       get

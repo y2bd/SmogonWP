@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Schmogon;
 using Schmogon.Data.Abilities;
+using Schmogon.Data.Items;
 using Schmogon.Data.Moves;
 using Schmogon.Data.Natures;
+using Schmogon.Data.Pokemon;
 using Schmogon.Data.Stats;
 using Schmogon.Data.Types;
 using Schmogon.Model.Text;
@@ -271,6 +274,184 @@ namespace SmogonWP.Design
     {
       var s = new SchmogonClient();
       return s.GetTypeDefenseEffect(type);
+    }
+
+    public async Task<IEnumerable<Pokemon>> GetAllPokemonAsync()
+    {
+      await Task.Delay(0);
+
+      return new List<Pokemon>
+      {
+        new Pokemon(
+          "Barbasaur",
+          new List<Type> {Type.Grass, Type.Fire},
+          Tier.Uber,
+          new List<Ability>
+          {
+            new Ability("Burnt Toast", "Burns toast 100% of the time", ""),
+            new Ability("Chocolate Silk", "Like milk except it comes out a spider's butt", "")
+          },
+          new BaseStat(0, 0, 0, 0, 0, 255),
+          ""),
+        new Pokemon(
+          "Barbasaur",
+          new List<Type> {Type.Grass, Type.Fire},
+          Tier.Uber,
+          new List<Ability>
+          {
+            new Ability("Burnt Toast", "Burns toast 100% of the time", ""),
+            new Ability("Chocolate Silk", "Like milk except it comes out a spider's butt", "")
+          },
+          new BaseStat(0, 0, 0, 0, 0, 255),
+          ""),
+        new Pokemon(
+          "Barbasaur",
+          new List<Type> {Type.Grass, Type.Fire},
+          Tier.Uber,
+          new List<Ability>
+          {
+            new Ability("Burnt Toast", "Burns toast 100% of the time", ""),
+            new Ability("Chocolate Silk", "Like milk except it comes out a spider's butt", "")
+          },
+          new BaseStat(0, 0, 0, 0, 0, 255),
+          ""),
+      };
+    }
+
+    public async Task<string> SerializePokemonListAsync()
+    {
+      await Task.Delay(0);
+
+      return "[]";
+    }
+
+    public async Task<PokemonData> GetPokemonDataAsync(Pokemon pokemon)
+    {
+      await Task.Delay(0);
+
+      return new PokemonData(
+        "Barbasaur",
+        "",
+        "http://www.smogon.com/download/sprites/bw/206.png",
+        new List<Ability>
+        {
+          new Ability("Burnt Toast", "Burns toast 100% of the time", ""),
+          new Ability("Chocolate Silk", "Like milk except it comes out a spider's butt", "")
+        },
+        new List<Type> { Type.Grass, Type.Fire },
+        Tier.Uber,
+        new BaseStat(0, 0, 0, 0, 0, 255),
+        new List<ITextElement>
+        {
+          new Paragraph("it's a pretty good pokemon honestly, but it's really purple and im not a fan of much purple")
+        },
+        new List<Moveset>
+        {
+          new Moveset
+          {
+            Name = "Kickapow",
+            Abilities = new List<Ability> {new Ability("Burnt Toast", "Burns toast 100% of the time", "")},
+            Description =
+              new List<ITextElement>
+              {
+                new Paragraph("THIS MOVESET IS REALL GOOD ECAUSE IT HITS HARD NO SQUISHY FLAMEBATE LOL")
+              },
+            EVSpread = new BaseStat(6, 252, 0, 0, 0, 252),
+            Items = new List<Item> {new Item("Life Orb", "Kicks life in the orbs", "")},
+            Moves = new List<IEnumerable<Move>>
+            {
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
+              new List<Move>
+              {
+                new Move("Chocolate Sauce", "mm dat drizzle", ""),
+                new Move("Milk Drain", "gotta get dat white stuff", "")
+              }
+            },
+            Natures = new List<Nature> {Nature.Adamant, Nature.Brave}
+          },
+          new Moveset
+          {
+            Name = "Kickapow",
+            Abilities = new List<Ability> {new Ability("Burnt Toast", "Burns toast 100% of the time", "")},
+            Description =
+              new List<ITextElement>
+              {
+                new Paragraph("THIS MOVESET IS REALL GOOD ECAUSE IT HITS HARD NO SQUISHY FLAMEBATE LOL")
+              },
+            EVSpread = new BaseStat(6, 252, 0, 0, 0, 252),
+            Items = new List<Item> {new Item("Life Orb", "Kicks life in the orbs", "")},
+            Moves = new List<IEnumerable<Move>>
+            {
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
+              new List<Move>
+              {
+                new Move("Chocolate Sauce", "mm dat drizzle", ""),
+                new Move("Milk Drain", "gotta get dat white stuff", "")
+              }
+            },
+            Natures = new List<Nature> {Nature.Adamant, Nature.Brave}
+          }
+        },
+        new List<ITextElement>
+        {
+          new Paragraph("it's a pretty good pokemon honestly, but it's really purple and im not a fan of much purple")
+        },
+        new List<ITextElement>
+        {
+          new Paragraph("it's a pretty good pokemon honestly, but it's really purple and im not a fan of much purple")
+        },
+        new List<Move>
+        {
+          new Move("Chocolate Sauce", "mm dat drizzle", ""),
+          new Move("Milk Drain", "gotta get dat white stuff", "")
+        }
+        );
+    }
+
+    public async Task<IEnumerable<Pokemon>> DeserializePokemonListAsync(string pokemon)
+    {
+      await Task.Delay(0);
+
+      return new List<Pokemon>
+      {
+        new Pokemon(
+          "Barbasaur",
+          new List<Type> {Type.Grass, Type.Fire},
+          Tier.Uber,
+          new List<Ability>
+          {
+            new Ability("Burnt Toast", "Burns toast 100% of the time", ""),
+            new Ability("Chocolate Silk", "Like milk except it comes out a spider's butt", "")
+          },
+          new BaseStat(0, 0, 0, 0, 0, 255),
+          ""),
+        new Pokemon(
+          "Barbasaur",
+          new List<Type> {Type.Grass, Type.Fire},
+          Tier.Uber,
+          new List<Ability>
+          {
+            new Ability("Burnt Toast", "Burns toast 100% of the time", ""),
+            new Ability("Chocolate Silk", "Like milk except it comes out a spider's butt", "")
+          },
+          new BaseStat(0, 0, 0, 0, 0, 255),
+          ""),
+        new Pokemon(
+          "Barbasaur",
+          new List<Type> {Type.Grass, Type.Fire},
+          Tier.Uber,
+          new List<Ability>
+          {
+            new Ability("Burnt Toast", "Burns toast 100% of the time", ""),
+            new Ability("Chocolate Silk", "Like milk except it comes out a spider's butt", "")
+          },
+          new BaseStat(0, 0, 0, 0, 0, 255),
+          ""),
+      };
     }
   }
 }

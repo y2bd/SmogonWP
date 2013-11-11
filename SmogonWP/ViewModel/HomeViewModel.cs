@@ -63,6 +63,12 @@ namespace SmogonWP.ViewModel
       {
         new NavigationItemViewModel
         {
+          Title = "Pokemon",
+          Description = "Search for Pokemon and how to use them",
+          NavigationPath = ViewModelLocator.PokemonSearchPath
+        },
+        new NavigationItemViewModel
+        {
           Title = "Moves",
           Description = "Search for moves and their relevance",
           NavigationPath = ViewModelLocator.MoveSearchPath

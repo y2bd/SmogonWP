@@ -96,6 +96,8 @@
     <Compile Include="Controls\TextElementTemplateSelector.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Converters\EmptinessVisibilityConverter.cs" />
+    <Compile Include="Converters\NullVisibilityConverter.cs" />
+    <Compile Include="Converters\UppercaseConverter.cs" />
     <Compile Include="Design\DesignSchmogonClient.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -134,10 +136,12 @@
     <Compile Include="ViewModel\Items\AbilityItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NatureItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NavigationItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\PokemonItemViewModel.cs" />
     <Compile Include="ViewModel\Items\TypeItemViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />
     <Compile Include="ViewModel\MoveSearchViewModel.cs" />
     <Compile Include="ViewModel\NatureViewModel.cs" />
+    <Compile Include="ViewModel\PokemonSearchViewModel.cs" />
     <Compile Include="ViewModel\TypeViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AbilityDataView.xaml.cs">
@@ -157,6 +161,9 @@
     </Compile>
     <Compile Include="View\NatureView.xaml.cs">
       <DependentUpon>NatureView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PokemonSearchView.xaml.cs">
+      <DependentUpon>PokemonSearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TypeView.xaml.cs">
       <DependentUpon>TypeView.xaml</DependentUpon>
@@ -200,6 +207,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NatureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PokemonSearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
