@@ -17,7 +17,8 @@ namespace SmogonWP.ViewModel
   {
     private readonly ISchmogonClient _schmogonClient;
 
-    private readonly MessageReceiver<MoveTypeSelectedMessage> _moveTypeSelectedMessage; 
+    private readonly MessageReceiver<MoveTypeSelectedMessage> _moveTypeSelectedMessage;
+    private readonly MessageReceiver<PokemonTypeSelectedMessage> _pokemonTypeSelectedMessage; 
 
     private ObservableCollection<string> _typeChoices;
     public ObservableCollection<string> TypeChoices
@@ -74,6 +75,23 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private int _pivotIndex;
+    public int PivotIndex
+    {
+      get
+      {
+        return _pivotIndex;
+      }
+      set
+      {
+        if (_pivotIndex != value)
+        {
+          _pivotIndex = value;
+          RaisePropertyChanged(() => PivotIndex);
+        }
+      }
+    }			
+
     private ObservableCollection<OffenseTypeGroup> _offenseTypeData;
     public ObservableCollection<OffenseTypeGroup> OffenseTypeData
     {
@@ -113,6 +131,7 @@ namespace SmogonWP.ViewModel
       _schmogonClient = schmogonClient;
 
       _moveTypeSelectedMessage = new MessageReceiver<MoveTypeSelectedMessage>(onMoveTypeSelected, true);
+      _pokemonTypeSelectedMessage = new MessageReceiver<PokemonTypeSelectedMessage>(onPokemonTypeSelected, true);
 
       setup();
 
@@ -183,9 +202,18 @@ namespace SmogonWP.ViewModel
     {
       var type = msg.Type;
 
-      MessengerInstance.Send(new VmToViewMessage<string, TypeView>("switchToOffense"));
+      PivotIndex = 0;
 
       SelectedOffensiveType = (int) type;
+    }
+
+    private void onPokemonTypeSelected(PokemonTypeSelectedMessage msg)
+    {
+      var type = msg.Type;
+
+      PivotIndex = 1;
+
+      SelectedDefenseType = (int)type;
     }
   }
 }

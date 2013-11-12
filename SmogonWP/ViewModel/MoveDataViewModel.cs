@@ -33,6 +33,7 @@ namespace SmogonWP.ViewModel
     private readonly ISchmogonClient _schmogonClient;
 
     private readonly MessageReceiver<MoveSearchMessage> _moveSearchReceiver;
+    private readonly MessageReceiver<PokemonMoveSelectedMessage> _pokemonMoveSelectedReceiver; 
     private readonly MessageSender<MoveTypeSelectedMessage> _moveTypeSelectedSender; 
 
     private readonly Stack<MoveDataItemViewModel> _moveStack;
@@ -189,6 +190,7 @@ namespace SmogonWP.ViewModel
       _trayService = trayService;
 
       _moveSearchReceiver = new MessageReceiver<MoveSearchMessage>(onMoveSearched, true);
+      _pokemonMoveSelectedReceiver = new MessageReceiver<PokemonMoveSelectedMessage>(onPokemonMoveSelected, true);
       _moveTypeSelectedSender = new MessageSender<MoveTypeSelectedMessage>();
 
       _moveStack = new Stack<MoveDataItemViewModel>();
@@ -207,6 +209,18 @@ namespace SmogonWP.ViewModel
     {
       // clear the current move if it exists
       // otherwise we run into stack issues
+
+      MDVM = null;
+
+      Name = msg.Move.Name;
+
+      scheduleMoveFetch(msg.Move);
+    }
+
+    private void onPokemonMoveSelected(PokemonMoveSelectedMessage msg)
+    {
+      // JUST IN CASE
+      if (_moveStack != null) _moveStack.Clear();
 
       MDVM = null;
 

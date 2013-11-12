@@ -93,10 +93,15 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SetupChoiceTemplateSelector.cs" />
     <Compile Include="Controls\TextElementTemplateSelector.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Converters\EmptinessVisibilityConverter.cs" />
+    <Compile Include="Converters\InvertedEmptinessVisibilityConverter.cs" />
+    <Compile Include="Converters\LowercaseConverter.cs" />
     <Compile Include="Converters\NullVisibilityConverter.cs" />
+    <Compile Include="Converters\RandomOpacityConverter.cs" />
+    <Compile Include="Converters\TextLengthToColumnSpanConverter.cs" />
     <Compile Include="Converters\UppercaseConverter.cs" />
     <Compile Include="Design\DesignSchmogonClient.cs" />
     <Compile Include="LocalizedStrings.cs" />
@@ -105,9 +110,15 @@
     </Compile>
     <Compile Include="Messages\MoveSearchMessage.cs" />
     <Compile Include="Messages\AbilitySearchMessage.cs" />
+    <Compile Include="Messages\MovesetSelectedMessage.cs" />
     <Compile Include="Messages\MoveTypeSelectedMessage.cs" />
+    <Compile Include="Messages\PokemonAbilitySelectedMessage.cs" />
+    <Compile Include="Messages\PokemonMoveSelectedMessage.cs" />
+    <Compile Include="Messages\PokemonSearchMessage.cs" />
+    <Compile Include="Messages\PokemonTypeSelectedMessage.cs" />
     <Compile Include="Messages\VMToViewMessage.cs" />
     <Compile Include="Model\DefenseTypeGroup.cs" />
+    <Compile Include="Model\MovesetGroup.cs" />
     <Compile Include="Model\OffenseTypeGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
@@ -125,6 +136,7 @@
     <Compile Include="Utilities\BindableLongListSelector.cs" />
     <Compile Include="Utilities\DataTemplateSelector.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
+    <Compile Include="Utilities\StatCalculator.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
     <Compile Include="ViewModel\AbilityDataViewModel.cs" />
     <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
@@ -134,13 +146,17 @@
     <Compile Include="ViewModel\Items\MoveDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveItemViewModel.cs" />
     <Compile Include="ViewModel\Items\AbilityItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\MovesetItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NatureItemViewModel.cs" />
     <Compile Include="ViewModel\Items\NavigationItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\PokemonDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\PokemonItemViewModel.cs" />
     <Compile Include="ViewModel\Items\TypeItemViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />
     <Compile Include="ViewModel\MoveSearchViewModel.cs" />
+    <Compile Include="ViewModel\MovesetViewModel.cs" />
     <Compile Include="ViewModel\NatureViewModel.cs" />
+    <Compile Include="ViewModel\PokemonDataViewModel.cs" />
     <Compile Include="ViewModel\PokemonSearchViewModel.cs" />
     <Compile Include="ViewModel\TypeViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -159,8 +175,14 @@
     <Compile Include="View\MoveSearchView.xaml.cs">
       <DependentUpon>MoveSearchView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MovesetView.xaml.cs">
+      <DependentUpon>MovesetView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NatureView.xaml.cs">
       <DependentUpon>NatureView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PokemonDataView.xaml.cs">
+      <DependentUpon>PokemonDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PokemonSearchView.xaml.cs">
       <DependentUpon>PokemonSearchView.xaml</DependentUpon>
@@ -206,7 +228,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\MovesetView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\NatureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PokemonDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -225,6 +255,7 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="SmogonWP_2013_11_12_12_23_59.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using GalaSoft.MvvmLight;
 using Schmogon.Data.Abilities;
 using Schmogon.Model.Text;
 
 namespace SmogonWP.ViewModel.Items
 {
-  public class AbilityDataItemViewModel
+  public class AbilityDataItemViewModel : ViewModelBase
   {
     internal AbilityData AbilityData;
 

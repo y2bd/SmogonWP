@@ -116,6 +116,10 @@ ClientBin/
 *.pfx
 *.publishsettings
 
+# Performance tests
+PerfLogs/
+*.sap
+
 # RIA/Silverlight projects
 Generated_Code/
 

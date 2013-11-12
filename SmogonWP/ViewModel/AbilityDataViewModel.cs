@@ -30,6 +30,7 @@ namespace SmogonWP.ViewModel
     private readonly ISchmogonClient _schmogonClient;
 
     private readonly MessageReceiver<AbilitySearchMessage> _abilitySearchReceiver;
+    private readonly MessageReceiver<PokemonAbilitySelectedMessage> _pokemonAbilitySelectedReceiver; 
     
     // if a network request fails, we'll try again one more time
     // otherwise we'll give up and tell the user
@@ -135,6 +136,7 @@ namespace SmogonWP.ViewModel
       _trayService = trayService;
 
       _abilitySearchReceiver = new MessageReceiver<AbilitySearchMessage>(onAbilitySearched, true);
+      _pokemonAbilitySelectedReceiver = new MessageReceiver<PokemonAbilitySelectedMessage>(onPokemonAbilitySelected, true);
       
       if (IsInDesignMode || IsInDesignModeStatic)
       {
@@ -157,7 +159,16 @@ namespace SmogonWP.ViewModel
 
       scheduleAbilityFetch(msg.Ability);
     }
-    
+
+    private void onPokemonAbilitySelected(PokemonAbilitySelectedMessage msg)
+    {
+      ADVM = null;
+
+      Name = msg.Ability.Name;
+
+      scheduleAbilityFetch(msg.Ability);
+    }
+
     private void onBackKeyPressed(CancelEventArgs args)
     {
       return;

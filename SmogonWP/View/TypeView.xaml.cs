@@ -43,6 +43,10 @@ namespace SmogonWP.View
       {
         PhasePivot.SelectedIndex = 0;
       }
+      else if (msg.Content.Equals("switchToDefense"))
+      {
+        PhasePivot.SelectedIndex = 1;
+      }
     }
   }
 }

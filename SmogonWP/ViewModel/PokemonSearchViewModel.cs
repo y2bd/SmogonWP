@@ -13,7 +13,9 @@ using Microsoft.Phone.Controls.Primitives;
 using Nito.AsyncEx;
 using Schmogon;
 using Schmogon.Data.Pokemon;
+using SmogonWP.Messages;
 using SmogonWP.Services;
+using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
 using SmogonWP.ViewModel.Items;
 using Type = Schmogon.Data.Types.Type;
@@ -27,6 +29,8 @@ namespace SmogonWP.ViewModel
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonClient _schmogonClient;
     private readonly IsolatedStorageService _storageService;
+
+    private readonly MessageSender<PokemonSearchMessage> _pokemonSearchSender;
 
     private bool _failedOnce;
 
@@ -80,7 +84,9 @@ namespace SmogonWP.ViewModel
       {
         if (_selectedPokemon != value)
         {
-          _selectedPokemon = value;
+          onPokemonSelected(value);
+
+          _selectedPokemon = null;
           RaisePropertyChanged(() => SelectedPokemon);
         }
       }
@@ -265,6 +271,8 @@ namespace SmogonWP.ViewModel
       _storageService = storageService;
       _trayService = trayService;
 
+      _pokemonSearchSender = new MessageSender<PokemonSearchMessage>();
+
       setupFilters();
 
       schedulePokemonListFetch();
@@ -305,6 +313,12 @@ namespace SmogonWP.ViewModel
       LoadFailed = false;
 
       schedulePokemonListFetch();
+    }
+
+    private void onPokemonSelected(PokemonItemViewModel pivm)
+    {
+      _pokemonSearchSender.SendMessage(new PokemonSearchMessage(pivm.Pokemon));
+      _navigationService.Navigate(ViewModelLocator.PokemonDataPath);
     }
 
     private void filterPokemon()

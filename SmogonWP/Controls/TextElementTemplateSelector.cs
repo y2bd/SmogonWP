@@ -11,8 +11,6 @@ namespace SmogonWP.Controls
 
     public override DataTemplate SelectTemplate(object item, DependencyObject container)
     {
-      var textElement = item as ITextElement;
-
       if (item != null)
       {
         if (item is Paragraph)

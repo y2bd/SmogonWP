@@ -32,6 +32,8 @@ namespace SmogonWP.ViewModel.Items
         {Type.Fairy, Color.FromArgb(255, 218, 112, 214)}
       }
     );
+
+    internal readonly Type Type;
     
     private string _name;
     public string Name
@@ -69,6 +71,8 @@ namespace SmogonWP.ViewModel.Items
 
     public TypeItemViewModel(Type type)
     {
+      Type = type;
+
       Name = Enum.GetName(typeof(Type), type);
 
       BackgroundBrush = new SolidColorBrush(TypeColors[type]);
