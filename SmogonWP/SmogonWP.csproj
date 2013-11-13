@@ -108,14 +108,9 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Messages\MoveSearchMessage.cs" />
-    <Compile Include="Messages\AbilitySearchMessage.cs" />
-    <Compile Include="Messages\MovesetSelectedMessage.cs" />
-    <Compile Include="Messages\MoveTypeSelectedMessage.cs" />
-    <Compile Include="Messages\PokemonAbilitySelectedMessage.cs" />
-    <Compile Include="Messages\PokemonMoveSelectedMessage.cs" />
-    <Compile Include="Messages\PokemonSearchMessage.cs" />
+    <Compile Include="Messages\ItemSearchedMessage.cs" />
     <Compile Include="Messages\PokemonTypeSelectedMessage.cs" />
+    <Compile Include="Messages\ItemSelectedMessage.cs" />
     <Compile Include="Messages\VMToViewMessage.cs" />
     <Compile Include="Model\DefenseTypeGroup.cs" />
     <Compile Include="Model\MovesetGroup.cs" />
@@ -255,7 +250,6 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="SmogonWP_2013_11_12_12_23_59.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />

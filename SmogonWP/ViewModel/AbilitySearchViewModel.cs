@@ -28,7 +28,7 @@ namespace SmogonWP.ViewModel
     private readonly ISchmogonClient _schmogonClient;
     private readonly IsolatedStorageService _storageService;
 
-    private readonly MessageSender<AbilitySearchMessage> _abilitySearchSender;
+    private readonly MessageSender<ItemSearchedMessage<Ability>> _abilitySearchSender;
 
     private bool _failedOnce;
 
@@ -163,7 +163,7 @@ namespace SmogonWP.ViewModel
       _trayService = trayService;
       _storageService = storageService;
 
-      _abilitySearchSender = new MessageSender<AbilitySearchMessage>();
+      _abilitySearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
 
       scheduleAbilityListFetch();
     }
@@ -184,7 +184,7 @@ namespace SmogonWP.ViewModel
 
     private void onAbilitySelected(AbilityItemViewModel mivm)
     {
-      _abilitySearchSender.SendMessage(new AbilitySearchMessage(mivm.Ability));
+      _abilitySearchSender.SendMessage(new ItemSearchedMessage<Ability>(mivm.Ability));
       _navigationService.Navigate(ViewModelLocator.AbilityDataPath);
     }
 

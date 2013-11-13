@@ -32,9 +32,9 @@ namespace SmogonWP.ViewModel
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonClient _schmogonClient;
 
-    private readonly MessageReceiver<MoveSearchMessage> _moveSearchReceiver;
-    private readonly MessageReceiver<PokemonMoveSelectedMessage> _pokemonMoveSelectedReceiver; 
-    private readonly MessageSender<MoveTypeSelectedMessage> _moveTypeSelectedSender; 
+    private readonly MessageReceiver<ItemSearchedMessage<Move>> _moveSearchReceiver;
+    private readonly MessageReceiver<ItemSelectedMessage<Move>> _pokemonMoveSelectedReceiver; 
+    private readonly MessageSender<ItemSelectedMessage<Type>> _moveTypeSelectedSender; 
 
     private readonly Stack<MoveDataItemViewModel> _moveStack;
 
@@ -189,9 +189,9 @@ namespace SmogonWP.ViewModel
       _schmogonClient = schmogonClient;
       _trayService = trayService;
 
-      _moveSearchReceiver = new MessageReceiver<MoveSearchMessage>(onMoveSearched, true);
-      _pokemonMoveSelectedReceiver = new MessageReceiver<PokemonMoveSelectedMessage>(onPokemonMoveSelected, true);
-      _moveTypeSelectedSender = new MessageSender<MoveTypeSelectedMessage>();
+      _moveSearchReceiver = new MessageReceiver<ItemSearchedMessage<Move>>(onMoveSearched, true);
+      _pokemonMoveSelectedReceiver = new MessageReceiver<ItemSelectedMessage<Move>>(onPokemonMoveSelected, true);
+      _moveTypeSelectedSender = new MessageSender<ItemSelectedMessage<Type>>();
 
       _moveStack = new Stack<MoveDataItemViewModel>();
 
@@ -205,28 +205,28 @@ namespace SmogonWP.ViewModel
 
     #region event handlers
 
-    private void onMoveSearched(MoveSearchMessage msg)
+    private void onMoveSearched(ItemSearchedMessage<Move> msg)
     {
       // clear the current move if it exists
       // otherwise we run into stack issues
 
       MDVM = null;
 
-      Name = msg.Move.Name;
+      Name = msg.Item.Name;
 
-      scheduleMoveFetch(msg.Move);
+      scheduleMoveFetch(msg.Item);
     }
 
-    private void onPokemonMoveSelected(PokemonMoveSelectedMessage msg)
+    private void onPokemonMoveSelected(ItemSelectedMessage<Move> msg)
     {
       // JUST IN CASE
       if (_moveStack != null) _moveStack.Clear();
 
       MDVM = null;
 
-      Name = msg.Move.Name;
+      Name = msg.Item.Name;
 
-      scheduleMoveFetch(msg.Move);
+      scheduleMoveFetch(msg.Item);
     }
 
     private void onRelatedMoveSelected(Move move)
@@ -259,7 +259,7 @@ namespace SmogonWP.ViewModel
       // if the parse fails, just ignore it :(
       if (!Enum.TryParse(MDVM.Type, true, out type)) return;
 
-      _moveTypeSelectedSender.SendMessage(new MoveTypeSelectedMessage(type));
+      _moveTypeSelectedSender.SendMessage(new ItemSelectedMessage<Type>(type));
       _navigationService.Navigate(ViewModelLocator.TypePath);
     }
 

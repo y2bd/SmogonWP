@@ -31,7 +31,7 @@ namespace SmogonWP.ViewModel
     private readonly ISchmogonClient _schmogonClient;
     private readonly IsolatedStorageService _storageService;
 
-    private readonly MessageSender<MoveSearchMessage> _moveSearchSender;
+    private readonly MessageSender<ItemSearchedMessage<Move>> _moveSearchSender;
 
     private bool _failedOnce;
 
@@ -235,7 +235,7 @@ namespace SmogonWP.ViewModel
       _trayService = trayService;
       _storageService = storageService;
 
-      _moveSearchSender = new MessageSender<MoveSearchMessage>();
+      _moveSearchSender = new MessageSender<ItemSearchedMessage<Move>>();
 
       Filters = new ObservableCollection<string> {"none"};
 
@@ -277,7 +277,7 @@ namespace SmogonWP.ViewModel
 
     private void onMoveSelected(MoveItemViewModel mivm)
     {
-      _moveSearchSender.SendMessage(new MoveSearchMessage(mivm.Move));
+      _moveSearchSender.SendMessage(new ItemSearchedMessage<Move>(mivm.Move));
       _navigationService.Navigate(ViewModelLocator.MoveDataPath);
     }
 

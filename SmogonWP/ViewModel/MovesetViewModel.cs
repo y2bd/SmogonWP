@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Controls.Primitives;
 using GalaSoft.MvvmLight;
 using Schmogon.Data.Abilities;
 using Schmogon.Data.Items;
@@ -16,9 +15,9 @@ namespace SmogonWP.ViewModel
 {
   public class MovesetViewModel : ViewModelBase
   {
-    private readonly MessageReceiver<MovesetSelectedMessage> _movesetSelectedReceiver;
-    private readonly MessageSender<PokemonAbilitySelectedMessage> _abilitySelectedSender;
-    private readonly MessageSender<PokemonMoveSelectedMessage> _moveSelectedSender;
+    private readonly MessageReceiver<ItemSelectedMessage<MovesetItemViewModel>> _movesetSelectedReceiver;
+    private readonly MessageSender<ItemSelectedMessage<Ability>> _abilitySelectedSender;
+    private readonly MessageSender<ItemSelectedMessage<Move>> _moveSelectedSender;
 
     private MovesetItemViewModel _msivm;
     public MovesetItemViewModel MSIVM
@@ -58,9 +57,9 @@ namespace SmogonWP.ViewModel
 
     public MovesetViewModel()
     {
-      _movesetSelectedReceiver = new MessageReceiver<MovesetSelectedMessage>(onMovesetSelected, true);
-      _abilitySelectedSender = new MessageSender<PokemonAbilitySelectedMessage>();
-      _moveSelectedSender = new MessageSender<PokemonMoveSelectedMessage>();
+      _movesetSelectedReceiver = new MessageReceiver<ItemSelectedMessage<MovesetItemViewModel>>(onMovesetSelected, true);
+      _abilitySelectedSender = new MessageSender<ItemSelectedMessage<Ability>>();
+      _moveSelectedSender = new MessageSender<ItemSelectedMessage<Move>>();
 
       #region design data
       if (IsInDesignMode || IsInDesignModeStatic)
@@ -106,9 +105,9 @@ namespace SmogonWP.ViewModel
       #endregion design data
     }
 
-    private void onMovesetSelected(MovesetSelectedMessage msg)
+    private void onMovesetSelected(ItemSelectedMessage<MovesetItemViewModel> msg)
     {
-      MSIVM = msg.MSIVM;
+      MSIVM = msg.Item;
     }
   }
 }

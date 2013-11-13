@@ -29,8 +29,8 @@ namespace SmogonWP.ViewModel
 
     private readonly ISchmogonClient _schmogonClient;
 
-    private readonly MessageReceiver<AbilitySearchMessage> _abilitySearchReceiver;
-    private readonly MessageReceiver<PokemonAbilitySelectedMessage> _pokemonAbilitySelectedReceiver; 
+    private readonly MessageReceiver<ItemSearchedMessage<Ability>> _abilitySearchReceiver;
+    private readonly MessageReceiver<ItemSelectedMessage<Ability>> _pokemonAbilitySelectedReceiver; 
     
     // if a network request fails, we'll try again one more time
     // otherwise we'll give up and tell the user
@@ -135,8 +135,8 @@ namespace SmogonWP.ViewModel
       _schmogonClient = schmogonClient;
       _trayService = trayService;
 
-      _abilitySearchReceiver = new MessageReceiver<AbilitySearchMessage>(onAbilitySearched, true);
-      _pokemonAbilitySelectedReceiver = new MessageReceiver<PokemonAbilitySelectedMessage>(onPokemonAbilitySelected, true);
+      _abilitySearchReceiver = new MessageReceiver<ItemSearchedMessage<Ability>>(onAbilitySearched, true);
+      _pokemonAbilitySelectedReceiver = new MessageReceiver<ItemSelectedMessage<Ability>>(onPokemonAbilitySelected, true);
       
       if (IsInDesignMode || IsInDesignModeStatic)
       {
@@ -148,25 +148,25 @@ namespace SmogonWP.ViewModel
 
     #region event handlers
 
-    private void onAbilitySearched(AbilitySearchMessage msg)
+    private void onAbilitySearched(ItemSearchedMessage<Ability> msg)
     {
       // clear the current ability if it exists
       // otherwise we run into stack issues
 
       ADVM = null;
 
-      Name = msg.Ability.Name;
+      Name = msg.Item.Name;
 
-      scheduleAbilityFetch(msg.Ability);
+      scheduleAbilityFetch(msg.Item);
     }
 
-    private void onPokemonAbilitySelected(PokemonAbilitySelectedMessage msg)
+    private void onPokemonAbilitySelected(ItemSelectedMessage<Ability> msg)
     {
       ADVM = null;
 
-      Name = msg.Ability.Name;
+      Name = msg.Item.Name;
 
-      scheduleAbilityFetch(msg.Ability);
+      scheduleAbilityFetch(msg.Item);
     }
 
     private void onBackKeyPressed(CancelEventArgs args)

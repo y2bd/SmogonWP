@@ -1,16 +1,13 @@
-﻿using SmogonWP.Services.Messaging;
-using Type = Schmogon.Data.Types.Type;
+﻿using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.Messages
 {
-  public class PokemonTypeSelectedMessage : InitMessageBase
+  public class PokemonTypeSelectedMessage : ItemSelectedMessage<Type>
   {
-    public Type Type { get; private set; }
-
-    public PokemonTypeSelectedMessage(Type type)
-      : this()
+    public PokemonTypeSelectedMessage(Type item)
+      : base(item)
     {
-      Type = type;
+
     }
 
     public PokemonTypeSelectedMessage()

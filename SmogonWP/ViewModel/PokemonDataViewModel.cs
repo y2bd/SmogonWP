@@ -11,6 +11,8 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
 using Schmogon;
+using Schmogon.Data.Abilities;
+using Schmogon.Data.Moves;
 using Schmogon.Data.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
@@ -18,6 +20,7 @@ using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
+using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -29,11 +32,11 @@ namespace SmogonWP.ViewModel
     private readonly ISchmogonClient _schmogonClient;
     private readonly SimpleNavigationService _navigationService;
 
-    private readonly MessageReceiver<PokemonSearchMessage> _pokemonSearchReceiver;
+    private readonly MessageReceiver<ItemSearchedMessage<Pokemon>> _pokemonSearchReceiver;
     private readonly MessageSender<PokemonTypeSelectedMessage> _pokemonTypeSelectedSender;
-    private readonly MessageSender<PokemonAbilitySelectedMessage> _pokemonAbilitySelectedSender;
-    private readonly MessageSender<PokemonMoveSelectedMessage> _pokemonMoveSelectedSender;
-    private readonly MessageSender<MovesetSelectedMessage> _movesetSelectedSender; 
+    private readonly MessageSender<ItemSelectedMessage<Ability>> _pokemonAbilitySelectedSender;
+    private readonly MessageSender<ItemSelectedMessage<Move>> _pokemonMoveSelectedSender;
+    private readonly MessageSender<ItemSelectedMessage<MovesetItemViewModel>> _movesetSelectedSender; 
 
     private bool _failedOnce;
 
@@ -198,12 +201,12 @@ namespace SmogonWP.ViewModel
       _schmogonClient = schmogonClient;
       _navigationService = navigationService;
       _trayService = trayService;
-      
-      _pokemonSearchReceiver = new MessageReceiver<PokemonSearchMessage>(onPokemonSearched, true);
+
+      _pokemonSearchReceiver = new MessageReceiver<ItemSearchedMessage<Pokemon>>(onPokemonSearched, true);
       _pokemonTypeSelectedSender = new MessageSender<PokemonTypeSelectedMessage>();
-      _pokemonAbilitySelectedSender = new MessageSender<PokemonAbilitySelectedMessage>();
-      _pokemonMoveSelectedSender = new MessageSender<PokemonMoveSelectedMessage>();
-      _movesetSelectedSender = new MessageSender<MovesetSelectedMessage>();
+      _pokemonAbilitySelectedSender = new MessageSender<ItemSelectedMessage<Ability>>();
+      _pokemonMoveSelectedSender = new MessageSender<ItemSelectedMessage<Move>>();
+      _movesetSelectedSender = new MessageSender<ItemSelectedMessage<MovesetItemViewModel>>();
 
       if (IsInDesignMode || IsInDesignModeStatic)
       {
@@ -215,21 +218,21 @@ namespace SmogonWP.ViewModel
 
     #region event handlers
 
-    private void onPokemonSearched(PokemonSearchMessage msg)
+    private void onPokemonSearched(ItemSearchedMessage<Pokemon> msg)
     {
       // clear the current pokemon if it exists
       // otherwise we run into stack issues
 
       PDVM = null;
 
-      Name = msg.Pokemon.Name;
+      Name = msg.Item.Name;
 
-      SchedulePokemonFetch(msg.Pokemon);
+      SchedulePokemonFetch(msg.Item);
     }
 
     private void onAbilitySelected(AbilityItemViewModel aivm)
     {
-      _pokemonAbilitySelectedSender.SendMessage(new PokemonAbilitySelectedMessage(aivm.Ability));
+      _pokemonAbilitySelectedSender.SendMessage(new ItemSelectedMessage<Ability>(aivm.Ability));
       _navigationService.Navigate(ViewModelLocator.AbilityDataPath);
     }
 
@@ -241,13 +244,13 @@ namespace SmogonWP.ViewModel
 
     private void onMoveSelected(MoveItemViewModel mivm)
     {
-      _pokemonMoveSelectedSender.SendMessage(new PokemonMoveSelectedMessage(mivm.Move));
+      _pokemonMoveSelectedSender.SendMessage(new ItemSelectedMessage<Move>(mivm.Move));
       _navigationService.Navigate(ViewModelLocator.MoveDataPath);
     }
 
     private void onMovesetSelected(MovesetItemViewModel msivm)
     {
-      _movesetSelectedSender.SendMessage(new MovesetSelectedMessage(msivm));
+      _movesetSelectedSender.SendMessage(new ItemSelectedMessage<MovesetItemViewModel>(msivm));
       _navigationService.Navigate((ViewModelLocator.MovesetPath));
     }
 

@@ -17,7 +17,7 @@ namespace SmogonWP.ViewModel
   {
     private readonly ISchmogonClient _schmogonClient;
 
-    private readonly MessageReceiver<MoveTypeSelectedMessage> _moveTypeSelectedMessage;
+    private readonly MessageReceiver<ItemSelectedMessage<Type>> _moveTypeSelectedMessage;
     private readonly MessageReceiver<PokemonTypeSelectedMessage> _pokemonTypeSelectedMessage; 
 
     private ObservableCollection<string> _typeChoices;
@@ -130,7 +130,7 @@ namespace SmogonWP.ViewModel
     {
       _schmogonClient = schmogonClient;
 
-      _moveTypeSelectedMessage = new MessageReceiver<MoveTypeSelectedMessage>(onMoveTypeSelected, true);
+      _moveTypeSelectedMessage = new MessageReceiver<ItemSelectedMessage<Type>>(onMoveTypeSelected, true);
       _pokemonTypeSelectedMessage = new MessageReceiver<PokemonTypeSelectedMessage>(onPokemonTypeSelected, true);
 
       setup();
@@ -198,9 +198,9 @@ namespace SmogonWP.ViewModel
       };
     }
 
-    private void onMoveTypeSelected(MoveTypeSelectedMessage msg)
+    private void onMoveTypeSelected(ItemSelectedMessage<Type> msg)
     {
-      var type = msg.Type;
+      var type = msg.Item;
 
       PivotIndex = 0;
 
@@ -209,7 +209,7 @@ namespace SmogonWP.ViewModel
 
     private void onPokemonTypeSelected(PokemonTypeSelectedMessage msg)
     {
-      var type = msg.Type;
+      var type = msg.Item;
 
       PivotIndex = 1;
 

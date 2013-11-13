@@ -30,7 +30,7 @@ namespace SmogonWP.ViewModel
     private readonly ISchmogonClient _schmogonClient;
     private readonly IsolatedStorageService _storageService;
 
-    private readonly MessageSender<PokemonSearchMessage> _pokemonSearchSender;
+    private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokemonSearchSender;
 
     private bool _failedOnce;
 
@@ -271,7 +271,7 @@ namespace SmogonWP.ViewModel
       _storageService = storageService;
       _trayService = trayService;
 
-      _pokemonSearchSender = new MessageSender<PokemonSearchMessage>();
+      _pokemonSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
 
       setupFilters();
 
@@ -317,7 +317,7 @@ namespace SmogonWP.ViewModel
 
     private void onPokemonSelected(PokemonItemViewModel pivm)
     {
-      _pokemonSearchSender.SendMessage(new PokemonSearchMessage(pivm.Pokemon));
+      _pokemonSearchSender.SendMessage(new ItemSearchedMessage<Pokemon>(pivm.Pokemon));
       _navigationService.Navigate(ViewModelLocator.PokemonDataPath);
     }
 
