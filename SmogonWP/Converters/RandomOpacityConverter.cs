@@ -11,7 +11,14 @@ namespace SmogonWP.Converters
   {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      var div = 0.1 + (new Random(value.GetHashCode())).NextDouble()/1.5;
+      double ease = 1.5;
+
+      if (parameter != null)
+      {
+        Double.TryParse(parameter as string, out ease);
+      }
+
+      var div = 0.1 + (new Random(value.GetHashCode())).NextDouble()/ease;
 
       return div;
     }

@@ -41,7 +41,6 @@
 
     <phone:PhoneApplicationPage.Resources>
         <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
-        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
         <converters:RandomOpacityConverter x:Key="RandomOpacityConverter" />
 
         <DataTemplate x:Key="DescriptionPivotHeaderTemplate">

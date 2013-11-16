@@ -49,18 +49,18 @@
                            Style="{StaticResource PhoneTextTitle3Style}" />
             </Grid>
         </DataTemplate>
-        
+
         <DataTemplate x:Key="SetupGeneralItemTemplate">
             <Grid Height="50"
                   Background="{StaticResource PhoneAccentBrush}">
                 <Border Background="Black"
                         Opacity="{Binding Converter={StaticResource RandomOpacityConverter}}" />
-                <TextBlock Text="{Binding Name, Converter={StaticResource LowercaseConverter}}" 
+                <TextBlock Text="{Binding Name, Converter={StaticResource LowercaseConverter}}"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"
                            Style="{StaticResource PhoneTextTitle3Style}"
                            Foreground="White"
-                           Margin="12,-3,12,0"/>
+                           Margin="12,-3,12,0" />
             </Grid>
         </DataTemplate>
 
@@ -75,6 +75,24 @@
                            Style="{StaticResource PhoneTextTitle3Style}"
                            Foreground="White"
                            Margin="12,-3,12,0" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SetupMoveItemTemplate">
+            <Grid Height="50"
+                  Background="{Binding BackgroundBrush}">
+                <Grid Margin="12,0,0,0"
+                      Background="{StaticResource PhoneAccentBrush}">
+                    <Border Background="Black"
+                            Opacity="{Binding Converter={StaticResource RandomOpacityConverter}, ConverterParameter='2'}" />
+                    <TextBlock Text="{Binding Name, Converter={StaticResource LowercaseConverter}}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Style="{StaticResource PhoneTextTitle3Style}"
+                               Foreground="White"
+                               Margin="12,-3,12,0" />
+
+                </Grid>
             </Grid>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
@@ -131,8 +149,18 @@
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Left" />
                                 </Border>
-                                <ItemsControl ItemsSource="{Binding MSIVM.Abilities}"
-                                              ItemTemplate="{StaticResource SetupGeneralItemTemplate}" />
+                                <ListBox ItemsSource="{Binding MSIVM.Abilities}"
+                                         ItemTemplate="{StaticResource SetupGeneralItemTemplate}"
+                                         SelectedItem="{Binding SelectedAbility, Mode=TwoWay}"
+                                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                         toolkit:TiltEffect.IsTiltEnabled="True">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="HorizontalContentAlignment"
+                                                    Value="Stretch" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
                             </StackPanel>
 
                             <StackPanel Margin="0,0,0,24"
@@ -143,8 +171,60 @@
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Left" />
                                 </Border>
-                                <ItemsControl ItemsSource="{Binding MSIVM.Natures}"
-                                              ItemTemplate="{StaticResource SetupNatureItemTemplate}" />
+                                <ListBox ItemsSource="{Binding MSIVM.Natures}"
+                                         ItemTemplate="{StaticResource SetupNatureItemTemplate}"
+                                         SelectedItem="{Binding SelectedNature, Mode=TwoWay}"
+                                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                         toolkit:TiltEffect.IsTiltEnabled="True">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="HorizontalContentAlignment"
+                                                    Value="Stretch" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,24"
+                                        Visibility="{Binding MSIVM.Items, Converter={StaticResource InvertedEmptinessVisibilityConverter}}">
+                                <Border Height="50"
+                                        Background="{StaticResource PhoneAccentBrush}">
+                                    <TextBlock Text="ITEM"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Left" />
+                                </Border>
+                                <ListBox ItemsSource="{Binding MSIVM.Items}"
+                                         ItemTemplate="{StaticResource SetupGeneralItemTemplate}"
+                                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                         toolkit:TiltEffect.IsTiltEnabled="True">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="HorizontalContentAlignment"
+                                                    Value="Stretch" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,24">
+                                <Border Height="50"
+                                        Background="{StaticResource PhoneAccentBrush}">
+                                    <TextBlock Text="MOVES"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Left" />
+                                </Border>
+                                <ListBox ItemsSource="{Binding MSIVM.Moves}"
+                                         SelectedItem="{Binding SelectedMove, Mode=TwoWay}"
+                                         ItemTemplate="{StaticResource SetupMoveItemTemplate}"
+                                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                         toolkit:TiltEffect.IsTiltEnabled="True">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="HorizontalContentAlignment"
+                                                    Value="Stretch" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>

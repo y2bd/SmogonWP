@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using Schmogon.Data.Abilities;
 using Schmogon.Data.Items;
@@ -8,6 +9,7 @@ using Schmogon.Data.Pokemon;
 using Schmogon.Data.Stats;
 using Schmogon.Model.Text;
 using SmogonWP.Messages;
+using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.Items;
 
@@ -15,8 +17,11 @@ namespace SmogonWP.ViewModel
 {
   public class MovesetViewModel : ViewModelBase
   {
+    private readonly SimpleNavigationService _navigationService;
+
     private readonly MessageReceiver<ItemSelectedMessage<MovesetItemViewModel>> _movesetSelectedReceiver;
     private readonly MessageSender<ItemSelectedMessage<Ability>> _abilitySelectedSender;
+    private readonly MessageSender<ItemSelectedMessage<Nature>> _natureSelectedSender;  
     private readonly MessageSender<ItemSelectedMessage<Move>> _moveSelectedSender;
 
     private MovesetItemViewModel _msivm;
@@ -55,10 +60,71 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    public MovesetViewModel()
+    private AbilityItemViewModel _selectedAbility;
+    public AbilityItemViewModel SelectedAbility
     {
+      get
+      {
+        return _selectedAbility;
+      }
+      set
+      {
+        if (_selectedAbility != value)
+        {
+          onAbilitySelected(value);
+
+          _selectedAbility = null;
+          RaisePropertyChanged(() => SelectedAbility);
+        }
+      }
+    }
+
+    private string _selectedNature;
+    public string SelectedNature
+    {
+      get
+      {
+        return _selectedNature;
+      }
+      set
+      {
+        if (_selectedNature != value)
+        {
+          onNatureSelected(value);
+
+          _selectedNature = null;
+          RaisePropertyChanged(() => SelectedNature);
+        }
+      }
+    }
+
+    private GroupedMoveItemViewModel _selectedMove;
+    public GroupedMoveItemViewModel SelectedMove
+    {
+      get
+      {
+        return _selectedMove;
+      }
+      set
+      {
+        if (_selectedMove != value)
+        {
+          onMoveSelected(value);
+
+          _selectedMove = null;
+          RaisePropertyChanged(() => SelectedMove);
+        }
+      }
+    }			
+
+    public MovesetViewModel(SimpleNavigationService navigationService)
+    {
+      _navigationService = navigationService;
+
       _movesetSelectedReceiver = new MessageReceiver<ItemSelectedMessage<MovesetItemViewModel>>(onMovesetSelected, true);
+
       _abilitySelectedSender = new MessageSender<ItemSelectedMessage<Ability>>();
+      _natureSelectedSender = new MessageSender<ItemSelectedMessage<Nature>>();
       _moveSelectedSender = new MessageSender<ItemSelectedMessage<Move>>();
 
       #region design data
@@ -108,6 +174,35 @@ namespace SmogonWP.ViewModel
     private void onMovesetSelected(ItemSelectedMessage<MovesetItemViewModel> msg)
     {
       MSIVM = msg.Item;
+    }
+
+    private void onAbilitySelected(AbilityItemViewModel aivm)
+    {
+      if (aivm == null) return;
+
+      _abilitySelectedSender.SendMessage(new ItemSelectedMessage<Ability>(aivm.Ability));
+      _navigationService.Navigate(ViewModelLocator.AbilityDataPath);
+    }
+
+    private void onNatureSelected(string nats)
+    {
+      if (string.IsNullOrWhiteSpace(nats)) return;
+
+      Nature nature;
+
+      if (Enum.TryParse(nats, true, out nature))
+      {
+        _natureSelectedSender.SendMessage(new ItemSelectedMessage<Nature>(nature));
+        _navigationService.Navigate(ViewModelLocator.NaturePath);
+      }
+    }
+
+    private void onMoveSelected(GroupedMoveItemViewModel gmivm)
+    {
+      if (gmivm == null) return;
+
+      _moveSelectedSender.SendMessage(new ItemSelectedMessage<Move>(gmivm.Move));
+      _navigationService.Navigate(ViewModelLocator.MoveDataPath);
     }
   }
 }

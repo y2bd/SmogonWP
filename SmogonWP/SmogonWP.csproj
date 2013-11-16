@@ -130,6 +130,7 @@
     <Compile Include="Services\TrayService.cs" />
     <Compile Include="Utilities\BindableLongListSelector.cs" />
     <Compile Include="Utilities\DataTemplateSelector.cs" />
+    <Compile Include="Utilities\LinqUtils.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\StatCalculator.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
@@ -138,7 +139,9 @@
     <Compile Include="ViewModel\AppBar\MenuItemViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\Items\AbilityDataItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\ItemItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveDataItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\GroupedMoveItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveItemViewModel.cs" />
     <Compile Include="ViewModel\Items\AbilityItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MovesetItemViewModel.cs" />

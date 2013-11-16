@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight;
 using Schmogon.Data.Natures;
 using Schmogon.Data.Pokemon;
 using Schmogon.Model.Text;
+using SmogonWP.Utilities;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -56,18 +57,34 @@ namespace SmogonWP.ViewModel.Items
       }
     }
 
-    public IEnumerable<AbilityItemViewModel> Abilities { get; private set; } 
+    public IEnumerable<AbilityItemViewModel> Abilities { get; private set; }
     public IEnumerable<string> Natures { get; private set; }
-    public IEnumerable<IEnumerable<MoveItemViewModel>> Moves { get; private set; }
+    public IEnumerable<ItemItemViewModel> Items { get; private set; }
+    public IEnumerable<GroupedMoveItemViewModel> Moves { get; private set; }
 
     public MovesetItemViewModel(string ownerName, Moveset data)
     {
       OwnerName = ownerName;
       Data = data;
 
-      Abilities = data.Abilities == null ? new List<AbilityItemViewModel>() : data.Abilities.Select(a => new AbilityItemViewModel(a)).ToList();
-      Natures = data.Natures == null ? new List<string>() : data.Natures.Select(n => Enum.GetName(typeof(Nature), n)).ToList();
-      Moves = data.Moves == null ? new List<List<MoveItemViewModel>>() : data.Moves.Select(ml => ml.Select(m => new MoveItemViewModel(m)).ToList()).ToList();
+      Abilities = data.Abilities == null ? 
+        new List<AbilityItemViewModel>() 
+        : data.Abilities.Select(a => new AbilityItemViewModel(a)).ToList();
+
+      Natures = data.Natures == null 
+        ? new List<string>() 
+        : data.Natures.Select(n => Enum.GetName(typeof(Nature), n)).ToList();
+
+      Items = data.Items == null
+        ? new List<ItemItemViewModel>()
+        : data.Items.Select(i => new ItemItemViewModel(i)).ToList();
+
+      Moves = data.Moves == null
+        ? new List<GroupedMoveItemViewModel>()
+        : data.Moves.SelectMany((mg, i) => mg.Select(m => new GroupedMoveItemViewModel(m, i)));
+
+      // TODO: Write the DataTemplates in the View that can display this new type of list
+
     }
   }
 }

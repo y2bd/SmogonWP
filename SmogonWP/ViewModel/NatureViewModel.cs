@@ -5,6 +5,8 @@ using GalaSoft.MvvmLight;
 using Schmogon;
 using Schmogon.Data.Natures;
 using Schmogon.Data.Stats;
+using SmogonWP.Messages;
+using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.Items;
 
 namespace SmogonWP.ViewModel
@@ -12,6 +14,8 @@ namespace SmogonWP.ViewModel
   public class NatureViewModel : ViewModelBase
   {
     private readonly ISchmogonClient _schmogonClient;
+
+    private readonly MessageReceiver<ItemSelectedMessage<Nature>> _natureSelectedReceiver; 
 
     private ObservableCollection<string> _natureChoices;
     public ObservableCollection<string> NatureChoices
@@ -136,11 +140,29 @@ namespace SmogonWP.ViewModel
           onSelectedStatsChange();
         }
       }
+    }
+
+    private int _pivotIndex;
+    public int PivotIndex
+    {
+      get
+      {
+        return _pivotIndex;
+      }
+      set
+      {
+        if (_pivotIndex != value)
+        {
+          _pivotIndex = value;
+          RaisePropertyChanged(() => PivotIndex);
+        }
+      }
     }			
 
     public NatureViewModel(ISchmogonClient schmogonClient)
     {
       _schmogonClient = schmogonClient;
+      _natureSelectedReceiver = new MessageReceiver<ItemSelectedMessage<Nature>>(onNatureSelected, true);
 
       setup();
     }
@@ -209,6 +231,12 @@ namespace SmogonWP.ViewModel
           .Select(n => new NatureItemViewModel(n))
         );
       }
+    }
+
+    private void onNatureSelected(ItemSelectedMessage<Nature> msg)
+    {
+      SelectedNature = (int) msg.Item;
+      PivotIndex = 1;
     }
   }
 }
