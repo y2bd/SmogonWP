@@ -2,7 +2,11 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Phone.Controls;
+using SmogonWP.Messages;
+using SmogonWP.ViewModel;
 
 namespace SmogonWP.View
 {
@@ -33,6 +37,24 @@ namespace SmogonWP.View
       {
         Items = { byType, byTier, _clear }
       };
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+      if (e.NavigationMode == NavigationMode.New)
+      {
+        if (NavigationContext.QueryString.ContainsKey("voiceCommandName"))
+        {
+          var voiceCommandName = NavigationContext.QueryString["voiceCommandName"];
+
+          if (voiceCommandName.Equals("SearchPokemon"))
+          {
+            var pokemonName = NavigationContext.QueryString["Pokemon"];
+
+            Messenger.Default.Send(new ViewToVmMessage<string, PokemonSearchViewModel>(pokemonName));
+          }
+        }
+      }
     }
 
     private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)

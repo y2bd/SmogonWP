@@ -4,6 +4,7 @@ using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using Windows.Phone.Speech.VoiceCommands;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using SmogonWP.Resources;
@@ -111,7 +112,7 @@ namespace SmogonWP
     {
       if (phoneApplicationInitialized)
         return;
-
+      
       // Create the frame but don't set it as RootVisual yet; this allows the splash
       // screen to remain active until the application is ready to render.
       RootFrame = new TransitionFrameSlim();

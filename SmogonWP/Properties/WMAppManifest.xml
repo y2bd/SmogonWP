@@ -5,6 +5,7 @@
     <IconPath IsRelative="true" IsResource="false">Assets\AppIcon_Smogon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
+      <Capability Name="ID_CAP_SPEECH_RECOGNITION" />
     </Capabilities>
     <Tasks>
       <DefaultTask Name="_default" NavigationPage="View/HomeView.xaml" />

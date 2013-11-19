@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
+using Windows.Phone.Speech.VoiceCommands;
 using GalaSoft.MvvmLight;
 using SmogonWP.Services;
 using SmogonWP.ViewModel.Items;
@@ -57,7 +59,7 @@ namespace SmogonWP.ViewModel
       setup();
     }
 
-    private void setup()
+    private async void setup()
     {
       NIVMs = new ObservableCollection<NavigationItemViewModel>
       {
@@ -92,6 +94,8 @@ namespace SmogonWP.ViewModel
           NavigationPath = ViewModelLocator.TypePath
         }
       };
+
+      await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///BaseVCD.xml"));
     }
 
     private void onNavItemSelected(NavigationItemViewModel item)

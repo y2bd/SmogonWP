@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -9,7 +10,6 @@ using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.Phone.Controls.Primitives;
 using Nito.AsyncEx;
 using Schmogon;
 using Schmogon.Data.Pokemon;
@@ -35,6 +35,8 @@ namespace SmogonWP.ViewModel
     private bool _failedOnce;
 
     private ICollection<PokemonItemViewModel> _pokemon;
+
+    private string _searchedPokemonName;
 
     #region props
 
@@ -276,6 +278,9 @@ namespace SmogonWP.ViewModel
       setupFilters();
 
       schedulePokemonListFetch();
+
+      var msgHandler = new Action<ViewToVmMessage<string, PokemonSearchViewModel>>(onViewMessage);
+      MessengerInstance.Register(this, msgHandler);
     }
 
     private void setupFilters()
@@ -319,6 +324,33 @@ namespace SmogonWP.ViewModel
     {
       _pokemonSearchSender.SendMessage(new ItemSearchedMessage<Pokemon>(pivm.Pokemon));
       _navigationService.Navigate(ViewModelLocator.PokemonDataPath);
+    }
+
+    private void onViewMessage(ViewToVmMessage<string, PokemonSearchViewModel> msg)
+    {
+      _searchedPokemonName = msg.Content;
+
+      if (FetchPokemonNotifier.IsSuccessfullyCompleted)
+      {
+        var pokemon = _pokemon.First(p => p.Name.ToLower().Equals(_searchedPokemonName.ToLower()));
+
+        onPokemonSelected(pokemon);
+      }
+      else
+      {
+        FetchPokemonNotifier.PropertyChanged += gotoVoicedPokemonOnLoad;
+      }
+    }
+
+    private void gotoVoicedPokemonOnLoad(object sender, PropertyChangedEventArgs args)
+    {
+      if (FetchPokemonNotifier == null || !FetchPokemonNotifier.IsSuccessfullyCompleted) return;
+
+      var pokemon = _pokemon.First(p => p.Name.ToLower().Equals(_searchedPokemonName.ToLower()));
+
+      onPokemonSelected(pokemon);
+
+      FetchPokemonNotifier.PropertyChanged -= gotoVoicedPokemonOnLoad;
     }
 
     private void filterPokemon()

@@ -111,6 +111,7 @@
     <Compile Include="Messages\ItemSearchedMessage.cs" />
     <Compile Include="Messages\PokemonTypeSelectedMessage.cs" />
     <Compile Include="Messages\ItemSelectedMessage.cs" />
+    <Compile Include="Messages\ViewToVMMessage.cs" />
     <Compile Include="Messages\VMToViewMessage.cs" />
     <Compile Include="Model\DefenseTypeGroup.cs" />
     <Compile Include="Model\MovesetGroup.cs" />
@@ -286,6 +287,9 @@
     <Content Include="Assets\Tiles\smogon_medtile.png" />
     <Content Include="Assets\Tiles\smogon_smalltile.png" />
     <Content Include="Assets\Tiles\smogon_widetile.png" />
+    <Content Include="BaseVCD.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
