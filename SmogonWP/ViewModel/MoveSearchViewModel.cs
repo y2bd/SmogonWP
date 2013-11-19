@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.ComponentModel;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
 using Schmogon;
@@ -36,6 +37,8 @@ namespace SmogonWP.ViewModel
     private bool _failedOnce;
 
     private List<MoveItemViewModel> _moves;
+
+    private string _voicedMoveName;
 
     #region props
 
@@ -245,6 +248,9 @@ namespace SmogonWP.ViewModel
       }
 
       scheduleMoveListFetch();
+
+      var msgHandler = new Action<ViewToVmMessage<string, MoveSearchViewModel>>(onViewMessage);
+      MessengerInstance.Register(this, msgHandler);
     }
     
     private void onQueryChanged(KeyEventArgs args)
@@ -286,6 +292,33 @@ namespace SmogonWP.ViewModel
       LoadFailed = false;
 
       scheduleMoveListFetch();
+    }
+
+    private void onViewMessage(ViewToVmMessage<string, MoveSearchViewModel> msg)
+    {
+      _voicedMoveName = msg.Content;
+
+      if (FetchMovesNotifier.IsSuccessfullyCompleted)
+      {
+        var move = _moves.First(m => m.Name.ToLower().Equals(_voicedMoveName.ToLower()));
+
+        onMoveSelected(move);
+      }
+      else
+      {
+        FetchMovesNotifier.PropertyChanged += gotoVoicedMoveOnLoad;
+      }
+    }
+
+    private void gotoVoicedMoveOnLoad(object sender, PropertyChangedEventArgs args)
+    {
+      if (FetchMovesNotifier == null || !FetchMovesNotifier.IsSuccessfullyCompleted) return;
+
+      var pokemon = _moves.First(m => m.Name.ToLower().Equals(_voicedMoveName.ToLower()));
+
+      onMoveSelected(pokemon);
+
+      FetchMovesNotifier.PropertyChanged -= gotoVoicedMoveOnLoad;
     }
 
     private void scheduleMoveListFetch()

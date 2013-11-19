@@ -3,7 +3,7 @@
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.0">
   <CommandSet xml:lang="en-US" Name="BaseVCD">
     <CommandPrefix>Smogon</CommandPrefix>
-    <Example> open the pokemon page </Example>
+    <Example> search for Gardevoir </Example>
 
     <Command Name="OpenPokemon">
       <Example> open the Pokemon page  </Example>
@@ -29,8 +29,21 @@
     <Command Name="SearchPokemon">
       <Example> search for the pokemon Gardevoir</Example>
       <ListenFor> search [for] [the] pokemon {Pokemon} </ListenFor>
+      <ListenFor> loop up [the] pokemon {Pokemon} </ListenFor>
+      <ListenFor> find [the] pokemon {Pokemon} </ListenFor>
+      <ListenFor> search [for] {Pokemon} </ListenFor>
       <Feedback> Searching for {Pokemon}... </Feedback>
-      <Navigate Target="/View/PokemonSearchView.xaml?pokemon"/>
+      <Navigate Target="/View/PokemonSearchView.xaml?"/>
+    </Command>
+
+    <Command Name="SearchMoves">
+      <Example> search for the move Calm Mind</Example>
+      <ListenFor> search [for] [the] move {Moves} </ListenFor>
+      <ListenFor> look up [the] move {Moves} </ListenFor>
+      <ListenFor> find [the] move {Moves} </ListenFor>
+      <ListenFor> search [for] {Moves} </ListenFor>
+      <Feedback> Searching for {Moves}... </Feedback>
+      <Navigate Target="/View/MoveSearchView.xaml"/>
     </Command>
 
     <PhraseList Label="Pokemon">
@@ -719,6 +732,568 @@
       <Item>Zorua</Item>
       <Item>Zubat</Item>
       <Item>Zweilous</Item>
+    </PhraseList>
+
+    <PhraseList Label="Moves">
+      <Item>Absorb</Item>
+      <Item>Acid</Item>
+      <Item>Acid Armor</Item>
+      <Item>Acid Spray</Item>
+      <Item>Acrobatics</Item>
+      <Item>Acupressure</Item>
+      <Item>Aerial Ace</Item>
+      <Item>Aeroblast</Item>
+      <Item>After You</Item>
+      <Item>Agility</Item>
+      <Item>Air Cutter</Item>
+      <Item>Air Slash</Item>
+      <Item>Ally Switch</Item>
+      <Item>Amnesia</Item>
+      <Item>AncientPower</Item>
+      <Item>Aqua Jet</Item>
+      <Item>Aqua Ring</Item>
+      <Item>Aqua Tail</Item>
+      <Item>Arm Thrust</Item>
+      <Item>Aromatherapy</Item>
+      <Item>Assist</Item>
+      <Item>Assurance</Item>
+      <Item>Astonish</Item>
+      <Item>Attack Order</Item>
+      <Item>Attract</Item>
+      <Item>Aura Sphere</Item>
+      <Item>Aurora Beam</Item>
+      <Item>Autotomize</Item>
+      <Item>Avalanche</Item>
+      <Item>Barrage</Item>
+      <Item>Barrier</Item>
+      <Item>Baton Pass</Item>
+      <Item>Beat Up</Item>
+      <Item>Belly Drum</Item>
+      <Item>Bestow</Item>
+      <Item>Bide</Item>
+      <Item>Bind</Item>
+      <Item>Bite</Item>
+      <Item>Blast Burn</Item>
+      <Item>Blaze Kick</Item>
+      <Item>Blizzard</Item>
+      <Item>Block</Item>
+      <Item>Blue Flare</Item>
+      <Item>Body Slam</Item>
+      <Item>Bolt Strike</Item>
+      <Item>Bone Club</Item>
+      <Item>Bone Rush</Item>
+      <Item>Bonemerang</Item>
+      <Item>Bounce</Item>
+      <Item>Brave Bird</Item>
+      <Item>Brick Break</Item>
+      <Item>Brine</Item>
+      <Item>Bubble</Item>
+      <Item>BubbleBeam</Item>
+      <Item>Bug Bite</Item>
+      <Item>Bug Buzz</Item>
+      <Item>Bulk Up</Item>
+      <Item>Bulldoze</Item>
+      <Item>Bullet Punch</Item>
+      <Item>Bullet Seed</Item>
+      <Item>Calm Mind</Item>
+      <Item>Camouflage</Item>
+      <Item>Captivate</Item>
+      <Item>Charge</Item>
+      <Item>Charge Beam</Item>
+      <Item>Charm</Item>
+      <Item>Chatter</Item>
+      <Item>Chip Away</Item>
+      <Item>Circle Throw</Item>
+      <Item>Clamp</Item>
+      <Item>Clear Smog</Item>
+      <Item>Close Combat</Item>
+      <Item>Coil</Item>
+      <Item>Comet Punch</Item>
+      <Item>Confuse Ray</Item>
+      <Item>Confusion</Item>
+      <Item>Constrict</Item>
+      <Item>Conversion</Item>
+      <Item>Conversion 2</Item>
+      <Item>Copycat</Item>
+      <Item>Cosmic Power</Item>
+      <Item>Cotton Guard</Item>
+      <Item>Cotton Spore</Item>
+      <Item>Counter</Item>
+      <Item>Covet</Item>
+      <Item>Crabhammer</Item>
+      <Item>Cross Chop</Item>
+      <Item>Cross Poison</Item>
+      <Item>Crunch</Item>
+      <Item>Crush Claw</Item>
+      <Item>Crush Grip</Item>
+      <Item>Curse</Item>
+      <Item>Cut</Item>
+      <Item>Dark Pulse</Item>
+      <Item>Dark Void</Item>
+      <Item>Defend Order</Item>
+      <Item>Defense Curl</Item>
+      <Item>Defog</Item>
+      <Item>Destiny Bond</Item>
+      <Item>Detect</Item>
+      <Item>Dig</Item>
+      <Item>Disable</Item>
+      <Item>Discharge</Item>
+      <Item>Dive</Item>
+      <Item>Dizzy Punch</Item>
+      <Item>Doom Desire</Item>
+      <Item>Double Hit</Item>
+      <Item>Double Kick</Item>
+      <Item>Double Team</Item>
+      <Item>Double-Edge</Item>
+      <Item>DoubleSlap</Item>
+      <Item>Draco Meteor</Item>
+      <Item>Dragon Claw</Item>
+      <Item>Dragon Dance</Item>
+      <Item>Dragon Pulse</Item>
+      <Item>Dragon Rage</Item>
+      <Item>Dragon Rush</Item>
+      <Item>Dragon Tail</Item>
+      <Item>DragonBreath</Item>
+      <Item>Drain Punch</Item>
+      <Item>Dream Eater</Item>
+      <Item>Drill Peck</Item>
+      <Item>Drill Run</Item>
+      <Item>Dual Chop</Item>
+      <Item>DynamicPunch</Item>
+      <Item>Earth Power</Item>
+      <Item>Earthquake</Item>
+      <Item>Echoed Voice</Item>
+      <Item>Egg Bomb</Item>
+      <Item>Electro Ball</Item>
+      <Item>Electroweb</Item>
+      <Item>Embargo</Item>
+      <Item>Ember</Item>
+      <Item>Encore</Item>
+      <Item>Endeavor</Item>
+      <Item>Endure</Item>
+      <Item>Energy Ball</Item>
+      <Item>Entrainment</Item>
+      <Item>Eruption</Item>
+      <Item>Explosion</Item>
+      <Item>Extrasensory</Item>
+      <Item>ExtremeSpeed</Item>
+      <Item>Facade</Item>
+      <Item>Faint Attack</Item>
+      <Item>Fake Out</Item>
+      <Item>Fake Tears</Item>
+      <Item>False Swipe</Item>
+      <Item>FeatherDance</Item>
+      <Item>Feint</Item>
+      <Item>Fiery Dance</Item>
+      <Item>Final Gambit</Item>
+      <Item>Fire Blast</Item>
+      <Item>Fire Fang</Item>
+      <Item>Fire Pledge</Item>
+      <Item>Fire Punch</Item>
+      <Item>Fire Spin</Item>
+      <Item>Fissure</Item>
+      <Item>Flail</Item>
+      <Item>Flame Burst</Item>
+      <Item>Flame Charge</Item>
+      <Item>Flame Wheel</Item>
+      <Item>Flamethrower</Item>
+      <Item>Flare Blitz</Item>
+      <Item>Flash</Item>
+      <Item>Flash Cannon</Item>
+      <Item>Flatter</Item>
+      <Item>Fling</Item>
+      <Item>Fly</Item>
+      <Item>Focus Blast</Item>
+      <Item>Focus Energy</Item>
+      <Item>Focus Punch</Item>
+      <Item>Follow Me</Item>
+      <Item>Force Palm</Item>
+      <Item>Foresight</Item>
+      <Item>Foul Play</Item>
+      <Item>Freeze Shock</Item>
+      <Item>Frenzy Plant</Item>
+      <Item>Frost Breath</Item>
+      <Item>Frustration</Item>
+      <Item>Fury Attack</Item>
+      <Item>Fury Cutter</Item>
+      <Item>Fury Swipes</Item>
+      <Item>Fusion Bolt</Item>
+      <Item>Fusion Flare</Item>
+      <Item>Future Sight</Item>
+      <Item>Gastro Acid</Item>
+      <Item>Gear Grind</Item>
+      <Item>Giga Drain</Item>
+      <Item>Giga Impact</Item>
+      <Item>Glaciate</Item>
+      <Item>Glare</Item>
+      <Item>Grass Knot</Item>
+      <Item>Grass Pledge</Item>
+      <Item>GrassWhistle</Item>
+      <Item>Gravity</Item>
+      <Item>Growl</Item>
+      <Item>Growth</Item>
+      <Item>Grudge</Item>
+      <Item>Guard Split</Item>
+      <Item>Guard Swap</Item>
+      <Item>Guillotine</Item>
+      <Item>Gunk Shot</Item>
+      <Item>Gust</Item>
+      <Item>Gyro Ball</Item>
+      <Item>Hail</Item>
+      <Item>Hammer Arm</Item>
+      <Item>Harden</Item>
+      <Item>Haze</Item>
+      <Item>Head Charge</Item>
+      <Item>Head Smash</Item>
+      <Item>Headbutt</Item>
+      <Item>Heal Bell</Item>
+      <Item>Heal Block</Item>
+      <Item>Heal Order</Item>
+      <Item>Heal Pulse</Item>
+      <Item>Healing Wish</Item>
+      <Item>Heart Stamp</Item>
+      <Item>Heart Swap</Item>
+      <Item>Heat Crash</Item>
+      <Item>Heat Wave</Item>
+      <Item>Heavy Slam</Item>
+      <Item>Helping Hand</Item>
+      <Item>Hex</Item>
+      <Item>Hi Jump Kick</Item>
+      <Item>Hidden Power</Item>
+      <Item>Hone Claws</Item>
+      <Item>Horn Attack</Item>
+      <Item>Horn Drill</Item>
+      <Item>Horn Leech</Item>
+      <Item>Howl</Item>
+      <Item>Hurricane</Item>
+      <Item>Hydro Cannon</Item>
+      <Item>Hydro Pump</Item>
+      <Item>Hyper Beam</Item>
+      <Item>Hyper Fang</Item>
+      <Item>Hyper Voice</Item>
+      <Item>Hypnosis</Item>
+      <Item>Ice Ball</Item>
+      <Item>Ice Beam</Item>
+      <Item>Ice Burn</Item>
+      <Item>Ice Fang</Item>
+      <Item>Ice Punch</Item>
+      <Item>Ice Shard</Item>
+      <Item>Icicle Crash</Item>
+      <Item>Icicle Spear</Item>
+      <Item>Icy Wind</Item>
+      <Item>Imprison</Item>
+      <Item>Incinerate</Item>
+      <Item>Inferno</Item>
+      <Item>Ingrain</Item>
+      <Item>Iron Defense</Item>
+      <Item>Iron Head</Item>
+      <Item>Iron Tail</Item>
+      <Item>Judgment</Item>
+      <Item>Jump Kick</Item>
+      <Item>Karate Chop</Item>
+      <Item>Kinesis</Item>
+      <Item>Knock Off</Item>
+      <Item>Last Resort</Item>
+      <Item>Lava Plume</Item>
+      <Item>Leaf Blade</Item>
+      <Item>Leaf Storm</Item>
+      <Item>Leaf Tornado</Item>
+      <Item>Leech Life</Item>
+      <Item>Leech Seed</Item>
+      <Item>Leer</Item>
+      <Item>Lick</Item>
+      <Item>Light Screen</Item>
+      <Item>Lock-On</Item>
+      <Item>Lovely Kiss</Item>
+      <Item>Low Kick</Item>
+      <Item>Low Sweep</Item>
+      <Item>Lucky Chant</Item>
+      <Item>Lunar Dance</Item>
+      <Item>Luster Purge</Item>
+      <Item>Mach Punch</Item>
+      <Item>Magic Coat</Item>
+      <Item>Magic Room</Item>
+      <Item>Magical Leaf</Item>
+      <Item>Magma Storm</Item>
+      <Item>Magnet Bomb</Item>
+      <Item>Magnet Rise</Item>
+      <Item>Magnitude</Item>
+      <Item>Me First</Item>
+      <Item>Mean Look</Item>
+      <Item>Meditate</Item>
+      <Item>Mega Drain</Item>
+      <Item>Mega Kick</Item>
+      <Item>Mega Punch</Item>
+      <Item>Megahorn</Item>
+      <Item>Memento</Item>
+      <Item>Metal Burst</Item>
+      <Item>Metal Claw</Item>
+      <Item>Metal Sound</Item>
+      <Item>Meteor Mash</Item>
+      <Item>Metronome</Item>
+      <Item>Milk Drink</Item>
+      <Item>Mimic</Item>
+      <Item>Mind Reader</Item>
+      <Item>Minimize</Item>
+      <Item>Miracle Eye</Item>
+      <Item>Mirror Coat</Item>
+      <Item>Mirror Move</Item>
+      <Item>Mirror Shot</Item>
+      <Item>Mist</Item>
+      <Item>Mist Ball</Item>
+      <Item>Moonlight</Item>
+      <Item>Morning Sun</Item>
+      <Item>Mud Bomb</Item>
+      <Item>Mud Shot</Item>
+      <Item>Mud Sport</Item>
+      <Item>Mud-Slap</Item>
+      <Item>Muddy Water</Item>
+      <Item>Nasty Plot</Item>
+      <Item>Natural Gift</Item>
+      <Item>Nature Power</Item>
+      <Item>Needle Arm</Item>
+      <Item>Night Daze</Item>
+      <Item>Night Shade</Item>
+      <Item>Night Slash</Item>
+      <Item>Nightmare</Item>
+      <Item>Octazooka</Item>
+      <Item>Odor Sleuth</Item>
+      <Item>Ominous Wind</Item>
+      <Item>Outrage</Item>
+      <Item>Overheat</Item>
+      <Item>Pain Split</Item>
+      <Item>Pay Day</Item>
+      <Item>Payback</Item>
+      <Item>Peck</Item>
+      <Item>Perish Song</Item>
+      <Item>Petal Dance</Item>
+      <Item>Pin Missile</Item>
+      <Item>Pluck</Item>
+      <Item>Poison Fang</Item>
+      <Item>Poison Gas</Item>
+      <Item>Poison Jab</Item>
+      <Item>Poison Sting</Item>
+      <Item>Poison Tail</Item>
+      <Item>PoisonPowder</Item>
+      <Item>Pound</Item>
+      <Item>Powder Snow</Item>
+      <Item>Power Gem</Item>
+      <Item>Power Split</Item>
+      <Item>Power Swap</Item>
+      <Item>Power Trick</Item>
+      <Item>Power Whip</Item>
+      <Item>Present</Item>
+      <Item>Protect</Item>
+      <Item>Psybeam</Item>
+      <Item>Psych Up</Item>
+      <Item>Psychic</Item>
+      <Item>Psycho Boost</Item>
+      <Item>Psycho Cut</Item>
+      <Item>Psycho Shift</Item>
+      <Item>Psyshock</Item>
+      <Item>Psystrike</Item>
+      <Item>Psywave</Item>
+      <Item>Punishment</Item>
+      <Item>Pursuit</Item>
+      <Item>Quash</Item>
+      <Item>Quick Attack</Item>
+      <Item>Quick Guard</Item>
+      <Item>Quiver Dance</Item>
+      <Item>Rage</Item>
+      <Item>Rage Powder</Item>
+      <Item>Rain Dance</Item>
+      <Item>Rapid Spin</Item>
+      <Item>Razor Leaf</Item>
+      <Item>Razor Shell</Item>
+      <Item>Razor Wind</Item>
+      <Item>Recover</Item>
+      <Item>Recycle</Item>
+      <Item>Reflect</Item>
+      <Item>Reflect Type</Item>
+      <Item>Refresh</Item>
+      <Item>Relic Song</Item>
+      <Item>Rest</Item>
+      <Item>Retaliate</Item>
+      <Item>Return</Item>
+      <Item>Revenge</Item>
+      <Item>Reversal</Item>
+      <Item>Roar</Item>
+      <Item>Roar of Time</Item>
+      <Item>Rock Blast</Item>
+      <Item>Rock Climb</Item>
+      <Item>Rock Polish</Item>
+      <Item>Rock Slide</Item>
+      <Item>Rock Smash</Item>
+      <Item>Rock Throw</Item>
+      <Item>Rock Tomb</Item>
+      <Item>Rock Wrecker</Item>
+      <Item>Role Play</Item>
+      <Item>Rolling Kick</Item>
+      <Item>Rollout</Item>
+      <Item>Roost</Item>
+      <Item>Round</Item>
+      <Item>Sacred Fire</Item>
+      <Item>Sacred Sword</Item>
+      <Item>Safeguard</Item>
+      <Item>Sand Tomb</Item>
+      <Item>Sand-Attack</Item>
+      <Item>Sandstorm</Item>
+      <Item>Scald</Item>
+      <Item>Scary Face</Item>
+      <Item>Scratch</Item>
+      <Item>Screech</Item>
+      <Item>Searing Shot</Item>
+      <Item>Secret Power</Item>
+      <Item>Secret Sword</Item>
+      <Item>Seed Bomb</Item>
+      <Item>Seed Flare</Item>
+      <Item>Seismic Toss</Item>
+      <Item>Selfdestruct</Item>
+      <Item>Shadow Ball</Item>
+      <Item>Shadow Claw</Item>
+      <Item>Shadow Force</Item>
+      <Item>Shadow Punch</Item>
+      <Item>Shadow Sneak</Item>
+      <Item>Sharpen</Item>
+      <Item>Sheer Cold</Item>
+      <Item>Shell Smash</Item>
+      <Item>Shift Gear</Item>
+      <Item>Shock Wave</Item>
+      <Item>Signal Beam</Item>
+      <Item>Silver Wind</Item>
+      <Item>Simple Beam</Item>
+      <Item>Sing</Item>
+      <Item>Sketch</Item>
+      <Item>Skill Swap</Item>
+      <Item>Skull Bash</Item>
+      <Item>Sky Attack</Item>
+      <Item>Sky Drop</Item>
+      <Item>Sky Uppercut</Item>
+      <Item>Slack Off</Item>
+      <Item>Slam</Item>
+      <Item>Slash</Item>
+      <Item>Sleep Powder</Item>
+      <Item>Sleep Talk</Item>
+      <Item>Sludge</Item>
+      <Item>Sludge Bomb</Item>
+      <Item>Sludge Wave</Item>
+      <Item>Smack Down</Item>
+      <Item>SmellingSalt</Item>
+      <Item>Smog</Item>
+      <Item>SmokeScreen</Item>
+      <Item>Snarl</Item>
+      <Item>Snatch</Item>
+      <Item>Snore</Item>
+      <Item>Soak</Item>
+      <Item>Softboiled</Item>
+      <Item>SolarBeam</Item>
+      <Item>SonicBoom</Item>
+      <Item>Spacial Rend</Item>
+      <Item>Spark</Item>
+      <Item>Spider Web</Item>
+      <Item>Spike Cannon</Item>
+      <Item>Spikes</Item>
+      <Item>Spit Up</Item>
+      <Item>Spite</Item>
+      <Item>Splash</Item>
+      <Item>Spore</Item>
+      <Item>Stealth Rock</Item>
+      <Item>Steamroller</Item>
+      <Item>Steel Wing</Item>
+      <Item>Stockpile</Item>
+      <Item>Stomp</Item>
+      <Item>Stone Edge</Item>
+      <Item>Stored Power</Item>
+      <Item>Storm Throw</Item>
+      <Item>Strength</Item>
+      <Item>String Shot</Item>
+      <Item>Struggle</Item>
+      <Item>Struggle Bug</Item>
+      <Item>Stun Spore</Item>
+      <Item>Submission</Item>
+      <Item>Substitute</Item>
+      <Item>Sucker Punch</Item>
+      <Item>Sunny Day</Item>
+      <Item>Super Fang</Item>
+      <Item>Superpower</Item>
+      <Item>Supersonic</Item>
+      <Item>Surf</Item>
+      <Item>Swagger</Item>
+      <Item>Swallow</Item>
+      <Item>Sweet Kiss</Item>
+      <Item>Sweet Scent</Item>
+      <Item>Swift</Item>
+      <Item>Switcheroo</Item>
+      <Item>Swords Dance</Item>
+      <Item>Synchronoise</Item>
+      <Item>Synthesis</Item>
+      <Item>Tackle</Item>
+      <Item>Tail Glow</Item>
+      <Item>Tail Slap</Item>
+      <Item>Tail Whip</Item>
+      <Item>Tailwind</Item>
+      <Item>Take Down</Item>
+      <Item>Taunt</Item>
+      <Item>Techno Blast</Item>
+      <Item>Teeter Dance</Item>
+      <Item>Telekinesis</Item>
+      <Item>Teleport</Item>
+      <Item>Thief</Item>
+      <Item>Thrash</Item>
+      <Item>Thunder</Item>
+      <Item>Thunder Fang</Item>
+      <Item>Thunder Wave</Item>
+      <Item>Thunderbolt</Item>
+      <Item>ThunderPunch</Item>
+      <Item>ThunderShock</Item>
+      <Item>Tickle</Item>
+      <Item>Torment</Item>
+      <Item>Toxic</Item>
+      <Item>Toxic Spikes</Item>
+      <Item>Transform</Item>
+      <Item>Tri Attack</Item>
+      <Item>Trick</Item>
+      <Item>Trick Room</Item>
+      <Item>Triple Kick</Item>
+      <Item>Trump Card</Item>
+      <Item>Twineedle</Item>
+      <Item>Twister</Item>
+      <Item>U-turn</Item>
+      <Item>Uproar</Item>
+      <Item>V-create</Item>
+      <Item>Vacuum Wave</Item>
+      <Item>Venoshock</Item>
+      <Item>ViceGrip</Item>
+      <Item>Vine Whip</Item>
+      <Item>Vital Throw</Item>
+      <Item>Volt Switch</Item>
+      <Item>Volt Tackle</Item>
+      <Item>Wake-Up Slap</Item>
+      <Item>Water Gun</Item>
+      <Item>Water Pledge</Item>
+      <Item>Water Pulse</Item>
+      <Item>Water Sport</Item>
+      <Item>Water Spout</Item>
+      <Item>Waterfall</Item>
+      <Item>Weather Ball</Item>
+      <Item>Whirlpool</Item>
+      <Item>Whirlwind</Item>
+      <Item>Wide Guard</Item>
+      <Item>Wild Charge</Item>
+      <Item>Will-O-Wisp</Item>
+      <Item>Wing Attack</Item>
+      <Item>Wish</Item>
+      <Item>Withdraw</Item>
+      <Item>Wonder Room</Item>
+      <Item>Wood Hammer</Item>
+      <Item>Work Up</Item>
+      <Item>Worry Seed</Item>
+      <Item>Wrap</Item>
+      <Item>Wring Out</Item>
+      <Item>X-Scissor</Item>
+      <Item>Yawn</Item>
+      <Item>Zap Cannon</Item>
+      <Item>Zen Headbutt</Item>
     </PhraseList>
 
   </CommandSet>

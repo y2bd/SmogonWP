@@ -36,7 +36,7 @@ namespace SmogonWP.ViewModel
 
     private ICollection<PokemonItemViewModel> _pokemon;
 
-    private string _searchedPokemonName;
+    private string _voicedPokemonName;
 
     #region props
 
@@ -328,11 +328,11 @@ namespace SmogonWP.ViewModel
 
     private void onViewMessage(ViewToVmMessage<string, PokemonSearchViewModel> msg)
     {
-      _searchedPokemonName = msg.Content;
+      _voicedPokemonName = msg.Content;
 
       if (FetchPokemonNotifier.IsSuccessfullyCompleted)
       {
-        var pokemon = _pokemon.First(p => p.Name.ToLower().Equals(_searchedPokemonName.ToLower()));
+        var pokemon = _pokemon.First(p => p.Name.ToLower().Equals(_voicedPokemonName.ToLower()));
 
         onPokemonSelected(pokemon);
       }
@@ -346,7 +346,7 @@ namespace SmogonWP.ViewModel
     {
       if (FetchPokemonNotifier == null || !FetchPokemonNotifier.IsSuccessfullyCompleted) return;
 
-      var pokemon = _pokemon.First(p => p.Name.ToLower().Equals(_searchedPokemonName.ToLower()));
+      var pokemon = _pokemon.First(p => p.Name.ToLower().Equals(_voicedPokemonName.ToLower()));
 
       onPokemonSelected(pokemon);
 
