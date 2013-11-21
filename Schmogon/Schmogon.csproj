@@ -59,6 +59,7 @@
     <Compile Include="SchmogonClient.Moves.cs" />
     <Compile Include="SchmogonClient.Natures.cs" />
     <Compile Include="SchmogonClient.Pokemon.cs" />
+    <Compile Include="SchmogonClient.SpecialCases.cs" />
     <Compile Include="SchmogonClient.Types.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Web.cs" />
