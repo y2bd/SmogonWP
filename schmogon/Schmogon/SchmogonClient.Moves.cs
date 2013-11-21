@@ -111,18 +111,23 @@ namespace Schmogon
 
       var content = doc.DocumentNode.Descendants("div").First(d => d.Id.Equals("content_wrapper"));
 
+      var name = WebUtility.HtmlDecode(move.Name);
+
       // first get the stats
       var stats = scrapeMoveStats(content.Element("table"));
 
       // now get the text parts
-      Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>, IEnumerable<Move>> descParts = scrapeMoveDescriptions(content);
+      // pick the special case if there is one, otherwise use general case
+      var descParts = SpecialMoveDescriptionCases.ContainsKey(name) ? 
+                      SpecialMoveDescriptionCases[name](content) : 
+                      scrapeMoveDescriptions(content);
 
       return new MoveData(
-        WebUtility.HtmlDecode(move.Name),
+        name,
         stats,
-        descParts.Item1,
-        descParts.Item2,
-        descParts.Item3);
+        descParts.Description,
+        descParts.Competitive,
+        descParts.RelatedMoves);
     }
 
     private static MoveStats scrapeMoveStats(HtmlNode statTable)
@@ -142,7 +147,7 @@ namespace Schmogon
       return stats;
     }
 
-    private static Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>, IEnumerable<Move>> scrapeMoveDescriptions(HtmlNode content)
+    private static MoveDescriptions scrapeMoveDescriptions(HtmlNode content)
     {
       // we need access to the children so we can get indices
       var children = content.ChildNodes;
@@ -228,7 +233,12 @@ namespace Schmogon
         }
       }
 
-      return new Tuple<IEnumerable<ITextElement>, IEnumerable<ITextElement>, IEnumerable<Move>>(descParas, compParas, relMoves);
+      return new MoveDescriptions
+      {
+        Description = descParas,
+        Competitive = compParas,
+        RelatedMoves = relMoves
+      };
     }
 
     #region serialization
@@ -266,5 +276,12 @@ namespace Schmogon
     }
 
     #endregion serialization
+  }
+
+  internal class MoveDescriptions
+  {
+    public IEnumerable<ITextElement> Description { get; set; }
+    public IEnumerable<ITextElement> Competitive { get; set; }
+    public IEnumerable<Move> RelatedMoves { get; set; }
   }
 }

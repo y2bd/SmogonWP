@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.20617.1 PREVIEW
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmogonWP", "SmogonWP\SmogonWP.csproj", "{87B3D66C-02F7-4A50-8A08-569117B54BA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schmogon", "libs\schmogon\Schmogon\Schmogon.csproj", "{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schmogon", "schmogon\Schmogon\Schmogon.csproj", "{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

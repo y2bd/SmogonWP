@@ -12,10 +12,10 @@ namespace Schmogon
 
     private const string DescHeader = "Description";
     private const string CompHeader = "Competitive Use";
-
+    
     private static Paragraph processIntoParagraph(HtmlNode para)
     {
-      if (!para.Name.Equals("p")) throw new ArgumentException("param must be of the node type P", "para");
+      if (!para.Name.Equals("p") && !para.Name.Equals("#text")) throw new ArgumentException("param must be of the node type P or #text", "para");
 
       return new Paragraph(sanitize(para.InnerText));
     }

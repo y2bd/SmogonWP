@@ -353,7 +353,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libs\schmogon\Schmogon\Schmogon.csproj">
+    <ProjectReference Include="..\schmogon\Schmogon\Schmogon.csproj">
       <Project>{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}</Project>
       <Name>Schmogon</Name>
     </ProjectReference>
