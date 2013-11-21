@@ -287,9 +287,18 @@ namespace SmogonWP.ViewModel
 
     private void onOpenBulbapediaPressed()
     {
+      var name = toTitleCase(Name);
+
+      // dammit ho-oh!
+      if (name.Contains("-") && !name.Equals("Ho-oh"))
+      {
+        // take every character before the hyphen, bulbapedia doesn't like forme suffixes
+        name = string.Join("", name.TakeWhile(c => c != '-'));
+      }
+
       var wbt = new WebBrowserTask
       {
-        Uri = new Uri(BulbaPrefix + Uri.EscapeDataString(toTitleCase(Name)))
+        Uri = new Uri(BulbaPrefix + Uri.EscapeDataString(name))
       };
 
       wbt.Show();
