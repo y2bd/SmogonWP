@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Schmogon.Data.Abilities;
+using Schmogon.Data.Items;
 using Schmogon.Data.Moves;
 using Schmogon.Data.Natures;
 using Schmogon.Data.Pokemon;
@@ -46,6 +47,20 @@ namespace Schmogon
     Task<IEnumerable<Ability>> DeserializeAbilityListAsync(string abilities); 
 
     #endregion abilities
+
+    #region items
+
+    Task<IEnumerable<Item>> GetAllItemsAsync();
+
+    Task<IEnumerable<Item>> SearchItemsAsync(string query);
+
+    Task<ItemData> GetItemDataAsync(Item item);
+
+    Task<string> SerializeItemListAsync();
+
+    Task<IEnumerable<Item>> DeserializeItemListAsync(string items); 
+
+    #endregion items
 
     #region natures
 

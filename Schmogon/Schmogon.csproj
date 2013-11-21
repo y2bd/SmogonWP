@@ -37,6 +37,7 @@
     <Compile Include="Data\Abilities\AbilityData.cs" />
     <Compile Include="Data\ISearchItem.cs" />
     <Compile Include="Data\Items\Item.cs" />
+    <Compile Include="Data\Items\ItemData.cs" />
     <Compile Include="Data\Moves\Move.cs" />
     <Compile Include="Data\Moves\MoveData.cs" />
     <Compile Include="Data\Moves\MoveStats.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchmogonClient.Abilities.cs" />
     <Compile Include="SchmogonClient.cs" />
+    <Compile Include="SchmogonClient.Items.cs" />
     <Compile Include="SchmogonClient.Moves.cs" />
     <Compile Include="SchmogonClient.Natures.cs" />
     <Compile Include="SchmogonClient.Pokemon.cs" />

@@ -19,9 +19,13 @@ namespace SchmogonTest
       Console.Write("Please enter a query: ");
       var query = Console.ReadLine();
 
-      var move = (await s.GetAllMovesAsync()).First(m => query != null && m.Name.Contains(query));
+      var item = (await s.GetAllItemsAsync()).FirstOrDefault(i => i.Name == query);
 
-      var data = await s.GetMoveDataAsync(move);
+      var data = (await s.GetItemDataAsync(item));
+
+      var cereal = await s.SerializeItemListAsync();
+
+      var uncereal = await s.DeserializeItemListAsync(cereal);
     }
   }
 }
