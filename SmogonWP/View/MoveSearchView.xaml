@@ -42,6 +42,7 @@
 
     <phone:PhoneApplicationPage.Resources>
         <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
 
         <DataTemplate x:Key="MoveItemTemplate">
             <StackPanel Margin="0,0,24,12">
@@ -130,6 +131,14 @@
                 Visibility="{Binding LoadFailed, Converter={StaticResource BooleanVisibilityConverter}}"
                 Command="{Binding ReloadCommand}">reload moves</Button>
 
+        <TextBlock Grid.Row="3"
+                   Style="{StaticResource EmptyListHeaderStyle}"
+                   Visibility="{Binding FilteredMoves, Converter={StaticResource EmptinessVisibilityConverter}}"
+                   Margin="24,0"
+                   TextWrapping="Wrap">
+            I couldn't find a match. Please try another query.
+        </TextBlock>
+
         <toolkit:PickerBox x:Name="FilterPicker"
                            Header="Choose a move type..."
                            Grid.Row="0"
@@ -142,6 +151,8 @@
                 Opacity="0.5"
                 Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, TargetNullValue=Collapsed}" />
 
+        
+    
     </Grid>
 
 </phone:PhoneApplicationPage>

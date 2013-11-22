@@ -42,6 +42,7 @@
 
     <phone:PhoneApplicationPage.Resources>
         <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
 
         <DataTemplate x:Key="AbilityItemTemplate">
             <StackPanel Margin="0,0,24,12">
@@ -111,6 +112,14 @@
                 VerticalAlignment="Top"
                 Visibility="{Binding LoadFailed, Converter={StaticResource BooleanVisibilityConverter}}"
                 Command="{Binding ReloadCommand}">reload abilities</Button>
+
+        <TextBlock Grid.Row="2"
+                   Style="{StaticResource EmptyListHeaderStyle}"
+                   Visibility="{Binding FilteredAbilities, Converter={StaticResource EmptinessVisibilityConverter}}"
+                   Margin="24,0"
+                   TextWrapping="Wrap">
+            I couldn't find a match. Please try another query.
+        </TextBlock>
     </Grid>
 
 </phone:PhoneApplicationPage>

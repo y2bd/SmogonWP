@@ -44,6 +44,7 @@
         <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
         <converters:UppercaseConverter x:Key="UppercaseConverter" />
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter" />
+        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
 
         <DataTemplate x:Key="PokemonItemTemplate">
             <StackPanel Margin="0,0,24,15">
@@ -160,6 +161,14 @@
                 VerticalAlignment="Top"
                 Visibility="{Binding LoadFailed, Converter={StaticResource BooleanVisibilityConverter}}"
                 Command="{Binding ReloadCommand}">reload pokemon</Button>
+
+        <TextBlock Grid.Row="3"
+                   Style="{StaticResource EmptyListHeaderStyle}"
+                   Visibility="{Binding FilteredPokemon, Converter={StaticResource EmptinessVisibilityConverter}}"
+                   Margin="24,0"
+                   TextWrapping="Wrap">
+            I couldn't find a match. Please try another query.
+        </TextBlock>
 
         <toolkit:PickerBox x:Name="TypePicker"
                            Header="Choose a Pokemon type..."

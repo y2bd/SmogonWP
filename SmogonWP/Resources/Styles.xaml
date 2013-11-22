@@ -3,6 +3,7 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
                     mc:Ignorable="d">
   
   <Style x:Key="LLSFloatingScrollbarStyle"
@@ -92,6 +93,19 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <system:Double x:Key="EmptyListHeaderFontSize">32</system:Double>
+
+    <Style x:Key="EmptyListHeaderStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource PhoneTextBlockBase}">
+        <Setter Property="FontFamily"
+                Value="{StaticResource PhoneFontFamilySemiLight}" />
+        <Setter Property="FontSize"
+                Value="{StaticResource EmptyListHeaderFontSize}" />
+        <Setter Property="Foreground"
+                Value="{StaticResource PhoneTextMidContrastColor}" />
     </Style>
 
 </ResourceDictionary>

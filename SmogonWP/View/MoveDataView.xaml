@@ -92,7 +92,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0"
-                    Margin="12,6,0,24">
+                    Margin="11,6,0,24">
             <TextBlock x:Name="MoveName"
                        Text="{Binding Name}"
                        Style="{StaticResource PhoneTextTitle2Style}" />
@@ -110,7 +110,7 @@
 
             <phone:Pivot x:Name="DescriptionPivot"
                          Grid.Row="1"
-                         Margin="-1,-12,0,0"
+                         Margin="0,-12,0,0"
                          HeaderTemplate="{StaticResource DescriptionPivotHeaderTemplate}">
                 <phone:PivotItem Header="STATS">
                     <Grid x:Name="StatGrid"
@@ -282,10 +282,13 @@
                                                        ItemsSource="{Binding Path=MDVM.RelatedMoves}"
                                                        SelectedItem="{Binding SelectedRelatedMove, Mode=TwoWay}"
                                                        ItemTemplate="{StaticResource RelatedItemTemplate}"
+                                                       Style="{StaticResource LLSFloatingScrollbarStyle}"
                                                        toolkit:TiltEffect.IsTiltEnabled="True" />
                     
-                        <TextBlock Style="{StaticResource PhoneTextSmallStyle}"
-                                   Text="(no related moves)"
+                        <TextBlock Style="{StaticResource EmptyListHeaderStyle}"
+                                   Margin="11,0"
+                                   TextWrapping="Wrap"
+                                   Text="No related moves were found."
                                    Visibility="{Binding Path=MDVM.RelatedMoves, Converter={StaticResource EmptinessVisibilityConverter}}" />    
                     </Grid>
                 </phone:PivotItem>
