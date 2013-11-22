@@ -21,7 +21,8 @@ namespace SmogonWP.ViewModel
 
     private readonly MessageReceiver<ItemSelectedMessage<MovesetItemViewModel>> _movesetSelectedReceiver;
     private readonly MessageSender<ItemSelectedMessage<Ability>> _abilitySelectedSender;
-    private readonly MessageSender<ItemSelectedMessage<Nature>> _natureSelectedSender;  
+    private readonly MessageSender<ItemSelectedMessage<Nature>> _natureSelectedSender;
+    private readonly MessageSender<ItemSelectedMessage<Item>> _itemSelectedSender;  
     private readonly MessageSender<ItemSelectedMessage<Move>> _moveSelectedSender;
 
     private MovesetItemViewModel _msivm;
@@ -98,6 +99,25 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private ItemItemViewModel _selectedItem;
+    public ItemItemViewModel SelectedItem
+    {
+      get
+      {
+        return _selectedItem;
+      }
+      set
+      {
+        if (_selectedItem != value)
+        {
+          onItemSelected(value);
+
+          _selectedItem = null;
+          RaisePropertyChanged(() => SelectedItem);
+        }
+      }
+    }			
+
     private GroupedMoveItemViewModel _selectedMove;
     public GroupedMoveItemViewModel SelectedMove
     {
@@ -125,6 +145,7 @@ namespace SmogonWP.ViewModel
 
       _abilitySelectedSender = new MessageSender<ItemSelectedMessage<Ability>>();
       _natureSelectedSender = new MessageSender<ItemSelectedMessage<Nature>>();
+      _itemSelectedSender = new MessageSender<ItemSelectedMessage<Item>>();
       _moveSelectedSender = new MessageSender<ItemSelectedMessage<Move>>();
 
       #region design data
@@ -195,6 +216,15 @@ namespace SmogonWP.ViewModel
         _natureSelectedSender.SendMessage(new ItemSelectedMessage<Nature>(nature));
         _navigationService.Navigate(ViewModelLocator.NaturePath);
       }
+    }
+
+    private void onItemSelected(ItemItemViewModel iivm)
+    {
+      if (iivm == null) return;
+
+      _itemSelectedSender.SendMessage(new ItemSelectedMessage<Item>(iivm.Item));
+      _navigationService.Navigate(ViewModelLocator.ItemDataPath);
+
     }
 
     private void onMoveSelected(GroupedMoveItemViewModel gmivm)

@@ -194,6 +194,7 @@
                                                HorizontalAlignment="Left" />
                                 </Border>
                                 <ListBox ItemsSource="{Binding MSIVM.Items}"
+                                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                                          ItemTemplate="{StaticResource SetupGeneralItemTemplate}"
                                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                          toolkit:TiltEffect.IsTiltEnabled="True">
