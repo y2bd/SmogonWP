@@ -1,0 +1,115 @@
+﻿<phone:PhoneApplicationPage x:Class="SmogonWP.View.ItemDataView"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
+                            SupportedOrientations="Portrait"
+                            Orientation="Portrait"
+                            mc:Ignorable="d"
+                            shell:SystemTray.IsVisible="True"
+                            DataContext="{Binding ItemData, Source={StaticResource Locator}}">
+
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideDownFadeIn" />
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeIn" />
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideDownFadeOut" />
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
+
+    <phone:PhoneApplicationPage.Resources>
+        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+
+        <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
+            <Grid>
+                <TextBlock Text="{Binding}"
+                           Margin="2,0,0,0"
+                           Style="{StaticResource PhoneTextTitle3Style}" />
+            </Grid>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
+
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator IsIndeterminate="True"
+                                 IsVisible="{Binding Path=TrayService.IsLoading}"
+                                 Text="{Binding Path=TrayService.CurrentMessage}" />
+    </shell:SystemTray.ProgressIndicator>
+
+    <bindable:Bindable.ApplicationBar>
+        <bindable:BindableApplicationBar Mode="Minimized"
+                                         MenuItemsSource="{Binding MenuItems}">
+        </bindable:BindableApplicationBar>
+    </bindable:Bindable.ApplicationBar>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot"
+          Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                    Margin="11,6,0,24">
+            <TextBlock x:Name="MoveName"
+                       Text="{Binding Name}"
+                       Style="{StaticResource PhoneTextTitle2Style}" />
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel"
+              Grid.Row="1"
+              Margin="0,0,0,0">
+            <phone:Pivot x:Name="DescriptionPivot"
+                         Margin="0,-12,0,0"
+                         HeaderTemplate="{StaticResource DescriptionPivotHeaderTemplate}">
+                <phone:PivotItem Header="DESCRIPTION"
+                                 Margin="12,12,12,0">
+                    <ListBox x:Name="DescList"
+                             ItemsSource="{Binding Path=IDVM.Description}"
+                             ItemTemplate="{StaticResource TextElementTemplate}"
+                             Margin="0,0,-12,0">
+                    </ListBox>
+                </phone:PivotItem>
+                <phone:PivotItem Header="COMPETITIVE USE"
+                                 Margin="12,12,12,0">
+                    <ListBox x:Name="CompList"
+                             ItemsSource="{Binding Path=IDVM.Competitive}"
+                             ItemTemplate="{StaticResource TextElementTemplate}"
+                             Margin="0,0,-12,0">
+                    </ListBox>
+                </phone:PivotItem>
+            </phone:Pivot>
+        </Grid>
+
+        <Border x:Name="BusyShade"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Margin="-12"
+                Background="{StaticResource PhoneBackgroundBrush}"
+                Opacity="0.5"
+                Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, FallbackValue=Collapsed}" />
+    </Grid>
+
+</phone:PhoneApplicationPage>

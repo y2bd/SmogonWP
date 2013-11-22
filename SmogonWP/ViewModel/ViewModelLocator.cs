@@ -17,6 +17,8 @@ namespace SmogonWP.ViewModel
     public const string MoveDataPath = "/View/MoveDataView.xaml";
     public const string AbilitySearchPath = "/View/AbilitySearchView.xaml";
     public const string AbilityDataPath = "/View/AbilityDataView.xaml";
+    public const string ItemSearchPath = "/View/ItemSearchView.xaml";
+    public const string ItemDataPath = "/View/ItemDataView.xaml";
     public const string NaturePath = "/View/NatureView.xaml";
     public const string TypePath = "/View/TypeView.xaml";
     public const string PokemonSearchPath = "/View/PokemonSearchView.xaml";
@@ -45,12 +47,19 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<IsolatedStorageService>();
 
       SimpleIoc.Default.Register<HomeViewModel>();
+
       SimpleIoc.Default.Register<MoveSearchViewModel>();
       SimpleIoc.Default.Register<MoveDataViewModel>();
+
       SimpleIoc.Default.Register<AbilitySearchViewModel>();
       SimpleIoc.Default.Register<AbilityDataViewModel>();
+
+      SimpleIoc.Default.Register<ItemSearchViewModel>();
+      SimpleIoc.Default.Register<ItemDataViewModel>();
+
       SimpleIoc.Default.Register<NatureViewModel>();
       SimpleIoc.Default.Register<TypeViewModel>();
+
       SimpleIoc.Default.Register<PokemonSearchViewModel>();
       SimpleIoc.Default.Register<PokemonDataViewModel>();
       SimpleIoc.Default.Register<MovesetViewModel>();
@@ -93,6 +102,22 @@ namespace SmogonWP.ViewModel
       get
       {
         return ServiceLocator.Current.GetInstance<AbilityDataViewModel>();
+      }
+    }
+
+    public ItemSearchViewModel ItemSearch
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<ItemSearchViewModel>();
+      }
+    }
+
+    public ItemDataViewModel ItemData
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<ItemDataViewModel>();
       }
     }
 

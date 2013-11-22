@@ -1,0 +1,125 @@
+﻿<phone:PhoneApplicationPage x:Class="SmogonWP.View.ItemSearchView"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:util="clr-namespace:SmogonWP.Utilities"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
+                            SupportedOrientations="Portrait"
+                            Orientation="Portrait"
+                            mc:Ignorable="d"
+                            shell:SystemTray.IsVisible="True"
+                            DataContext="{Binding ItemSearch, Source={StaticResource Locator}}">
+
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideDownFadeIn" />
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeIn" />
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideDownFadeOut" />
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
+
+    <phone:PhoneApplicationPage.Resources>
+        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
+
+        <DataTemplate x:Key="ItemItemTemplate">
+            <StackPanel Margin="0,0,24,12">
+                <TextBlock Text="{Binding Name}"
+                           Style="{StaticResource PhoneTextTitle2Style}"
+                           Margin="12,0,12,3" />
+                <TextBlock Text="{Binding Description}"
+                           Style="{StaticResource PhoneTextSmallStyle}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
+
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator IsIndeterminate="True"
+                                 IsVisible="{Binding Path=TrayService.IsLoading}"
+                                 Text="{Binding Path=TrayService.CurrentMessage}" />
+    </shell:SystemTray.ProgressIndicator>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot"
+          Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="FilterText"
+                   Grid.Row="0"
+                   Margin="24,17,24,12"
+                   Text="ITEMS"
+                   Style="{StaticResource PhoneTextNormalStyle}" />
+
+        <toolkit:PhoneTextBox x:Name="SearchBox"
+                              Grid.Row="1"
+                              Margin="12,0,12,12"
+                              InputScope="Search"
+                              Text="{Binding Filter, Mode=TwoWay}"
+                              PlaceholderText="Search for an item..."
+                              IsEnabled="{Binding FetchItemsNotifier.IsSuccessfullyCompleted}"
+                              KeyUp="Searchbox_OnKeyUp">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="KeyUp">
+                    <gala:EventToCommand Command="{Binding FilterChangedCommand}"
+                                         PassEventArgsToCommand="True" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <i:Interaction.Behaviors>
+                <util:UpdateTextBindingOnPropertyChanged />
+            </i:Interaction.Behaviors>
+        </toolkit:PhoneTextBox>
+
+        <util:BindableLongListSelector x:Name="ItemList"
+                                       Grid.Row="2"
+                                       Margin="12,0,12,0"
+                                       ItemsSource="{Binding FilteredItems}"
+                                       ItemTemplate="{StaticResource ItemItemTemplate}"
+                                       SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                                       Style="{StaticResource LLSFloatingScrollbarStyle}"
+                                       toolkit:TiltEffect.IsTiltEnabled="True" />
+
+        <Button x:Name="ReloadButton"
+                Grid.Row="2"
+                Margin="12,0"
+                VerticalAlignment="Top"
+                Visibility="{Binding LoadFailed, Converter={StaticResource BooleanVisibilityConverter}}"
+                Command="{Binding ReloadCommand}">reload abilities</Button>
+
+        <TextBlock Grid.Row="2"
+                   Style="{StaticResource EmptyListHeaderStyle}"
+                   Visibility="{Binding FilteredItems, Converter={StaticResource EmptinessVisibilityConverter}}"
+                   Margin="24,0"
+                   TextWrapping="Wrap">
+            I couldn't find a match. Please try another query.
+        </TextBlock>
+    </Grid>
+
+</phone:PhoneApplicationPage>

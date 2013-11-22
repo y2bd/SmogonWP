@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Schmogon;
 using Schmogon.Data.Abilities;
@@ -219,6 +218,73 @@ namespace SmogonWP.Design
         new Ability("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
         new Ability("whiplash", "quick strike that does more damage the slower the opponent", ""),
         new Ability("kung pao", "throws chicken at the opponent, causing confusion", ""),
+      };
+    }
+
+    public async Task<IEnumerable<Item>> GetAllItemsAsync()
+    {
+      await Task.Delay(0);
+
+      return new List<Item>
+      {
+        new Item("kung pao", "throws chicken at the opponent, causing confusion", ""),
+        new Item("drum machine", "quick strikes, can hit two to five times", ""),
+        new Item("stackflip", "damage builds as move is used in succession", ""),
+        new Item("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
+        new Item("whiplash", "quick strike that does more damage the slower the opponent", ""),
+        new Item("kung pao", "throws chicken at the opponent, causing confusion", ""),
+      };
+    }
+
+    public async Task<IEnumerable<Item>> SearchItemsAsync(string query)
+    {
+      return await GetAllItemsAsync();
+    }
+
+    public async Task<ItemData> GetItemDataAsync(Item item)
+    {
+      await Task.Delay(0);
+
+      var descData = new List<ITextElement>
+      {
+        new Paragraph("makes pokemon super sour"),
+        new Paragraph("does not work on the following pokemon"),
+        new UnorderedList(
+          new List<string>
+          {
+            "chingling",
+            "chimecho",
+            "chocobo"
+          })
+      };
+
+      var compData = new List<ITextElement>
+      {
+        new Paragraph("it's super good because sour pokemon are the worst.")
+      };
+
+      return new ItemData("lime", descData, compData);
+    }
+
+    public async Task<string> SerializeItemListAsync()
+    {
+      await Task.Delay(0);
+
+      return "[]";
+    }
+
+    public async Task<IEnumerable<Item>> DeserializeItemListAsync(string abilities)
+    {
+      await Task.Delay(0);
+
+      return new List<Item>
+      {
+        new Item("kung pao", "throws chicken at the opponent, causing confusion", ""),
+        new Item("drum machine", "quick strikes, can hit two to five times", ""),
+        new Item("stackflip", "damage builds as move is used in succession", ""),
+        new Item("hypertension", "boosts attack three stages at the cost of 1/8 max HP", ""),
+        new Item("whiplash", "quick strike that does more damage the slower the opponent", ""),
+        new Item("kung pao", "throws chicken at the opponent, causing confusion", ""),
       };
     }
 

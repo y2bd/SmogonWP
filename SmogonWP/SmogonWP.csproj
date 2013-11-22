@@ -139,7 +139,9 @@
     <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
     <Compile Include="ViewModel\AppBar\MenuItemViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\ItemDataViewModel.cs" />
     <Compile Include="ViewModel\Items\AbilityDataItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\ItemDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\ItemItemViewModel.cs" />
     <Compile Include="ViewModel\Items\MoveDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\GroupedMoveItemViewModel.cs" />
@@ -151,6 +153,7 @@
     <Compile Include="ViewModel\Items\PokemonDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\PokemonItemViewModel.cs" />
     <Compile Include="ViewModel\Items\TypeItemViewModel.cs" />
+    <Compile Include="ViewModel\ItemSearchViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />
     <Compile Include="ViewModel\MoveSearchViewModel.cs" />
     <Compile Include="ViewModel\MovesetViewModel.cs" />
@@ -167,6 +170,12 @@
     </Compile>
     <Compile Include="View\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ItemDataView.xaml.cs">
+      <DependentUpon>ItemDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ItemSearchView.xaml.cs">
+      <DependentUpon>ItemSearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MoveDataView.xaml.cs">
       <DependentUpon>MoveDataView.xaml</DependentUpon>
@@ -216,6 +225,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\HomeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ItemDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ItemSearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
