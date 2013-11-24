@@ -13,6 +13,7 @@
                             Orientation="Portrait"
                             mc:Ignorable="d"
                             shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="0"
                             DataContext="{Binding Type, Source={StaticResource Locator}}"
                             BackKeyPress="TypeView_OnBackKeyPress">
 
@@ -80,11 +81,15 @@
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0"
+        <Border Background="#22CCCCCC"
+                Grid.RowSpan="3" />
+        
+        <StackPanel Grid.Row="1"
                     Margin="12,6,0,24">
             <TextBlock x:Name="MoveName"
                        Text="TYPES"
@@ -93,7 +98,7 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel"
-              Grid.Row="1"
+              Grid.Row="2"
               Margin="0">
             <phone:Pivot HeaderTemplate="{StaticResource NaturePivotHeaderTemplate}"
                          Margin="0,-12,0,0"
@@ -165,7 +170,7 @@
         </Grid>
 
         <Grid x:Name="HelpPanel"
-              Grid.Row="0"
+              Grid.Row="1"
               Grid.RowSpan="2"
               Opacity="0.95"
               Visibility="Collapsed">

@@ -18,6 +18,7 @@
                             Orientation="Portrait"
                             mc:Ignorable="d"
                             shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="0"
                             DataContext="{Binding MoveData, Source={StaticResource Locator}}">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -86,12 +87,16 @@
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <Border Background="#22CCCCCC"
+                Grid.RowSpan="5" />
+
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel Grid.Row="0"
+        <StackPanel Grid.Row="1"
                     Margin="11,6,0,24">
             <TextBlock x:Name="MoveName"
                        Text="{Binding Name}"
@@ -100,7 +105,7 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel"
-              Grid.Row="1"
+              Grid.Row="2"
               Margin="0">
 
             <Grid.RowDefinitions>
@@ -294,13 +299,7 @@
                 </phone:PivotItem>
             </phone:Pivot>
 
-            <Border x:Name="BusyShade"
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Margin="-12"
-                    Background="{StaticResource PhoneBackgroundBrush}"
-                    Opacity="0.5"
-                    Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, TargetNullValue=Collapsed}" />
+            
         </Grid>
     </Grid>
 

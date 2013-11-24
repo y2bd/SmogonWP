@@ -17,6 +17,7 @@
                             Orientation="Portrait"
                             mc:Ignorable="d"
                             shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="0"
                             DataContext="{Binding ItemSearch, Source={StaticResource Locator}}">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -84,19 +85,23 @@
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <Border Background="#22CCCCCC"
+                Grid.RowSpan="4" />
+
         <TextBlock x:Name="FilterText"
-                   Grid.Row="0"
+                   Grid.Row="1"
                    Margin="24,17,24,12"
                    Text="ITEMS"
                    Style="{StaticResource PhoneTextNormalStyle}" />
 
         <toolkit:PhoneTextBox x:Name="SearchBox"
-                              Grid.Row="1"
+                              Grid.Row="2"
                               Margin="12,0,12,12"
                               InputScope="Search"
                               Text="{Binding Filter, Mode=TwoWay}"
@@ -116,7 +121,7 @@
         </toolkit:PhoneTextBox>
 
         <util:BindableLongListSelector x:Name="ItemList"
-                                       Grid.Row="2"
+                                       Grid.Row="3"
                                        Margin="12,0,12,0"
                                        ItemsSource="{Binding FilteredItems}"
                                        ItemTemplate="{StaticResource ItemItemTemplate}"
@@ -125,13 +130,13 @@
                                        toolkit:TiltEffect.IsTiltEnabled="True" />
 
         <Button x:Name="ReloadButton"
-                Grid.Row="2"
+                Grid.Row="3"
                 Margin="12,0"
                 VerticalAlignment="Top"
                 Visibility="{Binding LoadFailed, Converter={StaticResource BooleanVisibilityConverter}}"
                 Command="{Binding ReloadCommand}">reload abilities</Button>
 
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="3"
                    Style="{StaticResource EmptyListHeaderStyle}"
                    Visibility="{Binding FilteredItems, Converter={StaticResource EmptinessVisibilityConverter}}"
                    Margin="24,0"

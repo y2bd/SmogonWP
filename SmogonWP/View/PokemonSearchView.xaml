@@ -17,6 +17,7 @@
                             Orientation="Portrait"
                             mc:Ignorable="d"
                             shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="0"
                             DataContext="{Binding PokemonSearch, Source={StaticResource Locator}}">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -115,14 +116,18 @@
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
             <RowDefinition Height="0" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <Border Background="#22CCCCCC" 
+                Grid.RowSpan="5"/>
+
         <StackPanel Orientation="Horizontal"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="24,17,24,12">
             <TextBlock Margin="0,0,6,0"
                        Text="POKEMON"
@@ -143,7 +148,7 @@
         </StackPanel>
 
         <toolkit:PhoneTextBox x:Name="SearchBox"
-                              Grid.Row="2"
+                              Grid.Row="3"
                               Margin="12,0,12,12"
                               InputScope="Search"
                               Text="{Binding Query, Mode=TwoWay}"
@@ -164,7 +169,7 @@
         </toolkit:PhoneTextBox>
 
         <util:BindableLongListSelector x:Name="PokemonList"
-                                       Grid.Row="3"
+                                       Grid.Row="4"
                                        Margin="12,0,12,0"
                                        HorizontalContentAlignment="Left"
                                        ItemsSource="{Binding FilteredPokemon}"
@@ -174,13 +179,13 @@
                                        toolkit:TiltEffect.IsTiltEnabled="True" />
 
         <Button x:Name="ReloadButton"
-                Grid.Row="3"
+                Grid.Row="4"
                 Margin="12,0"
                 VerticalAlignment="Top"
                 Visibility="{Binding LoadFailed, Converter={StaticResource BooleanVisibilityConverter}}"
                 Command="{Binding ReloadCommand}">reload pokemon</Button>
 
-        <TextBlock Grid.Row="3"
+        <TextBlock Grid.Row="4"
                    Style="{StaticResource EmptyListHeaderStyle}"
                    Visibility="{Binding FilteredPokemon, Converter={StaticResource EmptinessVisibilityConverter}}"
                    Margin="24,0"
@@ -190,14 +195,14 @@
 
         <toolkit:PickerBox x:Name="TypePicker"
                            Header="Choose a Pokemon type..."
-                           Grid.Row="0"
+                           Grid.Row="1"
                            ItemsSource="{Binding TypeFilters}"
                            SelectedIndex="{Binding SelectedTypeFilter, Mode=TwoWay}" 
                            SelectionChanged="FilterPicker_OnSelectionChanged"/>
 
         <toolkit:PickerBox x:Name="TierPicker"
                            Header="Choose a Smogon tier..."
-                           Grid.Row="0"
+                           Grid.Row="1"
                            ItemsSource="{Binding TierFilters}"
                            SelectedIndex="{Binding SelectedTierFilter, Mode=TwoWay}"
                            SelectionChanged="FilterPicker_OnSelectionChanged"/>
