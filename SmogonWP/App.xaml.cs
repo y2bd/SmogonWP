@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
-using Windows.Phone.Speech.VoiceCommands;
+using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using SmogonWP.Resources;
@@ -36,6 +35,9 @@ namespace SmogonWP
       // Language display initialization
       InitializeLanguage();
       
+      // Init dispatcherhelper
+      DispatcherHelper.Initialize();
+
       // Show graphics profiling information while debugging.
       if (Debugger.IsAttached)
       {

@@ -339,7 +339,9 @@ namespace SmogonWP.ViewModel
     private async Task fetchMoves()
     {
       TrayService.AddJob("movefetch", "Fetching moves");
-      
+
+      FilteredMoves = null;
+
       var filter = SelectedFilter - 1;
 
       var rawMoves = filter == -1

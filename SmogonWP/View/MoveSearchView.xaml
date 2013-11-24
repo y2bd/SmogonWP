@@ -45,7 +45,25 @@
         <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
 
         <DataTemplate x:Key="MoveItemTemplate">
-            <StackPanel Margin="0,0,24,12">
+            <StackPanel x:Name="MoveItemStackPanel"
+                        Margin="0,0,24,12">
+                <StackPanel.Resources>
+                    <EventTrigger x:Name="LoadEvent"
+                                  RoutedEvent="Canvas.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard x:Name="FadeIn" >
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                               Storyboard.TargetName="MoveItemStackPanel">
+                                    <EasingDoubleKeyFrame KeyTime="0"
+                                                          Value="0.01" />
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.4"
+                                                          Value="1" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </StackPanel.Resources>
+
                 <TextBlock Text="{Binding Name}"
                            Style="{StaticResource PhoneTextTitle2Style}"
                            Margin="12,0,12,3" />
@@ -90,11 +108,11 @@
 
             <TextBlock Margin="0,0,6,0"
                        Text="{Binding TypeName}"
-                       Style="{StaticResource PhoneTextNormalStyle}" 
+                       Style="{StaticResource PhoneTextNormalStyle}"
                        FontFamily="{StaticResource PhoneFontFamilySemiBold}"
-                       Foreground="{Binding TypeBrush}"/>
+                       Foreground="{Binding TypeBrush}" />
         </StackPanel>
-        
+
         <toolkit:PhoneTextBox x:Name="SearchBox"
                               Grid.Row="2"
                               Margin="12,0,12,12"
@@ -151,8 +169,6 @@
                 Opacity="0.5"
                 Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, TargetNullValue=Collapsed}" />
 
-        
-    
     </Grid>
 
 </phone:PhoneApplicationPage>
