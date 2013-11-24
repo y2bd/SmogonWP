@@ -13,6 +13,7 @@ namespace SmogonWP.ViewModel
   public class ViewModelLocator
   {
     public const string HomePath = "/View/HomeView.xaml";
+    public const string HubPath = "/View/HubView.xaml";
     public const string MoveSearchPath = "/View/MoveSearchView.xaml";
     public const string MoveDataPath = "/View/MoveDataView.xaml";
     public const string AbilitySearchPath = "/View/AbilitySearchView.xaml";
@@ -47,6 +48,7 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<IsolatedStorageService>();
 
       SimpleIoc.Default.Register<HomeViewModel>();
+      SimpleIoc.Default.Register<HubViewModel>();
 
       SimpleIoc.Default.Register<MoveSearchViewModel>();
       SimpleIoc.Default.Register<MoveDataViewModel>();
@@ -70,6 +72,14 @@ namespace SmogonWP.ViewModel
       get
       {
         return ServiceLocator.Current.GetInstance<HomeViewModel>();
+      }
+    }
+
+    public HubViewModel Hub
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<HubViewModel>();
       }
     }
 

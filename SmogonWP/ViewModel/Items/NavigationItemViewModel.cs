@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.Windows.Media;
+using GalaSoft.MvvmLight;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -51,6 +52,40 @@ namespace SmogonWP.ViewModel.Items
         {
           _navigationPath = value;
           RaisePropertyChanged(() => NavigationPath);
+        }
+      }
+    }
+
+    private SolidColorBrush _backgroundBrush;
+    public SolidColorBrush BackgroundBrush
+    {
+      get
+      {
+        return _backgroundBrush;
+      }
+      set
+      {
+        if (_backgroundBrush != value)
+        {
+          _backgroundBrush = value;
+          RaisePropertyChanged(() => BackgroundBrush);
+        }
+      }
+    }
+
+    private string _iconPath;
+    public string IconPath
+    {
+      get
+      {
+        return _iconPath;
+      }
+      set
+      {
+        if (_iconPath != value)
+        {
+          _iconPath = value;
+          RaisePropertyChanged(() => IconPath);
         }
       }
     }			

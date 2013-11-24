@@ -101,7 +101,8 @@ namespace SmogonWP.ViewModel
         }
       };
 
-      await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///BaseVCD.xml"));
+      if (!IsInDesignMode && !IsInDesignModeStatic)
+        await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///BaseVCD.xml"));
     }
 
     private void onNavItemSelected(NavigationItemViewModel item)

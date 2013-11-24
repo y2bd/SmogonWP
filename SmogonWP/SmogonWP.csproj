@@ -139,6 +139,7 @@
     <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
     <Compile Include="ViewModel\AppBar\MenuItemViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\HubViewModel.cs" />
     <Compile Include="ViewModel\ItemDataViewModel.cs" />
     <Compile Include="ViewModel\Items\AbilityDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\ItemDataItemViewModel.cs" />
@@ -170,6 +171,9 @@
     </Compile>
     <Compile Include="View\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\HubView.xaml.cs">
+      <DependentUpon>HubView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ItemDataView.xaml.cs">
       <DependentUpon>ItemDataView.xaml</DependentUpon>
@@ -225,6 +229,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\HomeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HubView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -284,6 +292,14 @@
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Icons\conflict.png" />
+    <Content Include="Assets\Icons\fire.png" />
+    <Content Include="Assets\Icons\idea.png" />
+    <Content Include="Assets\Icons\pill.png" />
+    <Content Include="Assets\Icons\pokeball2.png" />
+    <Content Include="Assets\Icons\smile.png" />
+    <Content Include="Assets\Icons\smogon.png" />
+    <Content Include="Assets\panobg.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
