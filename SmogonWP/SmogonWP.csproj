@@ -25,6 +25,7 @@
     <ValidateXaml>true</ValidateXaml>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <ExpressionBlendVersion>12.0.40612.10</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -137,6 +138,7 @@
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
     <Compile Include="ViewModel\AbilityDataViewModel.cs" />
     <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
+    <Compile Include="ViewModel\AppBar\MenuButtonViewModel.cs" />
     <Compile Include="ViewModel\AppBar\MenuItemViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\HubViewModel.cs" />
@@ -348,6 +350,7 @@
     <Reference Include="JeffWilcox.PhoneThemeManager">
       <HintPath>..\packages\PhoneThemeManager.1.5\lib\sl4-windowsphone71\JeffWilcox.PhoneThemeManager.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>..\packages\WPtoolkit.Kinnara.4.2013.09.06\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>

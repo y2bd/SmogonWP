@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel;
+using System.Threading;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using Microsoft.Phone.Shell;
+using SmogonWP.Services;
+using SmogonWP.ViewModel.AppBar;
+using SmogonWP.ViewModel.Items;
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Windows.Phone.Speech.VoiceCommands;
-using GalaSoft.MvvmLight;
-using SmogonWP.Services;
-using SmogonWP.ViewModel.Items;
 using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.ViewModel
@@ -90,18 +91,85 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => SelectedToolItem);
         }
       }
+    }
+
+    private bool _isSearchPanelOpen;
+    public bool IsSearchPanelOpen
+    {
+      get
+      {
+        return _isSearchPanelOpen;
+      }
+      set
+      {
+        if (_isSearchPanelOpen != value)
+        {
+          _isSearchPanelOpen = value;
+          RaisePropertyChanged(() => IsSearchPanelOpen);
+        }
+      }
+    }
+
+    private bool _isAppBarOpen = true;
+    public bool IsAppBarOpen
+    {
+      get
+      {
+        return _isAppBarOpen;
+      }
+      set
+      {
+        if (_isAppBarOpen != value)
+        {
+          _isAppBarOpen = value;
+          RaisePropertyChanged(() => IsAppBarOpen);
+        }
+      }
+    }
+
+    private ObservableCollection<MenuButtonViewModel> _menuButtons;
+    public ObservableCollection<MenuButtonViewModel> MenuButtons
+    {
+      get
+      {
+        return _menuButtons;
+      }
+      set
+      {
+        if (_menuButtons != value)
+        {
+          _menuButtons = value;
+          RaisePropertyChanged(() => MenuButtons);
+        }
+      }
     }			
 
     #endregion props
+
+    #region commands
+
+    private RelayCommand<CancelEventArgs> _backKeyPressedCommand;
+    public RelayCommand<CancelEventArgs> BackKeyPressedCommand
+    {
+      get
+      {
+        return _backKeyPressedCommand ??
+               (_backKeyPressedCommand = new RelayCommand<CancelEventArgs>(onBackKeyPressed));
+      }
+    }
+
+    #endregion commands
 
     public HubViewModel(SimpleNavigationService navigationService)
     {
       _navigationService = navigationService;
 
-      setup();
+      setupNavigation();
+      setupAppBar();
+      initializeVCD();
     }
 
-    private async void setup()
+    private void setupNavigation()
     {
       StratNavItems = new ObservableCollection<NavigationItemViewModel>
       {
@@ -158,7 +226,23 @@ namespace SmogonWP.ViewModel
           IconPath = "/Assets/Icons/fire.png"
         },
       };
+    }
 
+    private void setupAppBar()
+    {
+      MenuButtons = new ObservableCollection<MenuButtonViewModel>
+      {
+        new MenuButtonViewModel
+        {
+          Text = "quicksearch",
+          IconUri = new Uri("/Assets/AppBar/feature.search.png", UriKind.RelativeOrAbsolute),
+          Command = new RelayCommand(onSearchButtonClicked)
+        }
+      };
+    }
+
+    private async void initializeVCD()
+    {
       if (!IsInDesignMode && !IsInDesignModeStatic)
         await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///BaseVCD.xml"));
     }
@@ -174,6 +258,23 @@ namespace SmogonWP.ViewModel
       }
 
       _navigationService.Navigate(item.NavigationPath);
+    }
+
+    private void onSearchButtonClicked()
+    {
+      IsSearchPanelOpen = true;
+      IsAppBarOpen = false;
+    }
+
+    private void onBackKeyPressed(CancelEventArgs e)
+    {
+      if (IsSearchPanelOpen)
+      {
+        e.Cancel = true;
+
+        IsSearchPanelOpen = false;
+        IsAppBarOpen = true;
+      }
     }
   }
 }
