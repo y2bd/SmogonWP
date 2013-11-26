@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Schmogon.Data;
 using Schmogon.Data.Abilities;
 using Schmogon.Data.Items;
 using Schmogon.Data.Moves;
@@ -99,5 +100,9 @@ namespace Schmogon
     Task<IEnumerable<Pokemon>> DeserializePokemonListAsync(string pokemon);
 
     #endregion pokemon
+
+    Task<IEnumerable<T>> DeserializeSearchItemListAsync<T>(string serialized) where T : ISearchItem;
+
+    Task<string> SerializeSearchItemListAsync<T>(IEnumerable<T> searchItems) where T : ISearchItem;
   }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Schmogon;
+using Schmogon.Data;
 using Schmogon.Data.Abilities;
 using Schmogon.Data.Items;
 using Schmogon.Data.Moves;
@@ -518,6 +519,20 @@ namespace SmogonWP.Design
           new BaseStat(0, 0, 0, 0, 0, 255),
           ""),
       };
+    }
+    
+    public async Task<string> SerializeSearchItemListAsync<T>(IEnumerable<T> searchItems) where T : ISearchItem
+    {
+      await Task.Delay(0);
+
+      return "[]";
+    }
+
+    public async Task<IEnumerable<T>> DeserializeSearchItemListAsync<T>(string serialized) where T : ISearchItem
+    {
+      await Task.Delay(0);
+
+      return new List<T>();
     }
   }
 }
