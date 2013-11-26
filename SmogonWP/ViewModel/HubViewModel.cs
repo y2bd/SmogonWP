@@ -1,9 +1,15 @@
-﻿using System.ComponentModel;
-using System.Threading;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.Phone.Shell;
+using Nito.AsyncEx;
+using Nito.AsyncEx.Synchronous;
+using Schmogon.Data;
 using SmogonWP.Services;
+using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 using System;
@@ -18,8 +24,28 @@ namespace SmogonWP.ViewModel
   public class HubViewModel : ViewModelBase
   {
     private readonly SimpleNavigationService _navigationService;
+    private readonly DataLoadingService _dataService;
 
-    #region props 
+    private IEnumerable<ISearchItem> _allSearchItems;
+
+    #region props
+
+    private TrayService _trayService;
+    public TrayService TrayService
+    {
+      get
+      {
+        return _trayService;
+      }
+      set
+      {
+        if (_trayService != value)
+        {
+          _trayService = value;
+          RaisePropertyChanged(() => TrayService);
+        }
+      }
+    }
 
     private ObservableCollection<NavigationItemViewModel> _stratNavItems;
     public ObservableCollection<NavigationItemViewModel> StratNavItems
@@ -142,8 +168,8 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => MenuButtons);
         }
       }
-    }			
-
+    }
+    
     #endregion props
 
     #region commands
@@ -160,13 +186,22 @@ namespace SmogonWP.ViewModel
 
     #endregion commands
 
-    public HubViewModel(SimpleNavigationService navigationService)
+    #region async handlers
+
+    public INotifyTaskCompletion FetchSearchDataNotifier { get; private set; }
+
+    #endregion async handlers
+
+    public HubViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
+      _dataService = dataService;
+      _trayService = trayService;
 
       setupNavigation();
       setupAppBar();
       initializeVCD();
+      scheduleSearchDataFetch();
     }
 
     private void setupNavigation()
@@ -247,6 +282,68 @@ namespace SmogonWP.ViewModel
         await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///BaseVCD.xml"));
     }
 
+    private void scheduleSearchDataFetch()
+    {
+      FetchSearchDataNotifier = NotifyTaskCompletion.Create(fetchSearchData());
+
+      FetchSearchDataNotifier.PropertyChanged += (sender, args) =>
+      {
+        if (FetchSearchDataNotifier == null) return;
+
+        if (FetchSearchDataNotifier.IsFaulted)
+        {
+          throw FetchSearchDataNotifier.InnerException;
+        }
+      };
+    }
+
+    private async Task fetchSearchData()
+    {
+      TrayService.AddJob("fetchall", "Fetching search data...");
+
+      var pokeTask = _dataService.FetchAllPokemonAsync();
+      var moveTask = _dataService.FetchAllMovesAsync();
+      var abilTask = _dataService.FetchAllAbilitiesAsync();
+      var itemTask = _dataService.FetchAllItemsAsync();
+
+      await Task.WhenAll(pokeTask, moveTask, abilTask, itemTask);
+
+      if (pokeTask.IsFaulted ||
+          moveTask.IsFaulted ||
+          abilTask.IsFaulted ||
+          itemTask.IsFaulted)
+      {
+        if (!NetUtilities.IsNetwork())
+        {
+          MessageBox.Show(
+          "Downloading move data requires an internet connection. Please get one of those and try again later.",
+          "No internet!", MessageBoxButton.OK);
+        }
+        else
+        {
+          MessageBox.Show(
+          "I'm sorry, but we couldn't load the Pokemon data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+
+          Debugger.Break();
+        }
+
+        TrayService.RemoveJob("fetchall");
+      }
+
+      _allSearchItems = new List<ISearchItem>()
+        .Concat(await pokeTask)
+        .Concat(await moveTask)
+        .Concat(await abilTask)
+        .Concat(await itemTask)
+        .OrderBy(i => i.Name)
+        .ToList();
+
+      TrayService.RemoveJob("fetchall");
+
+      // TODO : Finish universal search on hubview AND make other VMs use the DataLoaderService instead of the schmogon client
+    }
+
     private void onNavItemSelected(NavigationItemViewModel item)
     {
       if (item == null) return;
@@ -276,5 +373,7 @@ namespace SmogonWP.ViewModel
         IsAppBarOpen = true;
       }
     }
+
+
   }
 }

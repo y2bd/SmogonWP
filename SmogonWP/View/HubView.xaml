@@ -87,6 +87,12 @@
                                                        IsVisible="{Binding IsAppBarOpen}" />
     </bindableApplicationBar:Bindable.ApplicationBar>
 
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator IsIndeterminate="True"
+                                 IsVisible="{Binding Path=TrayService.IsLoading}"
+                                 Text="{Binding Path=TrayService.CurrentMessage}" />
+    </shell:SystemTray.ProgressIndicator>
+    
     <!--LayoutRoot contains the root grid where all other page content is placed-->
     <Grid x:Name="LayoutRoot">
         <i:Interaction.Triggers>
@@ -139,7 +145,15 @@
                         </Storyboard>
                     </VisualTransition>
                 </VisualStateGroup.Transitions>
-                <VisualState x:Name="Collapsed" />
+                <VisualState x:Name="Collapsed">
+                    <Storyboard>
+                        <DoubleAnimation Duration="0"
+                                         To="0"
+                                         Storyboard.TargetProperty="Opacity"
+                                         Storyboard.TargetName="QuickSearchPanel"
+                                         d:IsOptimized="True" />
+                    </Storyboard>
+                </VisualState>
                 <VisualState x:Name="Visible">
                     <Storyboard>
                         <DoubleAnimation Duration="0"

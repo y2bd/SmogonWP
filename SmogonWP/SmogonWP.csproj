@@ -123,6 +123,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\DataLoadingService.cs" />
     <Compile Include="Services\IsolatedStorageService.cs" />
     <Compile Include="Services\Messaging\InitMessageBase.cs" />
     <Compile Include="Services\Messaging\MessageReceiver.cs" />

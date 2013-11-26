@@ -1,9 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using GalaSoft.MvvmLight.Command;
+﻿using System.Windows.Controls;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 
 namespace SmogonWP.View
 {

@@ -46,6 +46,7 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<TombstoneService>();
       SimpleIoc.Default.Register<TrayService>();
       SimpleIoc.Default.Register<IsolatedStorageService>();
+      SimpleIoc.Default.Register<DataLoadingService>();
 
       SimpleIoc.Default.Register<HomeViewModel>();
       SimpleIoc.Default.Register<HubViewModel>();
