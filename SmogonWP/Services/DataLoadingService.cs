@@ -1,4 +1,6 @@
-﻿using Schmogon;
+﻿using System.Diagnostics;
+using Nito.AsyncEx;
+using Schmogon;
 using Schmogon.Data;
 using Schmogon.Data.Abilities;
 using Schmogon.Data.Items;
@@ -23,6 +25,21 @@ namespace SmogonWP.Services
     private readonly ISchmogonClient _schmogonClient;
     private readonly IsolatedStorageService _storageService;
 
+    // we have different locks for each call
+    // because we don't want a move request locking up a pokemon request
+    // because those two requests will never mess each other up
+    private readonly AsyncLock _pokeLock;
+    private readonly AsyncLock _moveLock;
+    private readonly AsyncLock _typedMoveLock;
+    private readonly AsyncLock _abilLock;
+    private readonly AsyncLock _itemLock;
+
+    private IEnumerable<Pokemon> _pokemonSearchCache;
+    private IEnumerable<Move> _moveSearchCache;
+    private Dictionary<Type, IEnumerable<Move>> _typedMoveSearchCache;
+    private IEnumerable<Ability> _abilitySearchCache;
+    private IEnumerable<Item> _itemSearchCache;
+
     public uint MaxTries { get; set; }
 
     public DataLoadingService(ISchmogonClient schmogonClient, IsolatedStorageService storageService)
@@ -31,36 +48,81 @@ namespace SmogonWP.Services
       _storageService = storageService;
 
       MaxTries = 2;
+
+      _pokeLock = new AsyncLock();
+      _moveLock = new AsyncLock();
+      _typedMoveLock = new AsyncLock();
+      _abilLock = new AsyncLock();
+      _itemLock = new AsyncLock();
+
+      _typedMoveSearchCache = new Dictionary<Type, IEnumerable<Move>>();
     }
 
     public async Task<IEnumerable<Pokemon>> FetchAllPokemonAsync()
     {
-      return await fetchSearchItems(PokemonListFilename, _schmogonClient.GetAllPokemonAsync());
+      // we use a lock so only one instance can be fetched at a time
+      // wait for the last caller to get the list before the next one gets it
+      // so the second is guaranteed the cache
+      using (var release = await _pokeLock.LockAsync())
+      {
+        return _pokemonSearchCache ??
+               (_pokemonSearchCache =
+                await fetchSearchItems(PokemonListFilename, _schmogonClient.GetAllPokemonAsync()));
+      }
     }
 
     public async Task<IEnumerable<Move>> FetchAllMovesAsync()
     {
-      return await fetchSearchItems(MoveListFilename, _schmogonClient.GetAllMovesAsync());
+      Debug.WriteLine("Trying to fetch moves");
+
+      using (var release = await _moveLock.LockAsync())
+      {
+        return _moveSearchCache ??
+               (_moveSearchCache =
+                await fetchSearchItems(MoveListFilename, _schmogonClient.GetAllMovesAsync()));
+      }
     }
 
     public async Task<IEnumerable<Move>> FetchAllMovesOfTypeAsync(Type type)
     {
-      var name = Enum.GetName(typeof (Type), type);
-      if (name == null) throw new ArgumentException(@"type must be in the range of the Type enum", "type");
+      using (var release = await _typedMoveLock.LockAsync())
+      {
+        var name = Enum.GetName(typeof(Type), type);
+        if (name == null) throw new ArgumentException(@"type must be in the range of the Type enum", "type");
 
-      var filename = string.Format(TypedMoveListFilename, name.ToLower());
+        var filename = string.Format(TypedMoveListFilename, name.ToLower());
 
-      return await fetchSearchItems(filename, _schmogonClient.GetMovesOfTypeAsync(type));
+        IEnumerable<Move> result;
+
+        if (!_typedMoveSearchCache.TryGetValue(type, out result))
+        {
+          result = await fetchSearchItems(filename, _schmogonClient.GetMovesOfTypeAsync(type));
+
+          _typedMoveSearchCache.Add(type, result);
+        }
+
+        return result;
+      }
     }
 
     public async Task<IEnumerable<Ability>> FetchAllAbilitiesAsync()
     {
-      return await fetchSearchItems(AbilityListFilename, _schmogonClient.GetAllAbilitiesAsync());
+      using (var release = await _abilLock.LockAsync())
+      {
+        return _abilitySearchCache ??
+               (_abilitySearchCache =
+                await fetchSearchItems(AbilityListFilename, _schmogonClient.GetAllAbilitiesAsync()));
+      }
     }
 
     public async Task<IEnumerable<Item>> FetchAllItemsAsync()
     {
-      return await fetchSearchItems(ItemListFilename, _schmogonClient.GetAllItemsAsync());
+      using (var release = await _itemLock.LockAsync())
+      {
+        return _itemSearchCache ??
+               (_itemSearchCache =
+                await fetchSearchItems(ItemListFilename, _schmogonClient.GetAllItemsAsync()));
+      }
     }
 
     private async Task<IEnumerable<T>> fetchSearchItems<T>(
