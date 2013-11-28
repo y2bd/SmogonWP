@@ -2,10 +2,14 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 using Nito.AsyncEx;
 using Nito.AsyncEx.Synchronous;
 using Schmogon.Data;
@@ -379,57 +383,59 @@ namespace SmogonWP.ViewModel
 
     private async Task fetchSearchData()
     {
-      TrayService.AddJob("fetchall", "Fetching search data...");
+      await Task.Run(new Func<Task>(pleaseOffThread));
+    }
+
+    // better name in future
+    // lol have fun jason
+    private async Task pleaseOffThread()
+    {
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("fetchall", "Fetching search data..."));
 
       var pokeTask = _dataService.FetchAllPokemonAsync();
       var moveTask = _dataService.FetchAllMovesAsync();
       var abilTask = _dataService.FetchAllAbilitiesAsync();
       var itemTask = _dataService.FetchAllItemsAsync();
-
+      
       try
       {
         await Task.WhenAll(pokeTask, moveTask, abilTask, itemTask);
 
-        await populateSearchItemList(pokeTask, moveTask, abilTask, itemTask);
-
-        FilteredSearchItems = new ObservableCollection<ISearchItem>();
-
-        IsAppBarOpen = true;
-      }
-      catch (Exception e)
-      {
-        if (!NetUtilities.IsNetwork())
-        {
-          MessageBox.Show(
-            "Downloading search data requires an internet connection. Please get one of those and try again later.",
-            "No internet!", MessageBoxButton.OK);
-        }
-        else
-        {
-          MessageBox.Show(
-            "I'm sorry, but we couldn't load the search data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
-            "Oh no!", MessageBoxButton.OK);
-
-          Debugger.Break();
-        }
-      }
-
-      TrayService.RemoveJob("fetchall");
-
-      // TODO : Finish universal search on hubview AND make other VMs use the DataLoaderService instead of the schmogon client
-    }
-
-    private async Task populateSearchItemList(Task<IEnumerable<Pokemon>> pokeTask, Task<IEnumerable<Move>> moveTask, Task<IEnumerable<Ability>> abilTask, Task<IEnumerable<Item>> itemTask)
-    {
-      _allSearchItems = new List<ISearchItem>()
+        _allSearchItems = new List<ISearchItem>()
         .Concat((await pokeTask).Select(p => new PokemonItemViewModel(p)))
         .Concat((await moveTask).Select(m => new MoveItemViewModel(m)))
         .Concat((await abilTask).Select(a => new AbilityItemViewModel(a)))
         .Concat((await itemTask).Select(i => new ItemItemViewModel(i)))
         .OrderBy(i => i.Name)
         .ToList();
-    }
 
+        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+        {
+          FilteredSearchItems = new ObservableCollection<ISearchItem>();
+          IsAppBarOpen = true;
+        });
+      }
+      catch (Exception e)
+      {
+        if (!NetUtilities.IsNetwork())
+        {
+          DispatcherHelper.CheckBeginInvokeOnUI(() => MessageBox.Show(
+            "Downloading search data requires an internet connection. Please get one of those and try again later.",
+            "No internet!", MessageBoxButton.OK));
+        }
+        else
+        {
+          DispatcherHelper.CheckBeginInvokeOnUI(() => MessageBox.Show(
+            "I'm sorry, but we couldn't load the search data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+            "Oh no!", MessageBoxButton.OK));
+
+          Debugger.Break();
+        }
+      }
+
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("fetchall"));
+    }
+    
     private void onNavItemSelected(NavigationItemViewModel item)
     {
       if (item == null) return;

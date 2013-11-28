@@ -73,8 +73,6 @@ namespace SmogonWP.Services
 
     public async Task<IEnumerable<Move>> FetchAllMovesAsync()
     {
-      Debug.WriteLine("Trying to fetch moves");
-
       using (var release = await _moveLock.LockAsync())
       {
         return _moveSearchCache ??
@@ -130,8 +128,12 @@ namespace SmogonWP.Services
       Task<IEnumerable<T>> searchTask)
       where T : ISearchItem
     {
+      Debug.WriteLine("Starting {0}", typeof(T));
+
       // first just try to fetch from storage
       var searchItems = await fetchSearchItemsFromStorage<T>(cacheLocation);
+
+      Debug.WriteLine("Fetched {0}", typeof(T));
 
       if (searchItems != null) return searchItems;
 
@@ -142,6 +144,8 @@ namespace SmogonWP.Services
 
       while (!success && tries < MaxTries)
       {
+        Debug.WriteLine("Looping {0}, iteration {1}", typeof(T), tries);
+
         tries++;
 
         try
@@ -187,6 +191,9 @@ namespace SmogonWP.Services
       if (await _storageService.FileExistsAsync(location))
       {
         var cereal = await _storageService.ReadStringFromFileAsync(location);
+
+        Debug.WriteLine("Deserializing {0}", typeof(T));
+
         cache = await _schmogonClient.DeserializeSearchItemListAsync<T>(cereal);
       }
 

@@ -47,28 +47,25 @@ namespace SmogonWP.Services
 
         var filePath = buildPath(filename);
 
-        lock (_readLock)
+        using (var isf = IsolatedStorageFile.GetUserStoreForApplication())
         {
-          using (var isf = IsolatedStorageFile.GetUserStoreForApplication())
-          {
-            if (!isf.FileExists(filePath)) throw new ArgumentException(string.Format("No file of the name '{0}' exists.", filename), "filename");
+          if (!isf.FileExists(filePath)) throw new ArgumentException(string.Format("No file of the name '{0}' exists.", filename), "filename");
 
-            try
+          try
+          {
+            using (var filestream = isf.OpenFile(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var reader = new StreamReader(filestream))
             {
-              using (var filestream = isf.OpenFile(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-              using (var reader = new StreamReader(filestream))
-              {
-                contents = reader.ReadToEnd();
-              }
+              contents = reader.ReadToEnd();
             }
-            catch (IsolatedStorageException e)
-            {
-              contents = null;
-            }
-            catch (IOException e)
-            {
-              contents = null;
-            }
+          }
+          catch (IsolatedStorageException e)
+          {
+            contents = null;
+          }
+          catch (IOException e)
+          {
+            contents = null;
           }
         }
 
