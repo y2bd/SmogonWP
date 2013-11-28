@@ -26,7 +26,7 @@ namespace SmogonWP.ViewModel
   public class PokemonSearchViewModel : ViewModelBase
   {
     private readonly SimpleNavigationService _navigationService;
-    private readonly DataLoadingService _dataService;
+    private readonly IDataLoadingService _dataService;
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokemonSearchSender;
 
@@ -261,7 +261,7 @@ namespace SmogonWP.ViewModel
 
     #endregion
 
-    public PokemonSearchViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
+    public PokemonSearchViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
       _dataService = dataService;

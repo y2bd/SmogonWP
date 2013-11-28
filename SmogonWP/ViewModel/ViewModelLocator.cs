@@ -36,17 +36,18 @@ namespace SmogonWP.ViewModel
       if (ViewModelBase.IsInDesignModeStatic)
       {
         RegisterIfUnregistered<ISchmogonClient, Design.DesignSchmogonClient>();
+        RegisterIfUnregistered<IDataLoadingService, Design.DesignDataLoadingService>();
       }
       else
       {
         RegisterIfUnregistered<ISchmogonClient, SchmogonClient>();
+        RegisterIfUnregistered<IDataLoadingService, DataLoadingService>();
       }
 
       SimpleIoc.Default.Register<SimpleNavigationService>();
       SimpleIoc.Default.Register<TombstoneService>();
       SimpleIoc.Default.Register<TrayService>();
       SimpleIoc.Default.Register<IsolatedStorageService>();
-      SimpleIoc.Default.Register<DataLoadingService>();
 
       SimpleIoc.Default.Register<HomeViewModel>();
       SimpleIoc.Default.Register<HubViewModel>();

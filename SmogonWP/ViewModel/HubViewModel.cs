@@ -24,7 +24,7 @@ namespace SmogonWP.ViewModel
   public class HubViewModel : ViewModelBase
   {
     private readonly SimpleNavigationService _navigationService;
-    private readonly DataLoadingService _dataService;
+    private readonly IDataLoadingService _dataService;
 
     private IEnumerable<ISearchItem> _allSearchItems;
 
@@ -192,7 +192,7 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public HubViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
+    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
       _dataService = dataService;

@@ -21,7 +21,7 @@ namespace SmogonWP.ViewModel
   public class ItemSearchViewModel : ViewModelBase
   {
     private readonly SimpleNavigationService _navigationService;
-    private readonly DataLoadingService _dataService;
+    private readonly IDataLoadingService _dataService;
 
     private readonly MessageSender<ItemSearchedMessage<Item>> _itemSearchSender;
     
@@ -149,7 +149,7 @@ namespace SmogonWP.ViewModel
 
     #endregion
 
-    public ItemSearchViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
+    public ItemSearchViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
       _dataService = dataService;

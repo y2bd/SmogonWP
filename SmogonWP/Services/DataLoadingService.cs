@@ -14,7 +14,7 @@ using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.Services
 {
-  public class DataLoadingService
+  public class DataLoadingService : IDataLoadingService
   {
     private const string PokemonListFilename = "pokemon.txt";
     private const string AbilityListFilename = "abilities.txt";

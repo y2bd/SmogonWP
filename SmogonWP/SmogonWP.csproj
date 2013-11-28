@@ -104,6 +104,7 @@
     <Compile Include="Converters\RandomOpacityConverter.cs" />
     <Compile Include="Converters\TextLengthToColumnSpanConverter.cs" />
     <Compile Include="Converters\UppercaseConverter.cs" />
+    <Compile Include="Design\DesignDataLoadingService.cs" />
     <Compile Include="Design\DesignSchmogonClient.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -124,6 +125,7 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\DataLoadingService.cs" />
+    <Compile Include="Services\IDataLoadingService.cs" />
     <Compile Include="Services\IsolatedStorageService.cs" />
     <Compile Include="Services\Messaging\InitMessageBase.cs" />
     <Compile Include="Services\Messaging\MessageReceiver.cs" />

@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -26,12 +25,10 @@ namespace SmogonWP.ViewModel
   public class MoveSearchViewModel : ViewModelBase
   {
     private readonly SimpleNavigationService _navigationService;
-    private readonly DataLoadingService _dataService;
+    private readonly IDataLoadingService _dataService;
 
     private readonly MessageSender<ItemSearchedMessage<Move>> _moveSearchSender;
-
-    private bool _failedOnce;
-
+    
     private List<MoveItemViewModel> _moves;
 
     private string _voicedMoveName;
@@ -227,7 +224,7 @@ namespace SmogonWP.ViewModel
 
     #endregion
 
-    public MoveSearchViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
+    public MoveSearchViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
       _dataService = dataService;
