@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.Phone.Controls;
 
 namespace SmogonWP.View
@@ -16,13 +17,9 @@ namespace SmogonWP.View
       };
     }
 
-    private void Panorama_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void Searchbox_OnKeyUp(object sender, KeyEventArgs e)
     {
-      var pano = sender as Panorama;
-
-      if (pano == null) return;
-
-      //AppBar.Mode = pano.SelectedIndex == 0 ? ApplicationBarMode.Default : ApplicationBarMode.Minimized;
+      if (e.Key == Key.Enter) QuickSearchList.Focus();
     }
   }
 }

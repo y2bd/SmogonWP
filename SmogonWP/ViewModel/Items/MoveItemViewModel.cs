@@ -1,9 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
+using Schmogon.Data;
 using Schmogon.Data.Moves;
 
 namespace SmogonWP.ViewModel.Items
 {
-  public class MoveItemViewModel : ViewModelBase
+  public class MoveItemViewModel : ViewModelBase, ISearchItem
   {
     internal readonly Move Move;
 

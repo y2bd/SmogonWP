@@ -1,9 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
+using Schmogon.Data;
 using Schmogon.Data.Abilities;
 
 namespace SmogonWP.ViewModel.Items
 {
-  public class AbilityItemViewModel : ViewModelBase
+  public class AbilityItemViewModel : ViewModelBase, ISearchItem
   {
     internal readonly Ability Ability;
 

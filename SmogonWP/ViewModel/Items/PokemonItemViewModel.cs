@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
+using Schmogon.Data;
 using Schmogon.Data.Pokemon;
 
 namespace SmogonWP.ViewModel.Items
 {
-  public class PokemonItemViewModel : ViewModelBase
+  public class PokemonItemViewModel : ViewModelBase, ISearchItem
   {
     public Pokemon Pokemon { get; private set; }
 
@@ -14,6 +15,14 @@ namespace SmogonWP.ViewModel.Items
       get
       {
         return Pokemon.Name.ToLowerInvariant();
+      }
+    }
+
+    public string PageLocation
+    {
+      get
+      {
+        return Pokemon.PageLocation;
       }
     }
 

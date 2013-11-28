@@ -406,8 +406,8 @@
                                                         ItemsSource="{Binding Path=PDVM.Movesets}"
                                                         SelectedItem="{Binding SelectedMoveset, Mode=TwoWay}"
                                                         Style="{StaticResource LLSFloatingScrollbarStyle}"
-                                                        ItemTemplate="{StaticResource MovesetItemTemplate}" 
-                                                        toolkit:TiltEffect.IsTiltEnabled="True"/>
+                                                        ItemTemplate="{StaticResource MovesetItemTemplate}"
+                                                        toolkit:TiltEffect.IsTiltEnabled="True" />
                 </phone:PivotItem>
                 <phone:PivotItem Header="MOVE POOL"
                                  Margin="10,10,14,2">
@@ -420,13 +420,6 @@
                 </phone:PivotItem>
             </phone:Pivot>
         </Grid>
-
-        <Border x:Name="BusyShade"
-                Grid.Row="2"
-                Margin="-12"
-                Background="{StaticResource PhoneBackgroundBrush}"
-                Opacity="0.5"
-                Visibility="{Binding Path=TrayService.IsLoading, Converter={StaticResource BooleanVisibilityConverter}, TargetNullValue=Collapsed}" />
     </Grid>
 
 </phone:PhoneApplicationPage>

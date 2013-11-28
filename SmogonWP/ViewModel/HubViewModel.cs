@@ -3,12 +3,19 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
 using Nito.AsyncEx.Synchronous;
 using Schmogon.Data;
+using Schmogon.Data.Abilities;
+using Schmogon.Data.Items;
+using Schmogon.Data.Moves;
+using Schmogon.Data.Pokemon;
+using SmogonWP.Messages;
 using SmogonWP.Services;
+using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
@@ -25,6 +32,11 @@ namespace SmogonWP.ViewModel
   {
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
+
+    private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokeSearchSender;
+    private readonly MessageSender<ItemSearchedMessage<Ability>> _abilSearchSender;
+    private readonly MessageSender<ItemSearchedMessage<Move>> _moveSearchSender;
+    private readonly MessageSender<ItemSearchedMessage<Item>> _itemSearchSender;
 
     private IEnumerable<ISearchItem> _allSearchItems;
 
@@ -169,6 +181,59 @@ namespace SmogonWP.ViewModel
         }
       }
     }
+
+    private string _filter;
+    public string Filter
+    {
+      get
+      {
+        return _filter;
+      }
+      set
+      {
+        if (_filter != value)
+        {
+          _filter = value;
+          RaisePropertyChanged(() => Filter);
+        }
+      }
+    }			
+
+    private ObservableCollection<ISearchItem> _filteredSearchItems;
+    public ObservableCollection<ISearchItem> FilteredSearchItems
+    {
+      get
+      {
+        return _filteredSearchItems;
+      }
+      set
+      {
+        if (_filteredSearchItems != value)
+        {
+          _filteredSearchItems = value;
+          RaisePropertyChanged(() => FilteredSearchItems);
+        }
+      }
+    }
+
+    private ISearchItem _selectedSearchItem;
+    public ISearchItem SelectedSearchItem
+    {
+      get
+      {
+        return _selectedSearchItem;
+      }
+      set
+      {
+        if (_selectedSearchItem != value)
+        {
+          onSearchItemSelected(value);
+
+          _selectedSearchItem = null;
+          RaisePropertyChanged(() => SelectedSearchItem);
+        }
+      }
+    }			
     
     #endregion props
 
@@ -181,6 +246,16 @@ namespace SmogonWP.ViewModel
       {
         return _backKeyPressedCommand ??
                (_backKeyPressedCommand = new RelayCommand<CancelEventArgs>(onBackKeyPressed));
+      }
+    }
+
+    private RelayCommand<KeyEventArgs> _queryChangedCommand;
+    public RelayCommand<KeyEventArgs> QueryChangedCommand
+    {
+      get
+      {
+        return _queryChangedCommand ??
+               (_queryChangedCommand = new RelayCommand<KeyEventArgs>(onQueryChanged));
       }
     }
 
@@ -197,6 +272,11 @@ namespace SmogonWP.ViewModel
       _navigationService = navigationService;
       _dataService = dataService;
       _trayService = trayService;
+
+      _pokeSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
+      _abilSearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
+      _moveSearchSender = new MessageSender<ItemSearchedMessage<Move>>();
+      _itemSearchSender = new MessageSender<ItemSearchedMessage<Item>>();
 
       setupNavigation();
       setupAppBar();
@@ -312,12 +392,14 @@ namespace SmogonWP.ViewModel
         await Task.WhenAll(pokeTask, moveTask, move2Task, abilTask, itemTask);
 
         _allSearchItems = new List<ISearchItem>()
-          .Concat(await pokeTask)
-          .Concat(await moveTask)
-          .Concat(await abilTask)
-          .Concat(await itemTask)
+          .Concat((await pokeTask).Select(p => new PokemonItemViewModel(p)))
+          .Concat((await moveTask).Select(m => new MoveItemViewModel(m)))
+          .Concat((await abilTask).Select(a => new AbilityItemViewModel(a)))
+          .Concat((await itemTask).Select(i => new ItemItemViewModel(i)))
           .OrderBy(i => i.Name)
           .ToList();
+
+        FilteredSearchItems = new ObservableCollection<ISearchItem>();
       }
       catch (Exception e)
       {
@@ -372,6 +454,49 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private void onQueryChanged(KeyEventArgs args)
+    {
+      if (_allSearchItems == null || Filter == null) return;
+      if (args.Key != Key.Enter) return;
 
+      if (string.IsNullOrWhiteSpace(Filter))
+      {
+        FilteredSearchItems = new ObservableCollection<ISearchItem>();
+        return;
+      }
+
+      FilteredSearchItems = new ObservableCollection<ISearchItem>(
+        _allSearchItems.Where(
+          m => m.Name.ToLower().Contains(Filter.ToLower().Trim())
+        ).OrderBy(m => m.Name)
+      );
+    }
+
+    private void onSearchItemSelected(ISearchItem item)
+    {
+      if (item is PokemonItemViewModel)
+      {
+        _pokeSearchSender.SendMessage(new ItemSearchedMessage<Pokemon>((item as PokemonItemViewModel).Pokemon));
+        _navigationService.Navigate(ViewModelLocator.PokemonDataPath);
+      }
+      else if (item is AbilityItemViewModel)
+      {
+        _abilSearchSender.SendMessage(new ItemSearchedMessage<Ability>((item as AbilityItemViewModel).Ability));
+        _navigationService.Navigate(ViewModelLocator.AbilityDataPath);
+      }
+      else if (item is MoveItemViewModel)
+      {
+        _moveSearchSender.SendMessage(new ItemSearchedMessage<Move>((item as MoveItemViewModel).Move));
+        _navigationService.Navigate(ViewModelLocator.MoveDataPath);
+      }
+      else if (item is ItemItemViewModel)
+      {
+        _itemSearchSender.SendMessage(new ItemSearchedMessage<Item>((item as ItemItemViewModel).Item));
+        _navigationService.Navigate(ViewModelLocator.ItemDataPath);
+      }
+
+      IsSearchPanelOpen = false;
+      IsAppBarOpen = true;
+    }
   }
 }

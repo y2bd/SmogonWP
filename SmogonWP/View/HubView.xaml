@@ -12,7 +12,6 @@
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                             xmlns:bindableApplicationBar="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
-                            xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
                             mc:Ignorable="d"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -56,6 +55,12 @@
                                    TextWrapping="Wrap" />
                     </StackPanel>
                 </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="QuickSearchItemTemplate">
+            <Grid Margin="0,0,0,12">
+                <TextBlock Style="{StaticResource PhoneTextTitle2Style}"
+                           Text="{Binding Name}" />
             </Grid>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
@@ -142,6 +147,15 @@
                                     <QuarticEase EasingMode="EaseIn" />
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
+                            <DoubleAnimation Duration="0:0:0.5"
+                                             From="1"
+                                             To="1"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Storyboard.TargetName="QuickSearchPanel">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuarticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
                         </Storyboard>
                     </VisualTransition>
                 </VisualStateGroup.Transitions>
@@ -167,8 +181,7 @@
         </VisualStateManager.VisualStateGroups>
 
         <phone:Panorama Background="#22CCCCCC"
-                        toolkit:TiltEffect.IsTiltEnabled="True"
-                        SelectionChanged="Panorama_OnSelectionChanged">
+                        toolkit:TiltEffect.IsTiltEnabled="True">
             <!--Panorama item one-->
             <phone:PanoramaItem>
                 <StackPanel Margin="0,96,0,0"
@@ -240,8 +253,30 @@
                            Text="QUICK SEARCH" />
                 <toolkit:PhoneTextBox x:Name="QuickSearchBox"
                                       PlaceholderText="Search for anything..."
-                                      InputScope="Text"/>
+                                      InputScope="Search"
+                                      Text="{Binding Filter, Mode=TwoWay}"
+                                      Margin="0,0,0,12"
+                                      KeyUp="Searchbox_OnKeyUp">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="KeyUp">
+                            <gala:EventToCommand Command="{Binding QueryChangedCommand}"
+                                                 PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                    <i:Interaction.Behaviors>
+                        <util:UpdateTextBindingOnPropertyChanged />
+                    </i:Interaction.Behaviors>
+                </toolkit:PhoneTextBox>
             </StackPanel>
+            <util:BindableLongListSelector x:Name="QuickSearchList"
+                                           Grid.Row="2"
+                                           Margin="12,0,12,0"
+                                           Style="{StaticResource LLSFloatingScrollbarStyle}"
+                                           ItemsSource="{Binding FilteredSearchItems}"
+                                           SelectedItem="{Binding SelectedSearchItem, Mode=TwoWay}"
+                                           ItemTemplate="{StaticResource QuickSearchItemTemplate}" 
+                                           toolkit:TiltEffect.IsTiltEnabled="True"/>
         </Grid>
     </Grid>
 
