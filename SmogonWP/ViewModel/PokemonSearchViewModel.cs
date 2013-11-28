@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Windows.Foundation.Metadata;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
@@ -24,15 +25,10 @@ namespace SmogonWP.ViewModel
 {
   public class PokemonSearchViewModel : ViewModelBase
   {
-    private const string PokemonListFilename = "pokemon.txt";
-
     private readonly SimpleNavigationService _navigationService;
-    private readonly ISchmogonClient _schmogonClient;
-    private readonly IsolatedStorageService _storageService;
+    private readonly DataLoadingService _dataService;
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokemonSearchSender;
-
-    private bool _failedOnce;
 
     private ICollection<PokemonItemViewModel> _pokemon;
 
@@ -41,7 +37,6 @@ namespace SmogonWP.ViewModel
     #region props
 
     private TrayService _trayService;
-
     public TrayService TrayService
     {
       get
@@ -266,11 +261,10 @@ namespace SmogonWP.ViewModel
 
     #endregion
 
-    public PokemonSearchViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, IsolatedStorageService storageService, TrayService trayService)
+    public PokemonSearchViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
-      _schmogonClient = schmogonClient;
-      _storageService = storageService;
+      _dataService = dataService;
       _trayService = trayService;
 
       _pokemonSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
@@ -385,93 +379,40 @@ namespace SmogonWP.ViewModel
 
     private async Task fetchPokemon()
     {
-      TrayService.AddJob("pokefetch", "Fetching pokemon");
+      FilteredPokemon = null;
 
-      // hehe raw pokemon
-      var rawPokemon = await fetchPokemonFromStorage();
-
-      // no pokemon in cache :(
-      if (rawPokemon == null)
+      try
       {
-        try
-        {
-          rawPokemon = await _schmogonClient.GetAllPokemonAsync();
-        }
-        catch (HttpRequestException)
-        {
-          reloadPokemon();
-          return;
-        }
+        var rawPokemon = await _dataService.FetchAllPokemonAsync();
 
-        await cacheMoves();
-      }
-
-      _pokemon = (from pokemon in rawPokemon
-                  select new PokemonItemViewModel(pokemon))
+        _pokemon = (from pokemon in rawPokemon
+                    select new PokemonItemViewModel(pokemon))
         .ToList();
 
-      FilteredPokemon = new ObservableCollection<PokemonItemViewModel>(_pokemon);
+        FilteredPokemon = new ObservableCollection<PokemonItemViewModel>(_pokemon);
 
-      LoadFailed = false;
-
-      TrayService.RemoveJob("pokefetch");
-    }
-
-    private async Task<IEnumerable<Pokemon>> fetchPokemonFromStorage()
-    {
-      IEnumerable<Pokemon> pokeCache = null;
-
-      if (await _storageService.FileExistsAsync(PokemonListFilename))
-      {
-        var cereal = await _storageService.ReadStringFromFileAsync(PokemonListFilename);
-
-        pokeCache = await _schmogonClient.DeserializePokemonListAsync(cereal);
+        LoadFailed = false;
       }
-
-      return pokeCache;
-    }
-
-    private async Task cacheMoves()
-    {
-      var cereal = await _schmogonClient.SerializePokemonListAsync();
-
-      await _storageService.WriteStringToFileAsync(PokemonListFilename, cereal);
-    }
-
-    private void reloadPokemon()
-    {
-      if (_failedOnce)
+      catch (Exception e)
       {
-        // we failed, give up
-        cleanup();
-
-        MessageBox.Show(
+        if (!NetUtilities.IsNetwork())
+        {
+          MessageBox.Show(
+          "Downloading Pokemon data requires an internet connection. Please get one of those and try again later.",
+          "No internet!", MessageBoxButton.OK);
+        }
+        else
+        {
+          MessageBox.Show(
           "I'm sorry, but we couldn't load the Pokemon data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
           "Oh no!", MessageBoxButton.OK);
+        }
 
-        _failedOnce = false;
+        Debugger.Break();
 
         LoadFailed = true;
-      }
-      else if (!NetUtilities.IsNetwork())
-      {
-        // crafty bastard somehow lost network connectivity midway
+
         cleanup();
-
-        MessageBox.Show(
-          "Downloading move data requires an internet connection. Please get one of those and try again later.",
-          "No internet!", MessageBoxButton.OK);
-
-        LoadFailed = true;
-      }
-      else
-      {
-        // let's try again
-        Debug.WriteLine("Move load failed once.");
-
-        _failedOnce = true;
-
-        schedulePokemonListFetch();
       }
     }
 

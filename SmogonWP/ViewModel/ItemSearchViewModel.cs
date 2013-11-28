@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
-using Schmogon;
 using Schmogon.Data.Items;
 using SmogonWP.Messages;
 using SmogonWP.Services;
@@ -21,16 +20,11 @@ namespace SmogonWP.ViewModel
 {
   public class ItemSearchViewModel : ViewModelBase
   {
-    private const string ItemListFilename = "items.txt";
-
     private readonly SimpleNavigationService _navigationService;
-    private readonly ISchmogonClient _schmogonClient;
-    private readonly IsolatedStorageService _storageService;
+    private readonly DataLoadingService _dataService;
 
     private readonly MessageSender<ItemSearchedMessage<Item>> _itemSearchSender;
-
-    private bool _failedOnce;
-
+    
     private List<ItemItemViewModel> _items;
 
     #region props
@@ -86,7 +80,7 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => SelectedItem);
         }
       }
-    }			
+    }
 
     private ObservableCollection<ItemItemViewModel> _filteredItems;
     public ObservableCollection<ItemItemViewModel> FilteredItems
@@ -120,7 +114,7 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => LoadFailed);
         }
       }
-    }			
+    }
 
     #endregion props
 
@@ -155,25 +149,24 @@ namespace SmogonWP.ViewModel
 
     #endregion
 
-    public ItemSearchViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService, IsolatedStorageService storageService)
+    public ItemSearchViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
-      _schmogonClient = schmogonClient;
+      _dataService = dataService;
       _trayService = trayService;
-      _storageService = storageService;
 
       _itemSearchSender = new MessageSender<ItemSearchedMessage<Item>>();
 
       scheduleItemListFetch();
     }
-    
+
     private void onFilterChanged(KeyEventArgs args)
     {
       if (_items == null || Filter == null) return;
       if (args.Key != Key.Enter) return;
 
       if (string.IsNullOrWhiteSpace(Filter)) FilteredItems = new ObservableCollection<ItemItemViewModel>(_items);
-      
+
       FilteredItems = new ObservableCollection<ItemItemViewModel>(
         _items.Where(
           m => m.Name.ToLower().Contains(Filter.ToLower().Trim())
@@ -211,97 +204,40 @@ namespace SmogonWP.ViewModel
 
     private async Task fetchItems()
     {
-      TrayService.AddJob("itemfetch", "Fetching items");
+      FilteredItems = null;
 
-      var rawItems = await fetchItemsFromStorage();
-
-      // if we couldn't get items from the cache...
-      if (rawItems == null)
+      try
       {
-        Debug.WriteLine("Reading items from internetland!");
+        var rawItems = await _dataService.FetchAllItemsAsync();
 
-        try
-        {
-          rawItems = (await _schmogonClient.GetAllItemsAsync()).ToList();
-        }
-        catch (HttpRequestException)
-        {
-          reloadItems();
-          return;
-        }
-
-        // cache 'em for next time
-        await cacheItems();
-      }
-      else
-      {
-        Debug.WriteLine("Reading items from fileland!");
-      }
-
-      _items = (from rawItem in rawItems
-                select new ItemItemViewModel(rawItem))
+        _items = (from item in rawItems
+                  select new ItemItemViewModel(item))
         .ToList();
 
-      FilteredItems = new ObservableCollection<ItemItemViewModel>(_items);
+        FilteredItems = new ObservableCollection<ItemItemViewModel>(_items);
 
-      TrayService.RemoveJob("itemfetch");
-    }
-
-    private async Task<IEnumerable<Item>> fetchItemsFromStorage()
-    {
-      IEnumerable<Item> itemCache = null;
-
-      if (await _storageService.FileExistsAsync(ItemListFilename))
-      {
-        var cereal = await _storageService.ReadStringFromFileAsync(ItemListFilename);
-
-        itemCache = (await _schmogonClient.DeserializeItemListAsync(cereal));
+        LoadFailed = false;
       }
-
-      return itemCache;
-    }
-
-    private async Task cacheItems()
-    {
-      var cereal = await _schmogonClient.SerializeItemListAsync();
-
-      await _storageService.WriteStringToFileAsync(ItemListFilename, cereal);
-    }
-
-    private void reloadItems()
-    {
-      if (_failedOnce)
+      catch (Exception e)
       {
-        // we failed, give up
-        cleanup();
-        
-        MessageBox.Show(
-          "I'm sorry, but we couldn't load the item data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
-          "Oh no!", MessageBoxButton.OK);
-
-        _failedOnce = false;
-
-        LoadFailed = true;
-      }
-      else if (!NetUtilities.IsNetwork())
-      {
-        // crafty bastard somehow lost network connectivity midway
-        cleanup();
-
-        MessageBox.Show(
+        if (!NetUtilities.IsNetwork())
+        {
+          MessageBox.Show(
           "Downloading item data requires an internet connection. Please get one of those and try again later.",
           "No internet!", MessageBoxButton.OK);
+        }
+        else
+        {
+          MessageBox.Show(
+          "I'm sorry, but we couldn't load the item data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+        }
+
+        Debugger.Break();
 
         LoadFailed = true;
-      }
-      else
-      {
-        // let's try again
-        Debug.WriteLine("Move load failed once.");
 
-        _failedOnce = true;
-
-        scheduleItemListFetch();
+        cleanup();
       }
     }
 

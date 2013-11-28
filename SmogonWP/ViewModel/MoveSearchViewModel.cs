@@ -25,12 +25,8 @@ namespace SmogonWP.ViewModel
 {
   public class MoveSearchViewModel : ViewModelBase
   {
-    private const string MoveListFilename = "moves.txt";
-    private const string TypedMoveListFilename = "movetype_{0}.txt";
-
     private readonly SimpleNavigationService _navigationService;
-    private readonly ISchmogonClient _schmogonClient;
-    private readonly IsolatedStorageService _storageService;
+    private readonly DataLoadingService _dataService;
 
     private readonly MessageSender<ItemSearchedMessage<Move>> _moveSearchSender;
 
@@ -231,12 +227,11 @@ namespace SmogonWP.ViewModel
 
     #endregion
 
-    public MoveSearchViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService, IsolatedStorageService storageService)
+    public MoveSearchViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
-      _schmogonClient = schmogonClient;
+      _dataService = dataService;
       _trayService = trayService;
-      _storageService = storageService;
 
       _moveSearchSender = new MessageSender<ItemSearchedMessage<Move>>();
 
@@ -338,147 +333,47 @@ namespace SmogonWP.ViewModel
 
     private async Task fetchMoves()
     {
-      TrayService.AddJob("movefetch", "Fetching moves");
-
       FilteredMoves = null;
 
       var filter = SelectedFilter - 1;
-
-      var rawMoves = filter == -1
-        ? (await fetchMovesFromStorage())
-        : (await fetchMovesFromStorage((Type)filter));
-
-      // if we couldn't get moves from the cache...
-      if (rawMoves == null)
+      
+      try
       {
-        Debug.WriteLine("Reading moves from internetland!");
+        var rawMoves = filter == -1
+          ? await _dataService.FetchAllMovesAsync()
+          : await _dataService.FetchAllMovesOfTypeAsync((Type) filter);
 
-        try
-        {
-          // filter of -1 means no filter
-          rawMoves = filter == -1
-            ? (await _schmogonClient.GetAllMovesAsync())
-            : (await _schmogonClient.GetMovesOfTypeAsync((Type) filter));
-        }
-        catch (HttpRequestException)
-        {
-          reloadMoves();
-          return;
-        }
-
-        if (filter == -1) await cacheMoves();
-        else await cacheMoves((Type) filter);
-      }
-      else
-      {
-        Debug.WriteLine("Reading moves from fileland!");
-      }
-
-      _moves = (from rawMove in rawMoves
-                select new MoveItemViewModel(rawMove))
+        _moves = (from rawMove in rawMoves
+                  select new MoveItemViewModel(rawMove))
         .ToList();
 
-      FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
+        FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
 
-      LoadFailed = false;
-
-      TrayService.RemoveJob("movefetch");
-    }
-
-    private async Task<IEnumerable<Move>> fetchMovesFromStorage()
-    {
-      IEnumerable<Move> moveCache = null;
-
-      if (await _storageService.FileExistsAsync(MoveListFilename))
-      {
-        var cereal = await _storageService.ReadStringFromFileAsync(MoveListFilename);
-
-        moveCache = (await _schmogonClient.DeserializeMoveListAsync(cereal));
+        LoadFailed = false;
       }
-
-      return moveCache;
-    }
-
-    private async Task<IEnumerable<Move>> fetchMovesFromStorage(Type type)
-    {
-      IEnumerable<Move> moveCache = null;
-
-      var name = Enum.GetName(typeof (Type), type);
-      if (name != null)
+      catch (Exception e)
       {
-        var typeName = name.ToLower();
-        var filename = string.Format(TypedMoveListFilename, typeName);
-
-        if (await _storageService.FileExistsAsync(filename))
+        if (!NetUtilities.IsNetwork())
         {
-          var cereal = await _storageService.ReadStringFromFileAsync(filename);
-
-          moveCache = await _schmogonClient.DeserializeMoveListAsync(type, cereal);
-        }
-      }
-
-      return moveCache;
-    }
-
-    private async Task cacheMoves()
-    {
-      var cereal = await _schmogonClient.SerializeMoveListAsync();
-
-      await _storageService.WriteStringToFileAsync(MoveListFilename, cereal);
-    }
-
-    private async Task cacheMoves(Type type)
-    {
-      var name = Enum.GetName(typeof (Type), type);
-      if (name != null)
-      {
-        var typeName = name.ToLower();
-        var filename = string.Format(TypedMoveListFilename, typeName);
-
-        var cereal = await _schmogonClient.SerializeMoveListAsync(type);
-
-        await _storageService.WriteStringToFileAsync(filename, cereal);
-
-      }
-    }
-
-    private void reloadMoves()
-    {
-      if (_failedOnce)
-      {
-        // we failed, give up
-        cleanup();
-        
-        MessageBox.Show(
-          "I'm sorry, but we couldn't load the move data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
-          "Oh no!", MessageBoxButton.OK);
-
-        _failedOnce = false;
-
-        LoadFailed = true;
-      }
-      else if (!NetUtilities.IsNetwork())
-      {
-        // crafty bastard somehow lost network connectivity midway
-        cleanup();
-
-        MessageBox.Show(
+          MessageBox.Show(
           "Downloading move data requires an internet connection. Please get one of those and try again later.",
           "No internet!", MessageBoxButton.OK);
+        }
+        else
+        {
+          MessageBox.Show(
+          "I'm sorry, but we couldn't load the move data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+        }
+
+        Debugger.Break();
 
         LoadFailed = true;
-      }
-      else
-      {
-        // let's try again
-        Debug.WriteLine("Move load failed once.");
 
-        _failedOnce = true;
-
-        scheduleMoveListFetch();
+        cleanup();
       }
     }
-
+    
     private void cleanup()
     {
       _moves = null;

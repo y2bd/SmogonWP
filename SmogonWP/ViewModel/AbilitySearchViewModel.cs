@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
-using Schmogon;
 using Schmogon.Data.Abilities;
 using SmogonWP.Messages;
 using SmogonWP.Services;
@@ -21,15 +20,11 @@ namespace SmogonWP.ViewModel
 {
   public class AbilitySearchViewModel : ViewModelBase
   {
-    private const string AbilityListFilename = "abilities.txt";
 
     private readonly SimpleNavigationService _navigationService;
-    private readonly ISchmogonClient _schmogonClient;
-    private readonly IsolatedStorageService _storageService;
+    private readonly DataLoadingService _dataService;
 
     private readonly MessageSender<ItemSearchedMessage<Ability>> _abilitySearchSender;
-
-    private bool _failedOnce;
 
     private List<AbilityItemViewModel> _abilities;
 
@@ -155,12 +150,11 @@ namespace SmogonWP.ViewModel
 
     #endregion
 
-    public AbilitySearchViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService, IsolatedStorageService storageService)
+    public AbilitySearchViewModel(SimpleNavigationService navigationService, DataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
-      _schmogonClient = schmogonClient;
+      _dataService = dataService;
       _trayService = trayService;
-      _storageService = storageService;
 
       _abilitySearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
 
@@ -211,97 +205,40 @@ namespace SmogonWP.ViewModel
 
     private async Task fetchAbilities()
     {
-      TrayService.AddJob("abilityfetch", "Fetching abilities");
+      FilteredAbilities = null;
 
-      var rawAbilities = await fetchAbilitiesFromStorage();
-
-      // if we couldn't get abilities from the cache...
-      if (rawAbilities == null)
+      try
       {
-        Debug.WriteLine("Reading abilities from internetland!");
+        var rawAbilities = await _dataService.FetchAllAbilitiesAsync();
 
-        try
-        {
-          rawAbilities = (await _schmogonClient.GetAllAbilitiesAsync()).ToList();
-        }
-        catch (HttpRequestException)
-        {
-          reloadAbilities();
-          return;
-        }
-
-        // cache 'em for next time
-        await cacheAbilities();
-      }
-      else
-      {
-        Debug.WriteLine("Reading abilities from fileland!");
-      }
-
-      _abilities = (from rawAbility in rawAbilities
-                select new AbilityItemViewModel(rawAbility))
+        _abilities = (from ability in rawAbilities
+                    select new AbilityItemViewModel(ability))
         .ToList();
 
-      FilteredAbilities = new ObservableCollection<AbilityItemViewModel>(_abilities);
+        FilteredAbilities = new ObservableCollection<AbilityItemViewModel>(_abilities);
 
-      TrayService.RemoveJob("abilityfetch");
-    }
-
-    private async Task<IEnumerable<Ability>> fetchAbilitiesFromStorage()
-    {
-      IEnumerable<Ability> abilityCache = null;
-
-      if (await _storageService.FileExistsAsync(AbilityListFilename))
-      {
-        var cereal = await _storageService.ReadStringFromFileAsync(AbilityListFilename);
-
-        abilityCache = (await _schmogonClient.DeserializeAbilityListAsync(cereal));
+        LoadFailed = false;
       }
-
-      return abilityCache;
-    }
-
-    private async Task cacheAbilities()
-    {
-      var cereal = await _schmogonClient.SerializeAbilityListAsync();
-
-      await _storageService.WriteStringToFileAsync(AbilityListFilename, cereal);
-    }
-
-    private void reloadAbilities()
-    {
-      if (_failedOnce)
+      catch (Exception e)
       {
-        // we failed, give up
-        cleanup();
-        
-        MessageBox.Show(
-          "I'm sorry, but we couldn't load the ability data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
-          "Oh no!", MessageBoxButton.OK);
-
-        _failedOnce = false;
-
-        LoadFailed = true;
-      }
-      else if (!NetUtilities.IsNetwork())
-      {
-        // crafty bastard somehow lost network connectivity midway
-        cleanup();
-
-        MessageBox.Show(
+        if (!NetUtilities.IsNetwork())
+        {
+          MessageBox.Show(
           "Downloading ability data requires an internet connection. Please get one of those and try again later.",
           "No internet!", MessageBoxButton.OK);
+        }
+        else
+        {
+          MessageBox.Show(
+          "I'm sorry, but we couldn't load the ability data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+        }
+
+        Debugger.Break();
 
         LoadFailed = true;
-      }
-      else
-      {
-        // let's try again
-        Debug.WriteLine("Move load failed once.");
 
-        _failedOnce = true;
-
-        scheduleAbilityListFetch();
+        cleanup();
       }
     }
 

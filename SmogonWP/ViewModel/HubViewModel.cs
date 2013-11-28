@@ -303,41 +303,39 @@ namespace SmogonWP.ViewModel
 
       var pokeTask = _dataService.FetchAllPokemonAsync();
       var moveTask = _dataService.FetchAllMovesAsync();
+      var move2Task = _dataService.FetchAllMovesAsync();
       var abilTask = _dataService.FetchAllAbilitiesAsync();
       var itemTask = _dataService.FetchAllItemsAsync();
 
-      await Task.WhenAll(pokeTask, moveTask, abilTask, itemTask);
+      try
+      {
+        await Task.WhenAll(pokeTask, moveTask, move2Task, abilTask, itemTask);
 
-      if (pokeTask.IsFaulted ||
-          moveTask.IsFaulted ||
-          abilTask.IsFaulted ||
-          itemTask.IsFaulted)
+        _allSearchItems = new List<ISearchItem>()
+          .Concat(await pokeTask)
+          .Concat(await moveTask)
+          .Concat(await abilTask)
+          .Concat(await itemTask)
+          .OrderBy(i => i.Name)
+          .ToList();
+      }
+      catch (Exception e)
       {
         if (!NetUtilities.IsNetwork())
         {
           MessageBox.Show(
-          "Downloading move data requires an internet connection. Please get one of those and try again later.",
-          "No internet!", MessageBoxButton.OK);
+            "Downloading search data requires an internet connection. Please get one of those and try again later.",
+            "No internet!", MessageBoxButton.OK);
         }
         else
         {
           MessageBox.Show(
-          "I'm sorry, but we couldn't load the Pokemon data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
-          "Oh no!", MessageBoxButton.OK);
+            "I'm sorry, but we couldn't load the search data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+            "Oh no!", MessageBoxButton.OK);
 
           Debugger.Break();
         }
-
-        TrayService.RemoveJob("fetchall");
       }
-
-      _allSearchItems = new List<ISearchItem>()
-        .Concat(await pokeTask)
-        .Concat(await moveTask)
-        .Concat(await abilTask)
-        .Concat(await itemTask)
-        .OrderBy(i => i.Name)
-        .ToList();
 
       TrayService.RemoveJob("fetchall");
 
