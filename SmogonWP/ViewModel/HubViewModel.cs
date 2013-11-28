@@ -148,7 +148,7 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private bool _isAppBarOpen = true;
+    private bool _isAppBarOpen;
     public bool IsAppBarOpen
     {
       get
@@ -383,23 +383,18 @@ namespace SmogonWP.ViewModel
 
       var pokeTask = _dataService.FetchAllPokemonAsync();
       var moveTask = _dataService.FetchAllMovesAsync();
-      var move2Task = _dataService.FetchAllMovesAsync();
       var abilTask = _dataService.FetchAllAbilitiesAsync();
       var itemTask = _dataService.FetchAllItemsAsync();
 
       try
       {
-        await Task.WhenAll(pokeTask, moveTask, move2Task, abilTask, itemTask);
+        await Task.WhenAll(pokeTask, moveTask, abilTask, itemTask);
 
-        _allSearchItems = new List<ISearchItem>()
-          .Concat((await pokeTask).Select(p => new PokemonItemViewModel(p)))
-          .Concat((await moveTask).Select(m => new MoveItemViewModel(m)))
-          .Concat((await abilTask).Select(a => new AbilityItemViewModel(a)))
-          .Concat((await itemTask).Select(i => new ItemItemViewModel(i)))
-          .OrderBy(i => i.Name)
-          .ToList();
+        await populateSearchItemList(pokeTask, moveTask, abilTask, itemTask);
 
         FilteredSearchItems = new ObservableCollection<ISearchItem>();
+
+        IsAppBarOpen = true;
       }
       catch (Exception e)
       {
@@ -422,6 +417,17 @@ namespace SmogonWP.ViewModel
       TrayService.RemoveJob("fetchall");
 
       // TODO : Finish universal search on hubview AND make other VMs use the DataLoaderService instead of the schmogon client
+    }
+
+    private async Task populateSearchItemList(Task<IEnumerable<Pokemon>> pokeTask, Task<IEnumerable<Move>> moveTask, Task<IEnumerable<Ability>> abilTask, Task<IEnumerable<Item>> itemTask)
+    {
+      _allSearchItems = new List<ISearchItem>()
+        .Concat((await pokeTask).Select(p => new PokemonItemViewModel(p)))
+        .Concat((await moveTask).Select(m => new MoveItemViewModel(m)))
+        .Concat((await abilTask).Select(a => new AbilityItemViewModel(a)))
+        .Concat((await itemTask).Select(i => new ItemItemViewModel(i)))
+        .OrderBy(i => i.Name)
+        .ToList();
     }
 
     private void onNavItemSelected(NavigationItemViewModel item)
