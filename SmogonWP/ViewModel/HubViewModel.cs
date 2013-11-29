@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -362,8 +363,13 @@ namespace SmogonWP.ViewModel
 
     private async void initializeVCD()
     {
+      /*
       if (!IsInDesignMode && !IsInDesignModeStatic)
         await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///BaseVCD.xml"));
+       * */
+
+      if (!IsInDesignMode && !IsInDesignModeStatic)
+        await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///GenericVCD.xml"));
     }
 
     private void scheduleSearchDataFetch()
@@ -380,6 +386,8 @@ namespace SmogonWP.ViewModel
         }
       };
     }
+
+
 
     private async Task fetchSearchData()
     {
