@@ -3,7 +3,7 @@ using Schmogon.Model.Text;
 
 namespace Schmogon.Data.Abilities
 {
-  public class AbilityData
+  public class AbilityData : IDataItem
   {
     public AbilityData(string name, IEnumerable<ITextElement> description, IEnumerable<ITextElement> competitive)
     {
