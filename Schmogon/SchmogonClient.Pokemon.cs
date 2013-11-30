@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -239,6 +241,8 @@ namespace Schmogon
       else if (node.Name.Equals("div"))
       {
         var paras = node.Elements("p").Concat(node.Elements("ul"));
+
+        currentMoveset.Description = currentMoveset.Description ?? new List<ITextElement>();
 
         foreach (var para in paras)
         {
