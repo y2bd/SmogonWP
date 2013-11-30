@@ -7,7 +7,7 @@ using Type = Schmogon.Data.Types.Type;
 
 namespace Schmogon.Data.Pokemon
 {
-  public class PokemonData
+  public class PokemonData : IDataItem
   {
     public string Name { get; private set; }
 
@@ -25,7 +25,7 @@ namespace Schmogon.Data.Pokemon
 
     public IEnumerable<ITextElement> Overview { get; private set; }
 
-    public IEnumerable<Moveset> Movesets { get; private set; } 
+    public IEnumerable<Moveset> Movesets { get; private set; }
 
     public IEnumerable<ITextElement> OtherOptions { get; private set; }
 

@@ -33,8 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Converters\JsonCreationConverter.cs" />
+    <Compile Include="Converters\TextElementConverter.cs" />
     <Compile Include="Data\Abilities\Ability.cs" />
     <Compile Include="Data\Abilities\AbilityData.cs" />
+    <Compile Include="Data\IDataItem.cs" />
     <Compile Include="Data\ISearchItem.cs" />
     <Compile Include="Data\Items\Item.cs" />
     <Compile Include="Data\Items\ItemData.cs" />
@@ -86,6 +89,10 @@
       <HintPath>..\..\packages\Microsoft.Net.Http.2.2.18\lib\portable-net40+sl4+win8+wp71\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">

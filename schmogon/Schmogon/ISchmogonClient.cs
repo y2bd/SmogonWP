@@ -101,8 +101,8 @@ namespace Schmogon
 
     #endregion pokemon
 
-    Task<IEnumerable<T>> DeserializeSearchItemListAsync<T>(string serialized) where T : ISearchItem;
+    Task<IEnumerable<T>> DeserializeDataListAsync<T>(string serialized);
 
-    Task<string> SerializeSearchItemListAsync<T>(IEnumerable<T> searchItems) where T : ISearchItem;
+    Task<string> SerializeDataListAsync<T>(IEnumerable<T> searchItems);
   }
 }

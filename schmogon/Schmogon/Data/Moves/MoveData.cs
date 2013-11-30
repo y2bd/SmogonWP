@@ -3,7 +3,7 @@ using Schmogon.Model.Text;
 
 namespace Schmogon.Data.Moves
 {
-  public class MoveData
+  public class MoveData : IDataItem
   {
     public MoveData(string name, MoveStats stats, IEnumerable<ITextElement> description, IEnumerable<ITextElement> competitive, IEnumerable<Move> relatedMoves)
     {

@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Schmogon.Converters;
 using Schmogon.Data;
 using Schmogon.Model.Text;
 
@@ -17,14 +18,20 @@ namespace Schmogon
     private const string DescHeader = "Description";
     private const string CompHeader = "Competitive Use";
 
-    public async Task<IEnumerable<T>> DeserializeSearchItemListAsync<T>(string serialized)
-      where T : ISearchItem
+    public async Task<IEnumerable<T>> DeserializeDataListAsync<T>(string serialized)
     {
-      return await JsonConvert.DeserializeObjectAsync<IEnumerable<T>>(serialized);
+      var settings = new JsonSerializerSettings
+      {
+        Converters = new List<JsonConverter>
+        {
+          new TextElementConverter()
+        }
+      };
+
+      return await JsonConvert.DeserializeObjectAsync<IEnumerable<T>>(serialized, settings);
     }
 
-    public async Task<string> SerializeSearchItemListAsync<T>(IEnumerable<T> searchItemList)
-      where T : ISearchItem
+    public async Task<string> SerializeDataListAsync<T>(IEnumerable<T> searchItemList)
     {
       return await JsonConvert.SerializeObjectAsync(searchItemList);
     }
