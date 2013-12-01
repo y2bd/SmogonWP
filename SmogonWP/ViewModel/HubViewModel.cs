@@ -18,6 +18,7 @@ using Schmogon.Data.Abilities;
 using Schmogon.Data.Items;
 using Schmogon.Data.Moves;
 using Schmogon.Data.Pokemon;
+using SchmogonDB;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
@@ -386,12 +387,12 @@ namespace SmogonWP.ViewModel
         }
       };
     }
-
-
-
+    
     private async Task fetchSearchData()
     {
-      await Task.Run(new Func<Task>(pleaseOffThread));
+      //await Task.Run(new Func<Task>(pleaseOffThread));
+
+      await testDB();
     }
 
     // better name in future
@@ -517,6 +518,14 @@ namespace SmogonWP.ViewModel
 
       IsSearchPanelOpen = false;
       IsAppBarOpen = true;
+    }
+
+    private async Task testDB()
+    {
+      var db = new SchmogonDBClient();
+
+      await db.CreateDatabase(true);
+      await db.PopulateTables();
     }
   }
 }

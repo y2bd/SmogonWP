@@ -179,7 +179,7 @@ namespace SmogonWP.Services
     private async Task cacheSearchItemList<T>(IEnumerable<T> searchItemList, string location)
       where T : ISearchItem
     {
-      var cereal = await _schmogonClient.SerializeSearchItemListAsync(searchItemList);
+      var cereal = await _schmogonClient.SerializeDataListAsync(searchItemList);
       await _storageService.WriteStringToFileAsync(location, cereal);
     }
 
@@ -194,7 +194,7 @@ namespace SmogonWP.Services
 
         Debug.WriteLine("Deserializing {0}", typeof(T));
 
-        cache = await _schmogonClient.DeserializeSearchItemListAsync<T>(cereal);
+        cache = await _schmogonClient.DeserializeDataListAsync<T>(cereal);
       }
 
       return cache;
