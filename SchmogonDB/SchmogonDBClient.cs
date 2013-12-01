@@ -24,6 +24,7 @@ namespace SchmogonDB
       if (dropTablesFirst) await dropAllTables();
 
       await createTables();
+      await createIndices();
     }
 
     public async Task PopulateTables()
@@ -129,6 +130,11 @@ namespace SchmogonDB
     private async Task createLevel4Tables()
     {
       await _database.ExecuteStatementAsync(CreateMoveToMoveCollectionTableQuery);
+    }
+
+    private async Task createIndices()
+    {
+      await _database.ExecuteStatementAsync(CreateIndicesQuery);
     }
 
     private async Task dropAllTables()

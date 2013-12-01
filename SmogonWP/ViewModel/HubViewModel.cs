@@ -390,7 +390,7 @@ namespace SmogonWP.ViewModel
     
     private async Task fetchSearchData()
     {
-      //await Task.Run(new Func<Task>(pleaseOffThread));
+      await Task.Run(new Func<Task>(pleaseOffThread));
 
       await testDB();
     }
@@ -524,8 +524,7 @@ namespace SmogonWP.ViewModel
     {
       var db = new SchmogonDBClient();
 
-      await db.CreateDatabase(true);
-      await db.PopulateTables();
+      await db.CreateDatabase();
     }
   }
 }

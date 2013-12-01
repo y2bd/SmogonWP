@@ -148,5 +148,60 @@
         );";
 
     #endregion level 4
+
+    private const string CreateIndicesQuery =
+      @"CREATE INDEX IF NOT EXISTS [atm_foreign] ON [AbilityToMoveset](
+        [Name_Ability]  ASC,
+        [id_Moveset]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [atp_foreign] ON [AbilityToPokemon](
+        [Name_Ability]  ASC,
+        [Name_Pokemon]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [itm_foreign] ON [ItemToMoveset](
+        [Name_Item]  ASC,
+        [id_Moveset]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [mc_foreign] ON [MoveCollection](
+        [id_Moveset]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [mtm_foreign] ON [MoveToMove](
+        [Name_MoveFrom]  ASC,
+        [Name_MoveTo]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [mtmc_foreign] ON [MoveToMoveCollection](
+        [Name_Move]  ASC,
+        [id_MoveCollection]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [mtp_foreign] ON [MoveToPokemon](
+        [Name_Pokemon]  ASC,
+        [Name_Move]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [moveset_foreign] ON [Moveset](
+        [Name_Pokemon]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [mn_foreign] ON [MovesetNature](
+        [id_Moveset]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [pt_foreign] ON [PokemonType](
+        [Name_Pokemon]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [te_owner_id] ON [TextElement](
+        [OwnerId]  ASC
+        );
+
+        CREATE INDEX IF NOT EXISTS [tec_foreign] ON [TextElementContent](
+        [id_TextElement]  ASC
+        );";
   }
 }
