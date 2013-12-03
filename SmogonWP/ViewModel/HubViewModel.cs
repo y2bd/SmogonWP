@@ -385,9 +385,18 @@ namespace SmogonWP.ViewModel
     
     private async Task fetchSearchData()
     {
-      await Task.Run(new Func<Task>(pleaseOffThread));
+      var st = new Stopwatch();
 
-      await testDB();
+      st.Start();
+      await Task.Run(new Func<Task>(pleaseOffThread));
+      st.Stop();
+      Debug.WriteLine("JSON load: {0}", st.ElapsedMilliseconds);
+
+      st.Reset();
+      st.Start();
+      await Task.Run(new Func<Task>(testDB));
+      st.Stop();
+      Debug.WriteLine("DB load: {0}", st.ElapsedMilliseconds);
     }
 
     // better name in future
@@ -517,9 +526,31 @@ namespace SmogonWP.ViewModel
 
     private async Task testDB()
     {
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("dbstuff", "DOING DB STUFF"));
+
       var db = new SchmogonDBClient();
 
-      await db.InitializeDatabase(true);
+      await db.InitializeDatabase();
+
+      var poketask = db.FetchPokemonSearchDataAsync();
+      var movetask = db.FetchMoveSearchDataAsync();
+      var abiltask = db.FetchAbilitySearchDataAsync();
+      var itemtask = db.FetchItemSearchDataAsync();
+
+      await Task.WhenAll(poketask, movetask, abiltask, itemtask);
+
+      var poke = await poketask;
+      var move = await movetask;
+      var abil = await abiltask;
+      var item = await itemtask;
+
+      var x = poke;
+
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
+
+      var sel = move.First(m => m.Name == "Shadow Ball");
+
+      var res = await db.FetchMoveDataAsync(sel);
     }
   }
 }

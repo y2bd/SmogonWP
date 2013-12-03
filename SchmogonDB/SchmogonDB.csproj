@@ -85,18 +85,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AbilityClient.cs" />
+    <Compile Include="ItemClient.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Model\TypedMove.cs" />
-    <Compile Include="Population\AbilitiesClient.cs" />
-    <Compile Include="Population\ItemsClient.cs" />
-    <Compile Include="Population\MovesClient.cs" />
-    <Compile Include="Population\MovesetClient.cs" />
-    <Compile Include="Population\PokemonClient.cs" />
+    <Compile Include="MoveClient.cs" />
+    <Compile Include="PokemonClient.cs" />
+    <Compile Include="Population\AbilitiesPopulator.cs" />
+    <Compile Include="Population\ItemsPopulator.cs" />
+    <Compile Include="Population\MovesPopulator.cs" />
+    <Compile Include="Population\MovesetPopulator.cs" />
+    <Compile Include="Population\PokemonPopulator.cs" />
     <Compile Include="Population\Populator.cs" />
     <Compile Include="Population\TableQueries.cs" />
-    <Compile Include="Population\TextElementClient.cs" />
+    <Compile Include="Population\TextElementPopulator.cs" />
     <Compile Include="SchmogonDBClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextElementClient.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\schmogon\Schmogon\Schmogon.csproj">

@@ -8,12 +8,14 @@ namespace SchmogonDB.Population
 {
   internal partial class Populator
   {
-    public async Task PopulateDatabaseAsync(Database database, bool dropTablesFirst=false)
+    public async Task PopulateDatabaseAsync(Database database, bool justCreateTables=false, bool dropTablesFirst=false)
     {
       if (dropTablesFirst) await dropAllTables(database);
 
       await createTables(database);
       await createIndices(database);
+
+      if (justCreateTables) return;
 
       await fillTables(database);
     }

@@ -105,6 +105,7 @@ namespace SQLiteWinRT
 		void EnableColumnsProperty() { m_columnsEnabled = true; }
 
 		IAsyncOperation<bool>^ StepAsync();
+		bool StepSync();
 
 		String^ GetTextAt(int index);
 		int GetIntAt(int index);

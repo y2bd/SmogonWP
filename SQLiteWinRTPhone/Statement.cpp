@@ -128,6 +128,43 @@ IAsyncOperation<bool>^ Statement::StepAsync()
 	});
 }
 
+bool Statement::StepSync()
+{
+	CheckForMoreRows();
+
+	auto result = Step();
+
+	switch (result)
+	{
+	case SqliteReturnCode::Done:
+		m_noMoreRows = true;
+		break;
+
+	case SqliteReturnCode::MoreRows:
+		break;
+
+	default:
+		ThrowIfStepFailed(result);
+		break;
+	}
+
+	if (!m_noMoreRows && m_columnsEnabled)
+	{
+		if (m_columns == nullptr)
+			m_columns = ref new Platform::Collections::Map<String^, String^>();
+		else
+			m_columns->Clear();
+
+		for (auto i = 0; i < GetColumnCount(); i++)
+		{
+			m_columns->Insert(GetColumnName(i), GetTextAt(i));
+		}
+	}
+
+	return !m_noMoreRows;
+}
+
+
 SqliteReturnCode Statement::Step(void)
 {
 	SimulateSlowOperation();
