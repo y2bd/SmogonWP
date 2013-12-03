@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Schmogon.Data.Pokemon;
+using SQLiteWinRT;
 
-namespace SchmogonDB
+namespace SchmogonDB.Population
 {
-  public partial class SchmogonDBClient
+  internal partial class Populator
   {
     private const string InsertPokemonQuery = 
       "INSERT INTO Pokemon VALUES (@name, @spritePath, @tier, @hp, @attack, @defense, @specialAttack, @specialDefense, @speed);";
@@ -15,9 +14,9 @@ namespace SchmogonDB
     private const string InsertPokemonTypeQuery =
       "INSERT INTO PokemonType (Type, Name_Pokemon) VALUES (@type, @pokemon)";
 
-    private async Task<string> insertPokemonData(PokemonData pokemon)
+    private async Task<string> insertPokemonData(Database database, PokemonData pokemon)
     {
-      var statement = await _database.PrepareStatementAsync(InsertPokemonQuery);
+      var statement = await database.PrepareStatementAsync(InsertPokemonQuery);
       statement.BindTextParameterWithName("@name", pokemon.Name);
       statement.BindTextParameterWithName("@spritePath", pokemon.SpritePath);
       statement.BindIntParameterWithName("@tier", (int)pokemon.Tier);
@@ -32,40 +31,40 @@ namespace SchmogonDB
 
       foreach (var desc in pokemon.Overview)
       {
-        await insertTextElement(desc, pokemon.Name, OwnerType.Pokemon, ElementType.Description);
+        await insertTextElement(database, desc, pokemon.Name, OwnerType.Pokemon, ElementType.Description);
       }
 
       foreach (var option in pokemon.OtherOptions)
       {
-        await insertTextElement(option, pokemon.Name, OwnerType.Pokemon, ElementType.Options);
+        await insertTextElement(database, option, pokemon.Name, OwnerType.Pokemon, ElementType.Options);
       }
 
       foreach (var counter in pokemon.ChecksAndCounters)
       {
-        await insertTextElement(counter, pokemon.Name, OwnerType.Pokemon, ElementType.Counters);
+        await insertTextElement(database, counter, pokemon.Name, OwnerType.Pokemon, ElementType.Counters);
       }
 
-      await insertPokemonAbilityConnections(pokemon);
+      await insertPokemonAbilityConnections(database, pokemon);
 
-      await insertPokemonTypeConnections(pokemon);
+      await insertPokemonTypeConnections(database, pokemon);
 
-      await insertPokemonMovesConnections(pokemon);
+      await insertPokemonMovesConnections(database, pokemon);
 
       foreach (var moveset in pokemon.Movesets)
       {
-        await insertMoveset(moveset, pokemon.Name);
+        await insertMoveset(database, moveset, pokemon.Name);
       }
 
       return pokemon.Name;
     }
 
-    private async Task<long> insertPokemonTypeConnections(PokemonData pokemon)
+    private async Task<long> insertPokemonTypeConnections(Database database, PokemonData pokemon)
     {
       long lastKey = 0;
 
       foreach (var type in pokemon.Types)
       {
-        var statement = await _database.PrepareStatementAsync(InsertPokemonTypeQuery);
+        var statement = await database.PrepareStatementAsync(InsertPokemonTypeQuery);
         statement.BindIntParameterWithName("@type", (int) type);
         statement.BindTextParameterWithName("@pokemon", pokemon.Name);
 
@@ -73,12 +72,14 @@ namespace SchmogonDB
         {
           await statement.StepAsync();
         }
-        catch (Exception e)
+        catch (Exception)
         {
+          Debugger.Break();
+
           continue;
         }
 
-        lastKey = _database.GetLastInsertedRowId();
+        lastKey = database.GetLastInsertedRowId();
       }
 
       return lastKey;

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Schmogon.Model.Text;
+using SQLiteWinRT;
 
-namespace SchmogonDB
+namespace SchmogonDB.Population
 {
-  public partial class SchmogonDBClient
+  internal partial class Populator
   {
     private const string InsertTextElementQuery = 
       "INSERT INTO TextElement (OwnerId, OwnerType, ElementType) VALUES (@ownerId, @ownerType, @elementType);";
@@ -12,59 +14,59 @@ namespace SchmogonDB
     private const string InsertTextElementContentQuery =
       "INSERT INTO TextElementContent (Content, id_TextElement) VALUES (@content, @id_TextElement);";
 
-    private async Task<long> insertTextElement(ITextElement element, string ownerId, OwnerType ownerType,
+    private async Task<long> insertTextElement(Database database, ITextElement element, string ownerId, OwnerType ownerType,
       ElementType elementType)
     {
-      var statement = await _database.PrepareStatementAsync(InsertTextElementQuery);
+      var statement = await database.PrepareStatementAsync(InsertTextElementQuery);
       statement.BindTextParameterWithName("@ownerId", ownerId);
       statement.BindIntParameterWithName("@ownerType", (int)ownerType);
       statement.BindInt64ParameterWithName("@elementType", (int)elementType);
 
       await statement.StepAsync();
 
-      var key = _database.GetLastInsertedRowId();
+      var key = database.GetLastInsertedRowId();
 
       var paragraph = element as Paragraph;
-      if (paragraph != null) await insertTextElementContent(paragraph, key);
+      if (paragraph != null) await insertTextElementContent(database, paragraph, key);
       else
       {
         var list = element as UnorderedList;
-        if (list != null) await insertTextElementContent(list, key);
+        if (list != null) await insertTextElementContent(database, list, key);
       }
 
       return key;
     }
 
-    private async Task<long> insertTextElement(ITextElement element, long ownerId, OwnerType ownerType,
+    private async Task<long> insertTextElement(Database database, ITextElement element, long ownerId, OwnerType ownerType,
       ElementType elementType)
     {
-      return await insertTextElement(element, ownerId.ToString(), ownerType, elementType);
+      return await insertTextElement(database, element, ownerId.ToString(CultureInfo.InvariantCulture), ownerType, elementType);
     }
 
-    private async Task<long> insertTextElementContent(Paragraph content, long textElementId)
+    private async Task<long> insertTextElementContent(Database database, Paragraph content, long textElementId)
     {
-      var statement = await _database.PrepareStatementAsync(InsertTextElementContentQuery);
+      var statement = await database.PrepareStatementAsync(InsertTextElementContentQuery);
       statement.BindTextParameterWithName("@content", content.Content);
       statement.BindInt64ParameterWithName("@id_TextElement", textElementId);
 
       await statement.StepAsync();
 
-      var key = _database.GetLastInsertedRowId();
+      var key = database.GetLastInsertedRowId();
       return key;
     }
 
-    private async Task<long> insertTextElementContent(UnorderedList content, long textElementId)
+    private async Task<long> insertTextElementContent(Database database, UnorderedList content, long textElementId)
     {
       foreach (var element in content.Elements)
       {
-        var statement = await _database.PrepareStatementAsync(InsertTextElementContentQuery);
+        var statement = await database.PrepareStatementAsync(InsertTextElementContentQuery);
         statement.BindTextParameterWithName("@content", element);
         statement.BindInt64ParameterWithName("@id_TextElement", textElementId);
 
         await statement.StepAsync();
       }
 
-      var key = _database.GetLastInsertedRowId();
+      var key = database.GetLastInsertedRowId();
       return key;
     }
   }

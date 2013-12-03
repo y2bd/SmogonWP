@@ -1,6 +1,6 @@
-﻿namespace SchmogonDB
+﻿namespace SchmogonDB.Population
 {
-  public partial class SchmogonDBClient
+  internal partial class Populator
   {
     /* I've organized the various table queries into levels.
      * The levels show in which order they should be created
@@ -24,17 +24,20 @@
 
     private const string CreateAbilityTableQuery =
       @"CREATE TABLE IF NOT EXISTS Ability (
-        Name TEXT NOT NULL  PRIMARY KEY
+        Name TEXT NOT NULL  PRIMARY KEY,
+        ShortDescription TEXT
         );";
 
     private const string CreateItemTableQuery =
       @"CREATE TABLE IF NOT EXISTS Item (
-        Name TEXT NOT NULL  PRIMARY KEY
+        Name TEXT NOT NULL  PRIMARY KEY,
+        ShortDescription TEXT
         );";
 
     private const string CreateMoveTableQuery =
       @"CREATE TABLE IF NOT EXISTS Move (
         Name TEXT NOT NULL  PRIMARY KEY,
+        ShortDescription TEXT,
         Type INTEGER,
         Power TEXT,
         Accuracy TEXT,
@@ -72,6 +75,7 @@
     private const string CreateMoveToPokemonTableQuery =
       @"CREATE TABLE IF NOT EXISTS MoveToPokemon (
         id INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
+        RelationDescription TEXT,
         Name_Pokemon TEXT NOT NULL  REFERENCES Pokemon (Name),
         Name_Move TEXT NOT NULL  REFERENCES Move (Name)
         );";
@@ -79,6 +83,7 @@
     private const string CreateMoveToMoveTableQuery =
       @"CREATE TABLE IF NOT EXISTS MoveToMove (
         id INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
+        RelationDescription TEXT,
         Name_MoveFrom TEXT NOT NULL  REFERENCES Move (Name),
         Name_MoveTo TEXT NOT NULL  REFERENCES Move (Name),
         MoveTo_FullName TEXT

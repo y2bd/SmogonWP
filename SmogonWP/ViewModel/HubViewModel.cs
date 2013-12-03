@@ -1,18 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Nito.AsyncEx;
-using Nito.AsyncEx.Synchronous;
 using Schmogon.Data;
 using Schmogon.Data.Abilities;
 using Schmogon.Data.Items;
@@ -26,8 +15,14 @@ using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Windows.Phone.Speech.VoiceCommands;
 using Type = Schmogon.Data.Types.Type;
@@ -424,7 +419,7 @@ namespace SmogonWP.ViewModel
           IsAppBarOpen = true;
         });
       }
-      catch (Exception e)
+      catch (Exception)
       {
         if (!NetUtilities.IsNetwork())
         {
@@ -524,7 +519,7 @@ namespace SmogonWP.ViewModel
     {
       var db = new SchmogonDBClient();
 
-      await db.CreateDatabase();
+      await db.InitializeDatabase(true);
     }
   }
 }

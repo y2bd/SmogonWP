@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Schmogon.Data.Moves;
 using Schmogon.Data.Pokemon;
+using SQLiteWinRT;
 
-namespace SchmogonDB
+namespace SchmogonDB.Population
 {
-  public partial class SchmogonDBClient
+  internal partial class Populator
   {
     private const string InsertMovesetQuery =
       "INSERT INTO Moveset (Name, EV_HP, EV_Attack, EV_Defense, EV_SpecialAttack, EV_SpecialDefense, EV_Speed, Name_Pokemon)" +
@@ -23,9 +23,9 @@ namespace SchmogonDB
     private const string InsertMoveToMoveCollectionQuery =
       "INSERT INTO MoveToMoveCollection (name_Move, Move_FullName, id_MoveCollection) VALUES (@move, @fullName, @moveCollection)";
 
-    private async Task<long> insertMoveset(Moveset moveset, string pokemonOwnerName)
+    private async Task<long> insertMoveset(Database database, Moveset moveset, string pokemonOwnerName)
     {
-      var statement = await _database.PrepareStatementAsync(InsertMovesetQuery);
+      var statement = await database.PrepareStatementAsync(InsertMovesetQuery);
       statement.BindTextParameterWithName("@name", moveset.Name);
       statement.BindIntParameterWithName("@hp", moveset.EVSpread.HP);
       statement.BindIntParameterWithName("@attack", moveset.EVSpread.Attack);
@@ -37,31 +37,31 @@ namespace SchmogonDB
 
       await statement.StepAsync();
 
-      long key = _database.GetLastInsertedRowId();
+      long key = database.GetLastInsertedRowId();
 
       foreach (var desc in moveset.Description)
       {
-        await insertTextElement(desc, key, OwnerType.Moveset, ElementType.Description);
+        await insertTextElement(database, desc, key, OwnerType.Moveset, ElementType.Description);
       }
 
-      await insertMovesetNatureConnections(moveset, key);
+      await insertMovesetNatureConnections(database, moveset, key);
 
-      await insertMovesetItemConnections(moveset, key);
+      await insertMovesetItemConnections(database, moveset, key);
 
-      await insertMovesetAbilityConnections(moveset, key);
+      await insertMovesetAbilityConnections(database, moveset, key);
 
-      await insertMoveCollections(moveset, key);
+      await insertMoveCollections(database, moveset, key);
 
       return key;
     }
 
-    private async Task<long> insertMovesetNatureConnections(Moveset moveset, long movesetId)
+    private async Task<long> insertMovesetNatureConnections(Database database, Moveset moveset, long movesetId)
     {
       long lastKey = 0;
 
       foreach (var nature in moveset.Natures)
       {
-        var statement = await _database.PrepareStatementAsync(InsertMovesetNatureQuery);
+        var statement = await database.PrepareStatementAsync(InsertMovesetNatureQuery);
         statement.BindIntParameterWithName("@nature", (int)nature);
         statement.BindInt64ParameterWithName("@moveset", movesetId);
 
@@ -69,44 +69,48 @@ namespace SchmogonDB
         {
           await statement.StepAsync();
         }
-        catch (Exception e)
+        catch (Exception)
         {
+          Debugger.Break();
+
           continue;
         }
 
-        lastKey = _database.GetLastInsertedRowId();
+        lastKey = database.GetLastInsertedRowId();
       }
 
       return lastKey;
     }
 
-    private async Task<long> insertMoveCollections(Moveset moveset, long movesetId)
+    private async Task<long> insertMoveCollections(Database database, Moveset moveset, long movesetId)
     {
       long lastKey = 0;
 
       foreach (var moveCollection in moveset.Moves)
       {
-        var statement = await _database.PrepareStatementAsync(InsertMoveCollectionQuery);
+        var statement = await database.PrepareStatementAsync(InsertMoveCollectionQuery);
         statement.BindInt64ParameterWithName("@moveset", movesetId);
 
         try
         {
           await statement.StepAsync();
         }
-        catch (Exception e)
+        catch (Exception)
         {
+          Debugger.Break();
+
           continue;
         }
 
-        lastKey = _database.GetLastInsertedRowId();
+        lastKey = database.GetLastInsertedRowId();
 
-        await insertMoveToMoveCollectionRelationships(moveCollection, lastKey);
+        await insertMoveToMoveCollectionRelationships(database, moveCollection, lastKey);
       }
 
       return lastKey;
     }
 
-    private async Task<long> insertMoveToMoveCollectionRelationships(IEnumerable<Move> moveCollection, long moveCollectionId)
+    private async Task<long> insertMoveToMoveCollectionRelationships(Database database, IEnumerable<Move> moveCollection, long moveCollectionId)
     {
       long lastKey = 0;
 
@@ -118,7 +122,7 @@ namespace SchmogonDB
         // kill em softly
         if (shortName.Contains("Hidden Power")) shortName = "Hidden Power";
 
-        var statement = await _database.PrepareStatementAsync(InsertMoveToMoveCollectionQuery);
+        var statement = await database.PrepareStatementAsync(InsertMoveToMoveCollectionQuery);
         statement.BindTextParameterWithName("@move", shortName);
         statement.BindTextParameterWithName("@fullName", move.Name);
         statement.BindInt64ParameterWithName("@moveCollection", moveCollectionId);
@@ -127,12 +131,14 @@ namespace SchmogonDB
         {
           await statement.StepAsync();
         }
-        catch (Exception e)
+        catch (Exception)
         {
+          Debugger.Break();
+
           continue;
         }
 
-        lastKey = _database.GetLastInsertedRowId();
+        lastKey = database.GetLastInsertedRowId();
       }
 
       return lastKey;
