@@ -86,9 +86,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AbilityClient.cs" />
+    <Compile Include="ISchmogonDBClient.cs" />
     <Compile Include="ItemClient.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Model\TypedMove.cs" />
+    <Compile Include="Model\TypedMoveset.cs" />
+    <Compile Include="Model\TypedPokemonData.cs" />
     <Compile Include="MoveClient.cs" />
     <Compile Include="PokemonClient.cs" />
     <Compile Include="Population\AbilitiesPopulator.cs" />

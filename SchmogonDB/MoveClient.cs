@@ -35,9 +35,11 @@ namespace SchmogonDB
 
     private const string FetchPokemonMovesQuery =
       @"SELECT mtp.Name_Move, 
-               mtp.RelationDescription 
+               mtp.RelationDescription,
+               om.Type
         FROM Pokemon p
         INNER JOIN MoveToPokemon mtp ON mtp.Name_Pokemon = p.Name
+        INNER JOIN Move om ON om.Name = mtp.Name_Move
         WHERE p.Name = @name";
 
     private IEnumerable<TypedMove> _moveCache;
@@ -93,6 +95,9 @@ namespace SchmogonDB
       statement.BindTextParameterWithName("@name", move.Name);
 
       statement.StepSync();
+
+      var i = statement.ColumnCount;
+
       return new MoveStats
       (
         typeString, 
@@ -127,7 +132,7 @@ namespace SchmogonDB
 
     private async Task<IEnumerable<Move>> fetchPokemonMoves(Pokemon pokemon)
     {
-      var pokemonMoves = new List<Move>();
+      var pokemonMoves = new List<TypedMove>();
 
       var statement = await _database.PrepareStatementAsync(FetchPokemonMovesQuery);
       statement.BindTextParameterWithName("@name", pokemon.Name);
@@ -136,9 +141,10 @@ namespace SchmogonDB
       {
         var name = statement.GetTextAt(0);
         var desc = statement.GetTextAt(1);
+        var type = (Type)statement.GetIntAt(2);
         var pageLocation = Utilities.ConstructSmogonLink(name, Utilities.MoveBasePath);
 
-        pokemonMoves.Add(new Move(name, desc, pageLocation));
+        pokemonMoves.Add(new TypedMove(name, desc, pageLocation, type));
       }
 
       return pokemonMoves;

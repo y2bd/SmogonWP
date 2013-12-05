@@ -108,6 +108,7 @@
     <Compile Include="Converters\UppercaseConverter.cs" />
     <Compile Include="Design\DesignDataLoadingService.cs" />
     <Compile Include="Design\DesignSchmogonClient.cs" />
+    <Compile Include="Design\DesignSchmogonDBClient.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -160,6 +161,7 @@
     <Compile Include="ViewModel\Items\NavigationItemViewModel.cs" />
     <Compile Include="ViewModel\Items\PokemonDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\PokemonItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\TypedMoveItemViewModel.cs" />
     <Compile Include="ViewModel\Items\TypeItemViewModel.cs" />
     <Compile Include="ViewModel\ItemSearchViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />

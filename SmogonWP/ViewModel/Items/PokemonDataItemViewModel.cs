@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using Schmogon.Data.Pokemon;
+using SchmogonDB.Model;
 using SmogonWP.Model;
 
 namespace SmogonWP.ViewModel.Items
@@ -28,7 +29,7 @@ namespace SmogonWP.ViewModel.Items
 
     public IEnumerable<AbilityItemViewModel> Abilities { get; private set; }
     public IEnumerable<TypeItemViewModel> Types { get; private set; }
-    public IEnumerable<MoveItemViewModel> Moves { get; private set; }
+    public IEnumerable<TypedMoveItemViewModel> Moves { get; private set; }
 
     private ObservableCollection<MovesetItemViewModel> _movesets;
     public ObservableCollection<MovesetItemViewModel> Movesets
@@ -70,7 +71,7 @@ namespace SmogonWP.ViewModel.Items
 
       Abilities = Data.Abilities.Select(a => new AbilityItemViewModel(a)).OrderByDescending(a => a.Name.Length).ToList();
       Types = Data.Types.Select(t => new TypeItemViewModel(t)).ToList();
-      Moves = Data.Moves.Select(m => new MoveItemViewModel(m)).ToList();
+      Moves = Data.Moves.Select(m => new TypedMoveItemViewModel(m as TypedMove)).ToList();
 
       Sprite = new BitmapImage(new Uri(SmogonBase + Data.SpritePath));
 

@@ -8,10 +8,10 @@ using Schmogon.Data.Items;
 using Schmogon.Data.Moves;
 using Schmogon.Data.Pokemon;
 using SchmogonDB;
+using SchmogonDB.Model;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
-using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 using System;
@@ -36,7 +36,7 @@ namespace SmogonWP.ViewModel
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokeSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Ability>> _abilSearchSender;
-    private readonly MessageSender<ItemSearchedMessage<Move>> _moveSearchSender;
+    private readonly MessageSender<ItemSearchedMessage<TypedMove>> _moveSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Item>> _itemSearchSender;
 
     private IEnumerable<ISearchItem> _allSearchItems;
@@ -276,7 +276,7 @@ namespace SmogonWP.ViewModel
 
       _pokeSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
       _abilSearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
-      _moveSearchSender = new MessageSender<ItemSearchedMessage<Move>>();
+      _moveSearchSender = new MessageSender<ItemSearchedMessage<TypedMove>>();
       _itemSearchSender = new MessageSender<ItemSearchedMessage<Item>>();
 
       setupNavigation();
@@ -391,12 +391,6 @@ namespace SmogonWP.ViewModel
       await Task.Run(new Func<Task>(pleaseOffThread));
       st.Stop();
       Debug.WriteLine("JSON load: {0}", st.ElapsedMilliseconds);
-
-      st.Reset();
-      st.Start();
-      await Task.Run(new Func<Task>(testDB));
-      st.Stop();
-      Debug.WriteLine("DB load: {0}", st.ElapsedMilliseconds);
     }
 
     // better name in future
@@ -414,36 +408,32 @@ namespace SmogonWP.ViewModel
       {
         await Task.WhenAll(pokeTask, moveTask, abilTask, itemTask);
 
-        _allSearchItems = new List<ISearchItem>()
-        .Concat((await pokeTask).Select(p => new PokemonItemViewModel(p)))
-        .Concat((await moveTask).Select(m => new MoveItemViewModel(m)))
-        .Concat((await abilTask).Select(a => new AbilityItemViewModel(a)))
-        .Concat((await itemTask).Select(i => new ItemItemViewModel(i)))
-        .OrderBy(i => i.Name)
-        .ToList();
-
+        var poke = await pokeTask;
+        var move = await moveTask;
+        var abil = await abilTask;
+        var item = await itemTask;
+        
         DispatcherHelper.CheckBeginInvokeOnUI(() =>
         {
+          _allSearchItems = new List<ISearchItem>()
+            .Concat((poke).Select(p => new PokemonItemViewModel(p)))
+            .Concat((move).Select(m => new TypedMoveItemViewModel(m)))
+            .Concat((abil).Select(a => new AbilityItemViewModel(a)))
+            .Concat((item).Select(i => new ItemItemViewModel(i)))
+            .OrderBy(i => i.Name)
+            .ToList();
+
           FilteredSearchItems = new ObservableCollection<ISearchItem>();
           IsAppBarOpen = true;
         });
       }
       catch (Exception)
       {
-        if (!NetUtilities.IsNetwork())
-        {
           DispatcherHelper.CheckBeginInvokeOnUI(() => MessageBox.Show(
-            "Downloading search data requires an internet connection. Please get one of those and try again later.",
-            "No internet!", MessageBoxButton.OK));
-        }
-        else
-        {
-          DispatcherHelper.CheckBeginInvokeOnUI(() => MessageBox.Show(
-            "I'm sorry, but we couldn't load the search data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+            "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
             "Oh no!", MessageBoxButton.OK));
 
           Debugger.Break();
-        }
       }
 
       DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("fetchall"));
@@ -509,9 +499,9 @@ namespace SmogonWP.ViewModel
         _abilSearchSender.SendMessage(new ItemSearchedMessage<Ability>((item as AbilityItemViewModel).Ability));
         _navigationService.Navigate(ViewModelLocator.AbilityDataPath);
       }
-      else if (item is MoveItemViewModel)
+      else if (item is TypedMoveItemViewModel)
       {
-        _moveSearchSender.SendMessage(new ItemSearchedMessage<Move>((item as MoveItemViewModel).Move));
+        _moveSearchSender.SendMessage(new ItemSearchedMessage<TypedMove>((item as TypedMoveItemViewModel).TypedMove));
         _navigationService.Navigate(ViewModelLocator.MoveDataPath);
       }
       else if (item is ItemItemViewModel)

@@ -29,6 +29,8 @@ namespace SchmogonDB
 
     public async Task InitializeDatabase()
     {
+      if (_isInitiatlized) return;
+
       await _database.OpenAsync();
       await ensureForeignKeys();
 

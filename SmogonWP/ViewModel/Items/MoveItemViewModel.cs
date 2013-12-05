@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using Schmogon.Data;
 using Schmogon.Data.Moves;
+using SchmogonDB.Model;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -33,9 +34,9 @@ namespace SmogonWP.ViewModel.Items
         return Move.PageLocation;
       }
     }
-
+    
     #endregion
-
+    
     public MoveItemViewModel(Move move)
     {
       Move = move;

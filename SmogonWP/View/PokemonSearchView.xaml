@@ -42,10 +42,7 @@
     </toolkit:TransitionService.NavigationOutTransition>
 
     <phone:PhoneApplicationPage.Resources>
-        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
         <converters:UppercaseConverter x:Key="UppercaseConverter" />
-        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter" />
-        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
 
         <DataTemplate x:Key="PokemonItemTemplate">
             <StackPanel Margin="0,0,24,15"

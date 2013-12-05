@@ -3,6 +3,7 @@ using System.Linq;
 using GalaSoft.MvvmLight;
 using Schmogon.Data.Moves;
 using Schmogon.Model.Text;
+using SchmogonDB.Model;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -27,12 +28,19 @@ namespace SmogonWP.ViewModel.Items
       get { return MoveData.Competitive; }
     }
 
-    public List<Move> RelatedMoves
+    public List<TypedMove> RelatedMoves
     {
       get
       {
         return MoveData.RelatedMoves.Select(
-          m => new Move(m.Name.ToLower(), m.Description, m.PageLocation)
+          m =>
+          {
+            var tm = m as TypedMove;
+
+            return tm != null 
+              ? new TypedMove(tm.Name, tm.Description, tm.PageLocation, tm.Type)
+              : new TypedMove(m.Name, m.Description, m.PageLocation, Schmogon.Data.Types.Type.Normal);
+          }
         ).ToList();
       }
     }

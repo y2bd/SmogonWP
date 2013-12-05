@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight;
 using Schmogon.Data.Natures;
 using Schmogon.Data.Pokemon;
 using Schmogon.Model.Text;
+using SchmogonDB.Model;
 using SmogonWP.Utilities;
 
 namespace SmogonWP.ViewModel.Items
@@ -60,7 +61,7 @@ namespace SmogonWP.ViewModel.Items
     public IEnumerable<AbilityItemViewModel> Abilities { get; private set; }
     public IEnumerable<string> Natures { get; private set; }
     public IEnumerable<ItemItemViewModel> Items { get; private set; }
-    public IEnumerable<GroupedMoveItemViewModel> Moves { get; private set; }
+    public IEnumerable<TypedGroupMoveItemViewModel> Moves { get; private set; }
 
     public MovesetItemViewModel(string ownerName, Moveset data)
     {
@@ -80,8 +81,8 @@ namespace SmogonWP.ViewModel.Items
         : data.Items.Select(i => new ItemItemViewModel(i)).ToList();
 
       Moves = data.Moves == null
-        ? new List<GroupedMoveItemViewModel>()
-        : data.Moves.SelectMany((mg, i) => mg.Select(m => new GroupedMoveItemViewModel(m, i)));
+        ? new List<TypedGroupMoveItemViewModel>()
+        : data.Moves.SelectMany((mg, i) => mg.Select(m => new TypedGroupMoveItemViewModel(m as , i)));
 
       // TODO: Write the DataTemplates in the View that can display this new type of list
 

@@ -218,20 +218,11 @@ namespace SmogonWP.ViewModel
 
         LoadFailed = false;
       }
-      catch (Exception e)
+      catch (Exception)
       {
-        if (!NetUtilities.IsNetwork())
-        {
-          MessageBox.Show(
-          "Downloading ability data requires an internet connection. Please get one of those and try again later.",
-          "No internet!", MessageBoxButton.OK);
-        }
-        else
-        {
-          MessageBox.Show(
-          "I'm sorry, but we couldn't load the ability data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+        MessageBox.Show(
+          "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
           "Oh no!", MessageBoxButton.OK);
-        }
 
         Debugger.Break();
 

@@ -8,6 +8,7 @@ using Schmogon.Data.Natures;
 using Schmogon.Data.Pokemon;
 using Schmogon.Data.Stats;
 using Schmogon.Model.Text;
+using SchmogonDB.Model;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
@@ -23,7 +24,7 @@ namespace SmogonWP.ViewModel
     private readonly MessageSender<ItemSelectedMessage<Ability>> _abilitySelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Nature>> _natureSelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Item>> _itemSelectedSender;  
-    private readonly MessageSender<ItemSelectedMessage<Move>> _moveSelectedSender;
+    private readonly MessageSender<ItemSelectedMessage<TypedMove>> _moveSelectedSender;
 
     private MovesetItemViewModel _msivm;
     public MovesetItemViewModel MSIVM
@@ -116,10 +117,10 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => SelectedItem);
         }
       }
-    }			
+    }
 
-    private GroupedMoveItemViewModel _selectedMove;
-    public GroupedMoveItemViewModel SelectedMove
+    private TypedGroupMoveItemViewModel _selectedMove;
+    public TypedGroupMoveItemViewModel SelectedMove
     {
       get
       {
@@ -146,7 +147,7 @@ namespace SmogonWP.ViewModel
       _abilitySelectedSender = new MessageSender<ItemSelectedMessage<Ability>>();
       _natureSelectedSender = new MessageSender<ItemSelectedMessage<Nature>>();
       _itemSelectedSender = new MessageSender<ItemSelectedMessage<Item>>();
-      _moveSelectedSender = new MessageSender<ItemSelectedMessage<Move>>();
+      _moveSelectedSender = new MessageSender<ItemSelectedMessage<TypedMove>>();
 
       #region design data
       if (IsInDesignMode || IsInDesignModeStatic)
@@ -227,11 +228,11 @@ namespace SmogonWP.ViewModel
 
     }
 
-    private void onMoveSelected(GroupedMoveItemViewModel gmivm)
+    private void onMoveSelected(TypedGroupMoveItemViewModel gmivm)
     {
       if (gmivm == null) return;
 
-      _moveSelectedSender.SendMessage(new ItemSelectedMessage<Move>(gmivm.Move));
+      _moveSelectedSender.SendMessage(new ItemSelectedMessage<TypedMove>(gmivm.Move as TypedMove));
       _navigationService.Navigate(ViewModelLocator.MoveDataPath);
     }
   }

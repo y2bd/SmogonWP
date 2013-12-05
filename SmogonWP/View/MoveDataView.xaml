@@ -9,7 +9,6 @@
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:converters="clr-namespace:SmogonWP.Converters"
                             xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -43,9 +42,6 @@
     </toolkit:TransitionService.NavigationOutTransition>
     
     <phone:PhoneApplicationPage.Resources>
-        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
-        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
-
         <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
             <Grid>
                 <TextBlock Text="{Binding}"
@@ -55,7 +51,7 @@
         </DataTemplate>
         <DataTemplate x:Key="RelatedItemTemplate">
             <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="{Binding Name}"
+                <TextBlock Text="{Binding Name, Converter={StaticResource LowercaseConverter}}"
                            Style="{StaticResource PhoneTextTitle3Style}" />
                 <TextBlock Text="{Binding Description}"
                            Style="{StaticResource PhoneTextSmallStyle}"
@@ -120,7 +116,7 @@
                 <phone:PivotItem Header="STATS">
                     <Grid x:Name="StatGrid"
                           Margin="12,0,12,24"
-                          Background="{StaticResource PhoneAccentBrush}"
+                          Background="{Binding TypeBackgroundBrush, TargetNullValue=Gray}"
                           VerticalAlignment="Top">
 
                         <Grid.Resources>
@@ -148,26 +144,26 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Border Grid.Row="0"
-                                Grid.ColumnSpan="2"
-                                Background="{Binding TypeBackgroundBrush}" />
-
                         <Border Grid.Row="1"
+                                Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 Background="Black"
                                 Opacity="0.3" />
 
                         <Border Grid.Row="3"
+                                Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 Background="Black"
                                 Opacity="0.3" />
 
                         <Border Grid.Row="5"
+                                Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 Background="Black"
                                 Opacity="0.3" />
 
-                        <Border Grid.RowSpan="7"
+                        <Border Grid.Row="0" 
+                                Grid.RowSpan="7"
                                 Grid.Column="1"
                                 Background="{StaticResource PhoneBackgroundBrush}"
                                 Opacity="0.1" />

@@ -39,7 +39,6 @@
     </toolkit:TransitionService.NavigationOutTransition>
 
     <phone:PhoneApplicationPage.Resources>
-        <converters:InvertedEmptinessVisibilityConverter x:Key="InvertedEmptinessVisibilityConverter" />
         <converters:RandomOpacityConverter x:Key="RandomOpacityConverter" />
         <converters:LowercaseConverter x:Key="LowercaseConverter" />
 

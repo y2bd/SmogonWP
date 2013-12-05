@@ -2,6 +2,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using Schmogon;
+using SchmogonDB;
 using SmogonWP.Services;
 
 namespace SmogonWP.ViewModel
@@ -37,11 +38,13 @@ namespace SmogonWP.ViewModel
       {
         RegisterIfUnregistered<ISchmogonClient, Design.DesignSchmogonClient>();
         RegisterIfUnregistered<IDataLoadingService, Design.DesignDataLoadingService>();
+        RegisterIfUnregistered<ISchmogonDBClient, Design.DesignSchmogonDBClient>();
       }
       else
       {
         RegisterIfUnregistered<ISchmogonClient, SchmogonClient>();
         RegisterIfUnregistered<IDataLoadingService, DataLoadingService>();
+        RegisterIfUnregistered<ISchmogonDBClient, SchmogonDBClient>();
       }
 
       SimpleIoc.Default.Register<SimpleNavigationService>();

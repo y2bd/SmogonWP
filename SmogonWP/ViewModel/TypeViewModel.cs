@@ -3,11 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using Schmogon;
-using Schmogon.Data.Types;
 using SmogonWP.Messages;
 using SmogonWP.Model;
 using SmogonWP.Services.Messaging;
-using SmogonWP.View;
 using SmogonWP.ViewModel.Items;
 using Type = Schmogon.Data.Types.Type;
 

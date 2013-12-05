@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SchmogonDB
 {
-  public partial class SchmogonDBClient
+  public partial class SchmogonDBClient : ISchmogonDBClient
   {
     private const string FetchItemSearchDataQuery =
       @"SELECT * FROM Item";
@@ -41,8 +41,8 @@ namespace SchmogonDB
 
     public async Task<ItemData> FetchItemDataAsync(Item item)
     {
-      var desc = await fetchTextElements(item.Name, OwnerType.Ability, ElementType.Description);
-      var comp = await fetchTextElements(item.Name, OwnerType.Ability, ElementType.Competitive);
+      var desc = await fetchTextElements(item.Name, OwnerType.Item, ElementType.Description);
+      var comp = await fetchTextElements(item.Name, OwnerType.Item, ElementType.Competitive);
 
       return new ItemData(
         item.Name,
