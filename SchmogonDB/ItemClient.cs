@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Schmogon.Data.Items;
+using SchmogonDB.Population;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Schmogon.Data.Items;
 
 namespace SchmogonDB
 {
@@ -36,6 +37,17 @@ namespace SchmogonDB
       }
 
       return moves;
+    }
+
+    public async Task<ItemData> FetchItemDataAsync(Item item)
+    {
+      var desc = await fetchTextElements(item.Name, OwnerType.Ability, ElementType.Description);
+      var comp = await fetchTextElements(item.Name, OwnerType.Ability, ElementType.Competitive);
+
+      return new ItemData(
+        item.Name,
+        desc,
+        comp);
     }
   }
 }

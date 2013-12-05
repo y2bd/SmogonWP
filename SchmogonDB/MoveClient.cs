@@ -1,4 +1,5 @@
 ﻿using Schmogon.Data.Moves;
+using Schmogon.Data.Pokemon;
 using SchmogonDB.Model;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,13 @@ namespace SchmogonDB
         INNER JOIN MoveToMove mtm ON mtm.Name_MoveFrom = m.Name
         INNER JOIN Move om ON om.Name = mtm.Name_MoveTo
         WHERE m.Name = @name";
+
+    private const string FetchPokemonMovesQuery =
+      @"SELECT mtp.Name_Move, 
+               mtp.RelationDescription 
+        FROM Pokemon p
+        INNER JOIN MoveToPokemon mtp ON mtp.Name_Pokemon = p.Name
+        WHERE p.Name = @name";
 
     private IEnumerable<TypedMove> _moveCache;
 
@@ -115,6 +123,25 @@ namespace SchmogonDB
       }
 
       return relatedMoves;
+    }
+
+    private async Task<IEnumerable<Move>> fetchPokemonMoves(Pokemon pokemon)
+    {
+      var pokemonMoves = new List<Move>();
+
+      var statement = await _database.PrepareStatementAsync(FetchPokemonMovesQuery);
+      statement.BindTextParameterWithName("@name", pokemon.Name);
+
+      while (statement.StepSync())
+      {
+        var name = statement.GetTextAt(0);
+        var desc = statement.GetTextAt(1);
+        var pageLocation = Utilities.ConstructSmogonLink(name, Utilities.MoveBasePath);
+
+        pokemonMoves.Add(new Move(name, desc, pageLocation));
+      }
+
+      return pokemonMoves;
     }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using Schmogon.Data.Abilities;
+using SchmogonDB.Population;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -34,8 +35,19 @@ namespace SchmogonDB
 
         moves.Add(new Ability(name, desc, pageLocation));
       }
-
+      
       return moves;
+    }
+
+    public async Task<AbilityData> FetchAbilityDataAsync(Ability ability)
+    {
+      var desc = await fetchTextElements(ability.Name, OwnerType.Ability, ElementType.Description);
+      var comp = await fetchTextElements(ability.Name, OwnerType.Ability, ElementType.Competitive);
+
+      return new AbilityData(
+        ability.Name,
+        desc,
+        comp);
     }
   }
 }

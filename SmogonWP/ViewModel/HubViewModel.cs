@@ -543,14 +543,16 @@ namespace SmogonWP.ViewModel
       var move = await movetask;
       var abil = await abiltask;
       var item = await itemtask;
-
-      var x = poke;
-
+      
       DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
 
-      var sel = move.First(m => m.Name == "Shadow Ball");
+      var sel = poke.First(p => p.Name == "Gardevoir");
 
-      var res = await db.FetchMoveDataAsync(sel);
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("dbstuff", "DOING POKEMON STUFF"));
+
+      var pokenew = await db.FetchPokemonDataAsync(sel);
+
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
     }
   }
 }
