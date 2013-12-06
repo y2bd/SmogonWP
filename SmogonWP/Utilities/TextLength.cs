@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmogonWP.Utilities
 {
   public static class TextLength
   {
-    private const string WideChars = "abcdeghkmnopqsuvwxyz ";
+    private const string FatChars = "mogw";
+    private const string WideChars = "abcdehknpqsuvxyz ";
     private const string NarrowChars = "fijlrt-";
 
     public static int EstimateTextLength(string text)
@@ -19,6 +16,7 @@ namespace SmogonWP.Utilities
       foreach (var c in text.ToLower())
       {
         if (NarrowChars.Contains(c)) score += 2;
+        else if (FatChars.Contains(c)) score += 8;
         else score += 4;
       }
 

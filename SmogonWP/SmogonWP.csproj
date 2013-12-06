@@ -98,6 +98,9 @@
     </Compile>
     <Compile Include="Controls\SetupChoiceTemplateSelector.cs" />
     <Compile Include="Controls\TextElementTemplateSelector.cs" />
+    <Compile Include="Controls\Tiles\FlipTileWide.xaml.cs">
+      <DependentUpon>FlipTileWide.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\AlternatingRowOpacityConverter.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Converters\EmptinessVisibilityConverter.cs" />
@@ -130,6 +133,7 @@
     <Compile Include="Services\DataLoadingService.cs" />
     <Compile Include="Services\IDataLoadingService.cs" />
     <Compile Include="Services\IsolatedStorageService.cs" />
+    <Compile Include="Services\LiveTileService.cs" />
     <Compile Include="Services\Messaging\InitMessageBase.cs" />
     <Compile Include="Services\Messaging\MessageReceiver.cs" />
     <Compile Include="Services\Messaging\MessageSender.cs" />
@@ -142,6 +146,9 @@
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\StatCalculator.cs" />
     <Compile Include="Utilities\TextLength.cs" />
+    <Compile Include="Utilities\ToolstackPNG\ToolStackCRCLib.cs" />
+    <Compile Include="Utilities\ToolstackPNG\ToolStackPNGWriterLib.cs" />
+    <Compile Include="Utilities\ToolstackPNG\ToolStackPNGWriterWBext.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
     <Compile Include="ViewModel\AbilityDataViewModel.cs" />
     <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
@@ -217,6 +224,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\Tiles\FlipTileWide.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

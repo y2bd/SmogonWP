@@ -32,6 +32,7 @@ namespace SmogonWP.ViewModel
   {
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
+    private readonly LiveTileService _tileService;
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokeSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Ability>> _abilSearchSender;
@@ -267,11 +268,12 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService)
+    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, LiveTileService tileService)
     {
       _navigationService = navigationService;
       _dataService = dataService;
       _trayService = trayService;
+      _tileService = tileService;
 
       _pokeSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
       _abilSearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
@@ -390,6 +392,8 @@ namespace SmogonWP.ViewModel
       await Task.Run(new Func<Task>(pleaseOffThread));
       st.Stop();
       Debug.WriteLine("JSON load: {0}", st.ElapsedMilliseconds);
+
+      await updateLiveTile();
     }
 
     // better name in future
@@ -542,6 +546,18 @@ namespace SmogonWP.ViewModel
       var pokenew = await db.FetchPokemonDataAsync(sel);
 
       DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
+    }
+
+    private async Task updateLiveTile()
+    {
+      try
+      {
+        await _tileService.GenerateFlipTileAsync();
+      }
+      catch (Exception)
+      {
+        Debug.WriteLine("tile creation failed, aw well");
+      }
     }
   }
 }
