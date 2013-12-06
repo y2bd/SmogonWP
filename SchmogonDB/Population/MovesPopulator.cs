@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
 using SchmogonDB.Model;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 using SQLiteWinRT;
 
 namespace SchmogonDB.Population
@@ -19,7 +19,7 @@ namespace SchmogonDB.Population
     private const string InsertMoveToPokemonQuery =
       "INSERT INTO MoveToPokemon (RelationDescription, Name_Pokemon, Name_Move) VALUES (@reldesc, @pokemon, @move);";
 
-    private async Task<string> insertMoveData(Database database, TypedMove move, MoveData moveData)
+    private async Task<string> insertMoveData(Database database, Move move, MoveData moveData)
     {
       //Type moveType;
       //if (!Enum.TryParse(moveData.Stats.Type, true, out moveType)) return null;

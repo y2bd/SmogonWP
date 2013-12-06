@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
 using SchmogonDB;
 using SchmogonDB.Model;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 using SmogonWP.Services;
 
 namespace SmogonWP.Design
@@ -24,7 +24,7 @@ namespace SmogonWP.Design
       return await _schmogonClient.FetchPokemonSearchDataAsync();
     }
 
-    public async Task<IEnumerable<TypedMove>> FetchAllMovesAsync()
+    public async Task<IEnumerable<Move>> FetchAllMovesAsync()
     {
       return await _schmogonClient.FetchMoveSearchDataAsync();
     }
@@ -44,7 +44,7 @@ namespace SmogonWP.Design
       return await _schmogonClient.FetchPokemonDataAsync(pokemon);
     }
 
-    public async Task<MoveData> FetchMoveDataAsync(TypedMove move)
+    public async Task<MoveData> FetchMoveDataAsync(Move move)
     {
       return await _schmogonClient.FetchMoveDataAsync(move);
     }

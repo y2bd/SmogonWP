@@ -1,4 +1,4 @@
-﻿using Type = Schmogon.Data.Types.Type;
+﻿using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.Messages
 {

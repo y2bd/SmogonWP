@@ -8,13 +8,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Pokemon;
-using Schmogon.Data.Stats;
-using Schmogon.Model.Text;
 using Schmogon.Utilities;
 using Type = Schmogon.Data.Types.Type;
 

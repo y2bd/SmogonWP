@@ -167,23 +167,24 @@
                                              SelectedItem="{Binding SelectedAbility, Mode=TwoWay}"
                                              toolkit:TiltEffect.IsTiltEnabled="True"
                                              HorizontalContentAlignment="Left"
+                                             HorizontalAlignment="Left"
                                              ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                         <ListBox.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <VirtualizingStackPanel Orientation="Vertical"
-                                                                        HorizontalAlignment="Left" />
+                                                <VirtualizingStackPanel Orientation="Vertical"/>
                                             </ItemsPanelTemplate>
                                         </ListBox.ItemsPanel>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid Background="{StaticResource PhoneAccentBrush}">
                                                     <Border Background="Black"
-                                                            Opacity="{Binding Converter={StaticResource RandomOpacityConverter}}" />
+                                                            Opacity="{Binding RowIndex, Converter={StaticResource AlternatingRowOpacityConverter}}" />
 
                                                     <TextBlock Text="{Binding Name}"
                                                                Style="{StaticResource PhoneTextTitle3Style}"
                                                                Foreground="White"
                                                                VerticalAlignment="Center"
+                                                               HorizontalAlignment="Left"
                                                                Margin="9,3,9,6" />
                                                 </Grid>
                                             </DataTemplate>

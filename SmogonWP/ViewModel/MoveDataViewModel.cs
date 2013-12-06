@@ -2,8 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
-using Schmogon.Data.Moves;
-using SchmogonDB.Model;
+using SchmogonDB.Model.Moves;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
@@ -15,11 +14,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -31,8 +29,8 @@ namespace SmogonWP.ViewModel
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
 
-    private readonly MessageReceiver<ItemSearchedMessage<TypedMove>> _moveSearchReceiver;
-    private readonly MessageReceiver<ItemSelectedMessage<TypedMove>> _pokemonMoveSelectedReceiver; 
+    private readonly MessageReceiver<ItemSearchedMessage<Move>> _moveSearchReceiver;
+    private readonly MessageReceiver<ItemSelectedMessage<Move>> _pokemonMoveSelectedReceiver; 
     private readonly MessageSender<ItemSelectedMessage<Type>> _moveTypeSelectedSender; 
 
     private readonly Stack<MoveDataItemViewModel> _moveStack;
@@ -75,8 +73,8 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private TypedMove _selectedRelatedMove;
-    public TypedMove SelectedRelatedMove
+    private Move _selectedRelatedMove;
+    public Move SelectedRelatedMove
     {
       get
       {
@@ -183,8 +181,8 @@ namespace SmogonWP.ViewModel
       _dataService = dataService;
       _trayService = trayService;
 
-      _moveSearchReceiver = new MessageReceiver<ItemSearchedMessage<TypedMove>>(onMoveSearched, true);
-      _pokemonMoveSelectedReceiver = new MessageReceiver<ItemSelectedMessage<TypedMove>>(onPokemonMoveSelected, true);
+      _moveSearchReceiver = new MessageReceiver<ItemSearchedMessage<Move>>(onMoveSearched, true);
+      _pokemonMoveSelectedReceiver = new MessageReceiver<ItemSelectedMessage<Move>>(onPokemonMoveSelected, true);
       _moveTypeSelectedSender = new MessageSender<ItemSelectedMessage<Type>>();
 
       _moveStack = new Stack<MoveDataItemViewModel>();
@@ -199,7 +197,7 @@ namespace SmogonWP.ViewModel
 
     #region event handlers
 
-    private void onMoveSearched(ItemSearchedMessage<TypedMove> msg)
+    private void onMoveSearched(ItemSearchedMessage<Move> msg)
     {
       // clear the current move if it exists
       // otherwise we run into stack issues
@@ -211,7 +209,7 @@ namespace SmogonWP.ViewModel
       scheduleMoveFetch(msg.Item);
     }
 
-    private void onPokemonMoveSelected(ItemSelectedMessage<TypedMove> msg)
+    private void onPokemonMoveSelected(ItemSelectedMessage<Move> msg)
     {
       // JUST IN CASE
       if (_moveStack != null) _moveStack.Clear();
@@ -223,7 +221,7 @@ namespace SmogonWP.ViewModel
       scheduleMoveFetch(msg.Item);
     }
 
-    private void onRelatedMoveSelected(TypedMove move)
+    private void onRelatedMoveSelected(Move move)
     {
       Name = move.Name;
 
@@ -308,7 +306,7 @@ namespace SmogonWP.ViewModel
 
     #endregion appbar
     
-    private void scheduleMoveFetch(TypedMove move)
+    private void scheduleMoveFetch(Move move)
     {
       FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(move));
 
@@ -324,7 +322,7 @@ namespace SmogonWP.ViewModel
       };
     }
 
-    private async Task fetchMoveData(TypedMove move)
+    private async Task fetchMoveData(Move move)
     {
       TrayService.AddJob("fetchdata", "Fetching move data...");
       

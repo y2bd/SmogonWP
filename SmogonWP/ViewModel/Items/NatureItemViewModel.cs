@@ -1,8 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight;
-using Schmogon;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Stats;
+using SchmogonDB.Model.Natures;
+using SchmogonDB.Model.Stats;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -59,11 +58,34 @@ namespace SmogonWP.ViewModel.Items
       }
     }
 
+    private int _rowIndex;
+    public int RowIndex
+    {
+      get
+      {
+        return _rowIndex;
+      }
+      set
+      {
+        if (_rowIndex != value)
+        {
+          _rowIndex = value;
+          RaisePropertyChanged(() => RowIndex);
+        }
+      }
+    }			
+
     public NatureItemViewModel(NatureEffect effect)
     {
       Name = Enum.GetName(typeof(Nature), effect.Nature);
       BoostStat = StatUtils.GetStatName(effect.Increased);
       LossStat = StatUtils.GetStatName(effect.Decreased);
+    }
+
+    public NatureItemViewModel(NatureEffect effect, int rowIndex)
+      : this(effect)
+    {
+      _rowIndex = rowIndex;
     }
   }
 }

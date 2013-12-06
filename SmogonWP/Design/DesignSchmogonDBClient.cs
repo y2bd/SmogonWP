@@ -1,15 +1,15 @@
-﻿using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Pokemon;
-using Schmogon.Data.Stats;
-using Schmogon.Model.Text;
-using SchmogonDB;
+﻿using SchmogonDB;
 using SchmogonDB.Model;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Type = Schmogon.Data.Types.Type;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Natures;
+using SchmogonDB.Model.Pokemon;
+using SchmogonDB.Model.Stats;
+using SchmogonDB.Model.Text;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.Design
 {
@@ -55,27 +55,27 @@ namespace SmogonWP.Design
       return new ItemData("lime", descData, compData);
     }
 
-    public async Task<IEnumerable<TypedMove>> FetchMoveSearchDataAsync()
+    public async Task<IEnumerable<Move>> FetchMoveSearchDataAsync()
     {
       await Task.Delay(0);
 
-      return new List<TypedMove>
+      return new List<Move>
       {
-        new TypedMove("kung pao", "throws chicken at the opponent, causing confusion", "", Type.Fire),
-        new TypedMove("drum machine", "quick strikes, can hit two to five times", "", Type.Rock),
-        new TypedMove("stackflip", "damage builds as move is used in succession", "", Type.Fighting),
-        new TypedMove("hypertension", "boosts attack three stages at the cost of 1/8 max HP", "", Type.Fighting),
-        new TypedMove("whiplash", "quick strike that does more damage the slower the opponent", "", Type.Water),
-        new TypedMove("kung pao", "throws chicken at the opponent, causing confusion", "", Type.Fire),
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", "", Type.Fire),
+        new Move("drum machine", "quick strikes, can hit two to five times", "", Type.Rock),
+        new Move("stackflip", "damage builds as move is used in succession", "", Type.Fighting),
+        new Move("hypertension", "boosts attack three stages at the cost of 1/8 max HP", "", Type.Fighting),
+        new Move("whiplash", "quick strike that does more damage the slower the opponent", "", Type.Water),
+        new Move("kung pao", "throws chicken at the opponent, causing confusion", "", Type.Fire),
       };
     }
 
-    public async Task<MoveData> FetchMoveDataAsync(TypedMove move)
+    public async Task<MoveData> FetchMoveDataAsync(Move move)
     {
       await Task.Delay(0);
 
       var stats = new MoveStats(
-        "Steel",
+        Type.Steel,
         "-",
         "-",
         "15",
@@ -100,7 +100,7 @@ namespace SmogonWP.Design
         stats,
         descData,
         compData,
-        new List<Move> { new Move("Swords Dance", "Swords Dance raises attack by two stages without a health penalty.", "") });
+        new List<Move> { new Move("Swords Dance", "Swords Dance raises attack by two stages without a health penalty.", "", Type.Normal) });
 
       return data;
     }
@@ -182,13 +182,13 @@ namespace SmogonWP.Design
             Items = new List<Item> {new Item("Life Orb", "Kicks life in the orbs", "")},
             Moves = new List<IEnumerable<Move>>
             {
-              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
-              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
-              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)},
               new List<Move>
               {
-                new Move("Chocolate Sauce", "mm dat drizzle", ""),
-                new Move("Milk Drain", "gotta get dat white stuff", "")
+                new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal),
+                new Move("Milk Drain", "gotta get dat white stuff", "", Type.Normal)
               }
             },
             Natures = new List<Nature> {Nature.Adamant, Nature.Brave}
@@ -206,13 +206,13 @@ namespace SmogonWP.Design
             Items = new List<Item> {new Item("Life Orb", "Kicks life in the orbs", "")},
             Moves = new List<IEnumerable<Move>>
             {
-              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
-              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
-              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "")},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)},
+              new List<Move> {new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)},
               new List<Move>
               {
-                new Move("Chocolate Sauce", "mm dat drizzle", ""),
-                new Move("Milk Drain", "gotta get dat white stuff", "")
+                new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal),
+                new Move("Milk Drain", "gotta get dat white stuff", "", Type.Normal)
               }
             },
             Natures = new List<Nature> {Nature.Adamant, Nature.Brave}
@@ -228,8 +228,8 @@ namespace SmogonWP.Design
         },
         new List<Move>
         {
-          new Move("Chocolate Sauce", "mm dat drizzle", ""),
-          new Move("Milk Drain", "gotta get dat white stuff", "")
+          new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal),
+          new Move("Milk Drain", "gotta get dat white stuff", "", Type.Normal)
         }
         );
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Schmogon.Model.Text;
+using SchmogonDB.Model.Text;
 using SchmogonDB.Population;
 
 namespace SchmogonDB

@@ -2,9 +2,9 @@
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Pokemon;
-using SchmogonDB.Model;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
@@ -31,7 +31,7 @@ namespace SmogonWP.ViewModel
     private readonly MessageReceiver<ItemSearchedMessage<Pokemon>> _pokemonSearchReceiver;
     private readonly MessageSender<PokemonTypeSelectedMessage> _pokemonTypeSelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Ability>> _pokemonAbilitySelectedSender;
-    private readonly MessageSender<ItemSelectedMessage<TypedMove>> _pokemonMoveSelectedSender;
+    private readonly MessageSender<ItemSelectedMessage<Move>> _pokemonMoveSelectedSender;
     private readonly MessageSender<ItemSelectedMessage<MovesetItemViewModel>> _movesetSelectedSender; 
     
     private string _pageLocation;
@@ -110,8 +110,8 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private TypedMoveItemViewModel _selectedMove;
-    public TypedMoveItemViewModel SelectedMove
+    private MoveItemViewModel _selectedMove;
+    public MoveItemViewModel SelectedMove
     {
       get
       {
@@ -199,7 +199,7 @@ namespace SmogonWP.ViewModel
       _pokemonSearchReceiver = new MessageReceiver<ItemSearchedMessage<Pokemon>>(onPokemonSearched, true);
       _pokemonTypeSelectedSender = new MessageSender<PokemonTypeSelectedMessage>();
       _pokemonAbilitySelectedSender = new MessageSender<ItemSelectedMessage<Ability>>();
-      _pokemonMoveSelectedSender = new MessageSender<ItemSelectedMessage<TypedMove>>();
+      _pokemonMoveSelectedSender = new MessageSender<ItemSelectedMessage<Move>>();
       _movesetSelectedSender = new MessageSender<ItemSelectedMessage<MovesetItemViewModel>>();
 
       if (IsInDesignMode || IsInDesignModeStatic)
@@ -236,9 +236,9 @@ namespace SmogonWP.ViewModel
       _navigationService.Navigate(ViewModelLocator.TypePath);
     }
 
-    private void onMoveSelected(TypedMoveItemViewModel mivm)
+    private void onMoveSelected(MoveItemViewModel mivm)
     {
-      _pokemonMoveSelectedSender.SendMessage(new ItemSelectedMessage<TypedMove>(mivm.TypedMove));
+      _pokemonMoveSelectedSender.SendMessage(new ItemSelectedMessage<Move>(mivm.Move));
       _navigationService.Navigate(ViewModelLocator.MoveDataPath);
     }
 

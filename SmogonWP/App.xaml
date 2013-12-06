@@ -20,6 +20,8 @@
             <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
             <converters:InvertedEmptinessVisibilityConverter x:Key="InvertedEmptinessVisibilityConverter" />
             <converters:LowercaseConverter x:Key="LowercaseConverter" />
+            <converters:UppercaseConverter x:Key="UppercaseConverter" />
+            <converters:AlternatingRowOpacityConverter x:Key="AlternatingRowOpacityConverter" />
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles.xaml" />

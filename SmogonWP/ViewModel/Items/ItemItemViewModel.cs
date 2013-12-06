@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
-using Schmogon.Data;
-using Schmogon.Data.Items;
+using SchmogonDB.Model;
+using SchmogonDB.Model.Items;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -32,9 +32,32 @@ namespace SmogonWP.ViewModel.Items
       }
     }
 
+    private int _rowIndex;
+    public int RowIndex
+    {
+      get
+      {
+        return _rowIndex;
+      }
+      set
+      {
+        if (_rowIndex != value)
+        {
+          _rowIndex = value;
+          RaisePropertyChanged(() => RowIndex);
+        }
+      }
+    }			
+
     public ItemItemViewModel(Item item)
     {
       Item = item;
+    }
+
+    public ItemItemViewModel(Item item, int rowIndex)
+      : this(item)
+    {
+      _rowIndex = rowIndex;
     }
   }
 }

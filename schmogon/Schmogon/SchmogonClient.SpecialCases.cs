@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using HtmlAgilityPack;
-using Schmogon.Data.Moves;
-using Schmogon.Model.Text;
 using Schmogon.Utilities;
 
 namespace Schmogon

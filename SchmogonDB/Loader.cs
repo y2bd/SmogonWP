@@ -1,13 +1,14 @@
-﻿using Schmogon;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SchmogonDB.Converters;
 using SchmogonDB.Model;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 
 namespace SchmogonDB
 {
@@ -45,26 +46,37 @@ namespace SchmogonDB
         abildres = await client.GetStringAsync(AbilDataPath);
         itemdres = await client.GetStringAsync(ItemDataPath);
       }
-
-      var s = new SchmogonClient();
-
+      
       return new LoaderData
       {
-        PokemonSearch = await s.DeserializeDataListAsync<Pokemon>(pokesres),
-        MovesSearch = await s.DeserializeDataListAsync<TypedMove>(movesres),
-        AbilitiesSearch = await s.DeserializeDataListAsync<Ability>(abilsres),
-        ItemsSearch = await s.DeserializeDataListAsync<Item>(itemsres),
-        Pokemon = await s.DeserializeDataListAsync<PokemonData>(pokedres),
-        Abilities = await s.DeserializeDataListAsync<AbilityData>(abildres),
-        Moves = await s.DeserializeDataListAsync<MoveData>(movedres),
-        Items = await s.DeserializeDataListAsync<ItemData>(itemdres),
+        PokemonSearch = await DeserializeDataListAsync<Pokemon>(pokesres),
+        MovesSearch = await DeserializeDataListAsync<Move>(movesres),
+        AbilitiesSearch = await DeserializeDataListAsync<Ability>(abilsres),
+        ItemsSearch = await DeserializeDataListAsync<Item>(itemsres),
+        Pokemon = await DeserializeDataListAsync<PokemonData>(pokedres),
+        Abilities = await DeserializeDataListAsync<AbilityData>(abildres),
+        Moves = await DeserializeDataListAsync<MoveData>(movedres),
+        Items = await DeserializeDataListAsync<ItemData>(itemdres),
       };
     }
 
+    private async Task<IEnumerable<T>> DeserializeDataListAsync<T>(string serialized)
+    {
+      var settings = new JsonSerializerSettings
+      {
+        Converters = new List<JsonConverter>
+        {
+          new TextElementConverter()
+        }
+      };
+
+      return await JsonConvert.DeserializeObjectAsync<IEnumerable<T>>(serialized, settings);
+    }
+    
     internal class LoaderData
     {
       public IEnumerable<Pokemon> PokemonSearch { get; set; }
-      public IEnumerable<TypedMove> MovesSearch { get; set; }
+      public IEnumerable<Move> MovesSearch { get; set; }
       public IEnumerable<Ability> AbilitiesSearch { get; set; }
       public IEnumerable<Item> ItemsSearch { get; set; } 
 

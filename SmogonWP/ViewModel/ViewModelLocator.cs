@@ -1,8 +1,8 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using Schmogon;
 using SchmogonDB;
+using SchmogonDB.Tools;
 using SmogonWP.Services;
 
 namespace SmogonWP.ViewModel
@@ -36,16 +36,16 @@ namespace SmogonWP.ViewModel
 
       if (ViewModelBase.IsInDesignModeStatic)
       {
-        RegisterIfUnregistered<ISchmogonClient, Design.DesignSchmogonClient>();
         RegisterIfUnregistered<IDataLoadingService, Design.DesignDataLoadingService>();
         RegisterIfUnregistered<ISchmogonDBClient, Design.DesignSchmogonDBClient>();
       }
       else
       {
-        RegisterIfUnregistered<ISchmogonClient, SchmogonClient>();
         RegisterIfUnregistered<IDataLoadingService, DataLoadingService>();
         RegisterIfUnregistered<ISchmogonDBClient, SchmogonDBClient>();
       }
+
+      RegisterIfUnregistered<SchmogonToolset>();
 
       SimpleIoc.Default.Register<SimpleNavigationService>();
       SimpleIoc.Default.Register<TombstoneService>();

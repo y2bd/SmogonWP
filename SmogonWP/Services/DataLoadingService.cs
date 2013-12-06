@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using Nito.AsyncEx;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
 using SchmogonDB;
 using SchmogonDB.Model;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 
 namespace SmogonWP.Services
 {
@@ -43,7 +43,7 @@ namespace SmogonWP.Services
       return await fetchData(_pokeLock, _schmogonDBClient.FetchPokemonSearchDataAsync);
     }
 
-    public async Task<IEnumerable<TypedMove>> FetchAllMovesAsync()
+    public async Task<IEnumerable<Move>> FetchAllMovesAsync()
     {
       return await fetchData(_moveLock, _schmogonDBClient.FetchMoveSearchDataAsync);
     }
@@ -63,7 +63,7 @@ namespace SmogonWP.Services
       return await fetchData(_pokeLock, _schmogonDBClient.FetchPokemonDataAsync, pokemon);
     }
 
-    public async Task<MoveData> FetchMoveDataAsync(TypedMove move)
+    public async Task<MoveData> FetchMoveDataAsync(Move move)
     {
       return await fetchData(_moveLock, _schmogonDBClient.FetchMoveDataAsync, move);
     }

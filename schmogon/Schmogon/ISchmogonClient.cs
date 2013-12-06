@@ -1,13 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Schmogon.Data;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Pokemon;
-using Schmogon.Data.Stats;
-using Schmogon.Data.Types;
 
 namespace Schmogon
 {

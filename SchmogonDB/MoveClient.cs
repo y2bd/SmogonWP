@@ -1,11 +1,10 @@
-﻿using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
-using SchmogonDB.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 using SchmogonDB.Population;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SchmogonDB
 {
@@ -20,7 +19,8 @@ namespace SchmogonDB
                m.PP, 
                m.Priority, 
                m.Damage,
-               m.Target 
+               m.Target,
+               m.Type 
         FROM Move m
         WHERE m.Name = @name";
 
@@ -42,18 +42,18 @@ namespace SchmogonDB
         INNER JOIN Move om ON om.Name = mtp.Name_Move
         WHERE p.Name = @name";
 
-    private IEnumerable<TypedMove> _moveCache;
+    private IEnumerable<Move> _moveCache;
 
-    public async Task<IEnumerable<TypedMove>> FetchMoveSearchDataAsync()
+    public async Task<IEnumerable<Move>> FetchMoveSearchDataAsync()
     {
       ensureDatabaseInitialized();
 
       return _moveCache ?? (_moveCache = await fetchMoveSearchData());
     }
 
-    private async Task<IEnumerable<TypedMove>> fetchMoveSearchData()
+    private async Task<IEnumerable<Move>> fetchMoveSearchData()
     {
-      var moves = new List<TypedMove>();
+      var moves = new List<Move>();
 
       var statement = await _database.PrepareStatementAsync(FetchMoveSearchDataQuery);
 
@@ -65,13 +65,13 @@ namespace SchmogonDB
 
         var pageLocation = Utilities.ConstructSmogonLink(name, Utilities.MoveBasePath);
 
-        moves.Add(new TypedMove(name, desc, pageLocation, type));
+        moves.Add(new Move(name, desc, pageLocation, type));
       }
       
       return moves;
     }
 
-    public async Task<MoveData> FetchMoveDataAsync(TypedMove move)
+    public async Task<MoveData> FetchMoveDataAsync(Move move)
     {
       var desc = await fetchTextElements(move.Name, OwnerType.Move, ElementType.Description);
       var comp = await fetchTextElements(move.Name, OwnerType.Move, ElementType.Competitive);
@@ -87,20 +87,16 @@ namespace SchmogonDB
         );
     }
 
-    private async Task<MoveStats> fetchMoveStats(TypedMove move)
+    private async Task<MoveStats> fetchMoveStats(Move move)
     {
-      var typeString = Enum.GetName(typeof(Type), move.Type);
-
       var statement = await _database.PrepareStatementAsync(FetchMoveStatsQuery);
       statement.BindTextParameterWithName("@name", move.Name);
 
       statement.StepSync();
-
-      var i = statement.ColumnCount;
-
+      
       return new MoveStats
       (
-        typeString, 
+        (Type)statement.GetIntAt(6), 
         statement.GetTextAt(0), 
         statement.GetTextAt(1), 
         statement.GetTextAt(2),
@@ -110,9 +106,9 @@ namespace SchmogonDB
       );
     }
 
-    private async Task<IEnumerable<TypedMove>> fetchRelatedMoves(TypedMove move)
+    private async Task<IEnumerable<Move>> fetchRelatedMoves(Move move)
     {
-      var relatedMoves = new List<TypedMove>();
+      var relatedMoves = new List<Move>();
 
       var statement = await _database.PrepareStatementAsync(FetchRelatedMovesQuery);
       statement.BindTextParameterWithName("@name", move.Name);
@@ -124,7 +120,7 @@ namespace SchmogonDB
         var type = (Type) statement.GetIntAt(2);
         var pageLocation = Utilities.ConstructSmogonLink(name, Utilities.MoveBasePath);
 
-        relatedMoves.Add(new TypedMove(name, desc, pageLocation, type));
+        relatedMoves.Add(new Move(name, desc, pageLocation, type));
       }
 
       return relatedMoves;
@@ -132,7 +128,7 @@ namespace SchmogonDB
 
     private async Task<IEnumerable<Move>> fetchPokemonMoves(Pokemon pokemon)
     {
-      var pokemonMoves = new List<TypedMove>();
+      var pokemonMoves = new List<Move>();
 
       var statement = await _database.PrepareStatementAsync(FetchPokemonMovesQuery);
       statement.BindTextParameterWithName("@name", pokemon.Name);
@@ -144,7 +140,7 @@ namespace SchmogonDB
         var type = (Type)statement.GetIntAt(2);
         var pageLocation = Utilities.ConstructSmogonLink(name, Utilities.MoveBasePath);
 
-        pokemonMoves.Add(new TypedMove(name, desc, pageLocation, type));
+        pokemonMoves.Add(new Move(name, desc, pageLocation, type));
       }
 
       return pokemonMoves;

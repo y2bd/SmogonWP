@@ -1,7 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
-using SchmogonDB.Model;
+using SchmogonDB.Model.Moves;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -24,9 +24,9 @@ namespace SmogonWP.ViewModel
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
 
-    private readonly MessageSender<ItemSearchedMessage<TypedMove>> _moveSearchSender;
+    private readonly MessageSender<ItemSearchedMessage<Move>> _moveSearchSender;
 
-    private List<TypedMoveItemViewModel> _moves;
+    private List<MoveItemViewModel> _moves;
 
     private string _voicedMoveName;
 
@@ -66,8 +66,8 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private TypedMoveItemViewModel _selectedMove;
-    public TypedMoveItemViewModel SelectedMove
+    private MoveItemViewModel _selectedMove;
+    public MoveItemViewModel SelectedMove
     {
       get
       {
@@ -85,8 +85,8 @@ namespace SmogonWP.ViewModel
       }
     }			
 
-    private ObservableCollection<TypedMoveItemViewModel> _filteredMoves;
-    public ObservableCollection<TypedMoveItemViewModel> FilteredMoves
+    private ObservableCollection<MoveItemViewModel> _filteredMoves;
+    public ObservableCollection<MoveItemViewModel> FilteredMoves
     {
       get
       {
@@ -210,7 +210,7 @@ namespace SmogonWP.ViewModel
       _dataService = dataService;
       _trayService = trayService;
 
-      _moveSearchSender = new MessageSender<ItemSearchedMessage<TypedMove>>();
+      _moveSearchSender = new MessageSender<ItemSearchedMessage<Move>>();
 
       Filters = new ObservableCollection<string> {"none"};
 
@@ -230,10 +230,10 @@ namespace SmogonWP.ViewModel
       if (_moves == null || Query == null) return;
       if (args.Key != Key.Enter) return;
 
-      if (string.IsNullOrWhiteSpace(Query)) FilteredMoves = new ObservableCollection<TypedMoveItemViewModel>(_moves);
+      if (string.IsNullOrWhiteSpace(Query)) FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
       else
       {
-        FilteredMoves = new ObservableCollection<TypedMoveItemViewModel>(
+        FilteredMoves = new ObservableCollection<MoveItemViewModel>(
           _moves.Where(
             m => m.Name.ToLower().Contains(Query.ToLower().Trim())
             ).OrderBy(m => m.Name)
@@ -245,7 +245,7 @@ namespace SmogonWP.ViewModel
     {
       var type = SelectedFilter - 1;
 
-      FilteredMoves = new ObservableCollection<TypedMoveItemViewModel>(
+      FilteredMoves = new ObservableCollection<MoveItemViewModel>(
         _moves.Where(m => type == -1 || m.Type.Type == (Type)type)
               .OrderBy(m => m.Name));
 
@@ -254,9 +254,9 @@ namespace SmogonWP.ViewModel
       TypeDisplay = type == -1 ? null : new TypeItemViewModel((Type) type);
     }
 
-    private void onMoveSelected(TypedMoveItemViewModel mivm)
+    private void onMoveSelected(MoveItemViewModel mivm)
     {
-      _moveSearchSender.SendMessage(new ItemSearchedMessage<TypedMove>(mivm.TypedMove));
+      _moveSearchSender.SendMessage(new ItemSearchedMessage<Move>(mivm.Move));
       _navigationService.Navigate(ViewModelLocator.MoveDataPath);
     }
 
@@ -318,11 +318,11 @@ namespace SmogonWP.ViewModel
         var rawMoves = await _dataService.FetchAllMovesAsync();
 
         _moves = (from rawMove in rawMoves
-                  select new TypedMoveItemViewModel(rawMove))
+                  select new MoveItemViewModel(rawMove))
         .OrderBy(m => m.Name)
         .ToList();
 
-        FilteredMoves = new ObservableCollection<TypedMoveItemViewModel>(_moves);
+        FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
 
         LoadFailed = false;
       }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Schmogon.Model.Text;
+using SchmogonDB.Model.Text;
 using SQLiteWinRT;
 
 namespace SchmogonDB.Population

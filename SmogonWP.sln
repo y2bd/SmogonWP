@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmogonWP", "SmogonWP\SmogonWP.csproj", "{87B3D66C-02F7-4A50-8A08-569117B54BA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schmogon", "schmogon\Schmogon\Schmogon.csproj", "{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{09E3AFBE-0B07-4D15-92F9-41C609C799EC}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -62,23 +60,6 @@ Global
 		{87B3D66C-02F7-4A50-8A08-569117B54BA8}.Release|x86.ActiveCfg = Release|x86
 		{87B3D66C-02F7-4A50-8A08-569117B54BA8}.Release|x86.Build.0 = Release|x86
 		{87B3D66C-02F7-4A50-8A08-569117B54BA8}.Release|x86.Deploy.0 = Release|x86
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|ARM.Build.0 = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Debug|x86.Build.0 = Debug|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Release|ARM.ActiveCfg = Release|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Release|ARM.Build.0 = Release|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Release|Win32.ActiveCfg = Release|Any CPU
-		{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}.Release|x86.ActiveCfg = Release|Any CPU
 		{4AE0193F-5986-404E-87B6-1EC9301D16D8}.Debug|Any CPU.ActiveCfg = Debug|ARM
 		{4AE0193F-5986-404E-87B6-1EC9301D16D8}.Debug|Any CPU.Build.0 = Debug|ARM
 		{4AE0193F-5986-404E-87B6-1EC9301D16D8}.Debug|ARM.ActiveCfg = Debug|ARM

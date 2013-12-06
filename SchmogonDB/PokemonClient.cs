@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Pokemon;
-using Schmogon.Data.Stats;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Natures;
+using SchmogonDB.Model.Pokemon;
+using SchmogonDB.Model.Stats;
 using SchmogonDB.Population;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SchmogonDB
 {
@@ -183,16 +183,19 @@ namespace SchmogonDB
 
         var abilties = statement.GetTextAt(7)
                                 .Split(',')
+                                .Where(s => !string.IsNullOrWhiteSpace(s))
                                 .Select(s => new Ability(s, string.Empty, Utilities.ConstructSmogonLink(s, Utilities.AbilityBasePath)))
                                 .ToList();
 
         var natures = statement.GetTextAt(8)
                                 .Split(',')
+                                .Where(s => !string.IsNullOrWhiteSpace(s))
                                 .Select(s => (Nature)int.Parse(s))
                                 .ToList();
 
         var items = statement.GetTextAt(9)
                              .Split(',')
+                             .Where(s => !string.IsNullOrWhiteSpace(s))
                              .Select(s => new Item(s, string.Empty, Utilities.ConstructSmogonLink(s, Utilities.ItemBasePath)))
                              .ToList();
 
@@ -200,7 +203,7 @@ namespace SchmogonDB
           .Split('|')
           .Select(
             s => s.Split(',')
-                  .Select(ss => new Move(ss, string.Empty, Utilities.ConstructSmogonLink(ss, Utilities.MoveBasePath)))
+                  .Select(ss => new Move(ss, string.Empty, Utilities.ConstructSmogonLink(ss, Utilities.MoveBasePath), Type.Normal))
                   .ToList()
           ).ToList();
 

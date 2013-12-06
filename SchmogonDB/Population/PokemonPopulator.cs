@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Schmogon.Data.Pokemon;
+using SchmogonDB.Model.Pokemon;
 using SQLiteWinRT;
 
 namespace SchmogonDB.Population

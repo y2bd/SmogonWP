@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using Schmogon.Data.Moves;
-using Schmogon.Model.Text;
-using SchmogonDB.Model;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Text;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -28,26 +29,21 @@ namespace SmogonWP.ViewModel.Items
       get { return MoveData.Competitive; }
     }
 
-    public List<TypedMove> RelatedMoves
+    public List<Move> RelatedMoves
     {
       get
       {
-        return MoveData.RelatedMoves.Select(
-          m =>
-          {
-            var tm = m as TypedMove;
-
-            return tm != null 
-              ? new TypedMove(tm.Name, tm.Description, tm.PageLocation, tm.Type)
-              : new TypedMove(m.Name, m.Description, m.PageLocation, Schmogon.Data.Types.Type.Normal);
-          }
-        ).ToList();
+        return MoveData.RelatedMoves.ToList();
       }
     }
 
     public string Type
     {
-      get { return MoveData.Stats.Type.ToLower(); }
+      get
+      {
+        var name = Enum.GetName(typeof(Type), MoveData.Stats.Type);
+        return name != null ? name.ToLower() : "ERROR !!";
+      }
     }
 
     public string Damage

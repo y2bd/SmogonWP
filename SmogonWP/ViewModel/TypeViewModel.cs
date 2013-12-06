@@ -2,18 +2,18 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using Schmogon;
+using SchmogonDB.Tools;
 using SmogonWP.Messages;
 using SmogonWP.Model;
 using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.Items;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
   public class TypeViewModel : ViewModelBase
   {
-    private readonly ISchmogonClient _schmogonClient;
+    private readonly SchmogonToolset _toolset;
 
     private readonly MessageReceiver<ItemSelectedMessage<Type>> _moveTypeSelectedMessage;
     private readonly MessageReceiver<PokemonTypeSelectedMessage> _pokemonTypeSelectedMessage; 
@@ -122,11 +122,11 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => DefenseTypeData);
         }
       }
-    }			
+    }
 
-    public TypeViewModel(ISchmogonClient schmogonClient)
+    public TypeViewModel(SchmogonToolset toolset)
     {
-      _schmogonClient = schmogonClient;
+      _toolset = toolset;
 
       _moveTypeSelectedMessage = new MessageReceiver<ItemSelectedMessage<Type>>(onMoveTypeSelected, true);
       _pokemonTypeSelectedMessage = new MessageReceiver<PokemonTypeSelectedMessage>(onPokemonTypeSelected, true);
@@ -158,7 +158,7 @@ namespace SmogonWP.ViewModel
 
       var type = (Type) SelectedOffensiveType;
 
-      var effect = _schmogonClient.GetTypeOffenseEffect(type);
+      var effect = _toolset.GetTypeOffenseEffect(type);
 
       OffenseTypeData = new ObservableCollection<OffenseTypeGroup>
       {
@@ -180,7 +180,7 @@ namespace SmogonWP.ViewModel
 
       var type = (Type) SelectedDefenseType;
 
-      var effect = _schmogonClient.GetTypeDefenseEffect(type);
+      var effect = _toolset.GetTypeDefenseEffect(type);
 
       DefenseTypeData = new ObservableCollection<DefenseTypeGroup>
       {

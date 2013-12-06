@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 using SQLiteWinRT;
 
 namespace SchmogonDB.Population

@@ -5,8 +5,6 @@ using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
-using Schmogon.Data.Abilities;
-using Schmogon.Model.Text;
 using Schmogon.Utilities;
 
 namespace Schmogon

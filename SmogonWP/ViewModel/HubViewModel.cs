@@ -2,13 +2,12 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Nito.AsyncEx;
-using Schmogon.Data;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
 using SchmogonDB;
 using SchmogonDB.Model;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
@@ -25,7 +24,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Windows.Phone.Speech.VoiceCommands;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -36,7 +35,7 @@ namespace SmogonWP.ViewModel
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokeSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Ability>> _abilSearchSender;
-    private readonly MessageSender<ItemSearchedMessage<TypedMove>> _moveSearchSender;
+    private readonly MessageSender<ItemSearchedMessage<Move>> _moveSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Item>> _itemSearchSender;
 
     private IEnumerable<ISearchItem> _allSearchItems;
@@ -276,7 +275,7 @@ namespace SmogonWP.ViewModel
 
       _pokeSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
       _abilSearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
-      _moveSearchSender = new MessageSender<ItemSearchedMessage<TypedMove>>();
+      _moveSearchSender = new MessageSender<ItemSearchedMessage<Move>>();
       _itemSearchSender = new MessageSender<ItemSearchedMessage<Item>>();
 
       setupNavigation();
@@ -417,7 +416,7 @@ namespace SmogonWP.ViewModel
         {
           _allSearchItems = new List<ISearchItem>()
             .Concat((poke).Select(p => new PokemonItemViewModel(p)))
-            .Concat((move).Select(m => new TypedMoveItemViewModel(m)))
+            .Concat((move).Select(m => new MoveItemViewModel(m)))
             .Concat((abil).Select(a => new AbilityItemViewModel(a)))
             .Concat((item).Select(i => new ItemItemViewModel(i)))
             .OrderBy(i => i.Name)
@@ -499,9 +498,9 @@ namespace SmogonWP.ViewModel
         _abilSearchSender.SendMessage(new ItemSearchedMessage<Ability>((item as AbilityItemViewModel).Ability));
         _navigationService.Navigate(ViewModelLocator.AbilityDataPath);
       }
-      else if (item is TypedMoveItemViewModel)
+      else if (item is MoveItemViewModel)
       {
-        _moveSearchSender.SendMessage(new ItemSearchedMessage<TypedMove>((item as TypedMoveItemViewModel).TypedMove));
+        _moveSearchSender.SendMessage(new ItemSearchedMessage<Move>((item as MoveItemViewModel).Move));
         _navigationService.Navigate(ViewModelLocator.MoveDataPath);
       }
       else if (item is ItemItemViewModel)

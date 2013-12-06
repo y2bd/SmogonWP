@@ -1,4 +1,4 @@
-﻿using Schmogon.Data.Items;
+﻿using SchmogonDB.Model.Items;
 using SchmogonDB.Population;
 using System;
 using System.Collections.Generic;

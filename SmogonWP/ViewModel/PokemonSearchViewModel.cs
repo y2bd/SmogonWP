@@ -10,13 +10,13 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
-using Schmogon.Data.Pokemon;
+using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
 using SmogonWP.ViewModel.Items;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {

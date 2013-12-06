@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Pokemon;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Pokemon;
 using SQLiteWinRT;
 
 namespace SchmogonDB.Population

@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
-using SchmogonDB.Model;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 
 namespace SchmogonDB
 {
@@ -14,9 +13,9 @@ namespace SchmogonDB
 
     Task<ItemData> FetchItemDataAsync(Item item);
 
-    Task<IEnumerable<TypedMove>> FetchMoveSearchDataAsync();
+    Task<IEnumerable<Move>> FetchMoveSearchDataAsync();
 
-    Task<MoveData> FetchMoveDataAsync(TypedMove move);
+    Task<MoveData> FetchMoveDataAsync(Move move);
 
     Task<IEnumerable<Pokemon>> FetchPokemonSearchDataAsync();
 

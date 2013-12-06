@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using GalaSoft.MvvmLight;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Pokemon;
-using Schmogon.Data.Stats;
-using Schmogon.Model.Text;
-using SchmogonDB.Model;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Natures;
+using SchmogonDB.Model.Pokemon;
+using SchmogonDB.Model.Stats;
+using SchmogonDB.Model.Text;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.Items;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -24,7 +24,7 @@ namespace SmogonWP.ViewModel
     private readonly MessageSender<ItemSelectedMessage<Ability>> _abilitySelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Nature>> _natureSelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Item>> _itemSelectedSender;  
-    private readonly MessageSender<ItemSelectedMessage<TypedMove>> _moveSelectedSender;
+    private readonly MessageSender<ItemSelectedMessage<Move>> _moveSelectedSender;
 
     private MovesetItemViewModel _msivm;
     public MovesetItemViewModel MSIVM
@@ -119,8 +119,8 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private TypedGroupMoveItemViewModel _selectedMove;
-    public TypedGroupMoveItemViewModel SelectedMove
+    private GroupedMoveItemViewModel _selectedMove;
+    public GroupedMoveItemViewModel SelectedMove
     {
       get
       {
@@ -147,7 +147,7 @@ namespace SmogonWP.ViewModel
       _abilitySelectedSender = new MessageSender<ItemSelectedMessage<Ability>>();
       _natureSelectedSender = new MessageSender<ItemSelectedMessage<Nature>>();
       _itemSelectedSender = new MessageSender<ItemSelectedMessage<Item>>();
-      _moveSelectedSender = new MessageSender<ItemSelectedMessage<TypedMove>>();
+      _moveSelectedSender = new MessageSender<ItemSelectedMessage<Move>>();
 
       #region design data
       if (IsInDesignMode || IsInDesignModeStatic)
@@ -169,20 +169,20 @@ namespace SmogonWP.ViewModel
           {
             new List<Move>
             {
-              new Move("Chocolate Sauce", "mm dat drizzle", "")
+              new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)
             },
             new List<Move>
             {
-              new Move("Chocolate Sauce", "mm dat drizzle", "")
+              new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)
             },
             new List<Move>
             {
-              new Move("Chocolate Sauce", "mm dat drizzle", "")
+              new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)
             },
             new List<Move>
             {
-              new Move("Chocolate Sauce", "mm dat drizzle", ""),
-              new Move("Milk Drain", "gotta get dat white stuff", "")
+              new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal),
+              new Move("Milk Drain", "gotta get dat white stuff", "", Type.Normal)
             }
           },
           Natures = new List<Nature> { Nature.Adamant, Nature.Brave }
@@ -228,11 +228,11 @@ namespace SmogonWP.ViewModel
 
     }
 
-    private void onMoveSelected(TypedGroupMoveItemViewModel gmivm)
+    private void onMoveSelected(GroupedMoveItemViewModel gmivm)
     {
       if (gmivm == null) return;
 
-      _moveSelectedSender.SendMessage(new ItemSelectedMessage<TypedMove>(gmivm.Move as TypedMove));
+      _moveSelectedSender.SendMessage(new ItemSelectedMessage<Move>(gmivm.Move));
       _navigationService.Navigate(ViewModelLocator.MoveDataPath);
     }
   }

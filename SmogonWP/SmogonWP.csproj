@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="Controls\SetupChoiceTemplateSelector.cs" />
     <Compile Include="Controls\TextElementTemplateSelector.cs" />
+    <Compile Include="Converters\AlternatingRowOpacityConverter.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Converters\EmptinessVisibilityConverter.cs" />
     <Compile Include="Converters\InvertedEmptinessVisibilityConverter.cs" />
@@ -107,7 +108,6 @@
     <Compile Include="Converters\TextLengthToColumnSpanConverter.cs" />
     <Compile Include="Converters\UppercaseConverter.cs" />
     <Compile Include="Design\DesignDataLoadingService.cs" />
-    <Compile Include="Design\DesignSchmogonClient.cs" />
     <Compile Include="Design\DesignSchmogonDBClient.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -141,6 +141,7 @@
     <Compile Include="Utilities\LinqUtils.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\StatCalculator.cs" />
+    <Compile Include="Utilities\TextLength.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
     <Compile Include="ViewModel\AbilityDataViewModel.cs" />
     <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
@@ -161,7 +162,6 @@
     <Compile Include="ViewModel\Items\NavigationItemViewModel.cs" />
     <Compile Include="ViewModel\Items\PokemonDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\PokemonItemViewModel.cs" />
-    <Compile Include="ViewModel\Items\TypedMoveItemViewModel.cs" />
     <Compile Include="ViewModel\Items\TypeItemViewModel.cs" />
     <Compile Include="ViewModel\ItemSearchViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />
@@ -409,10 +409,6 @@
     <ProjectReference Include="..\SchmogonDB\SchmogonDB.csproj">
       <Project>{06571FE8-12A5-41DC-847A-3606C1928777}</Project>
       <Name>SchmogonDB</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\schmogon\Schmogon\Schmogon.csproj">
-      <Project>{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}</Project>
-      <Name>Schmogon</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

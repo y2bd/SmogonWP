@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Schmogon.Converters;
-using Schmogon.Data;
-using Schmogon.Model.Text;
 
 namespace Schmogon
 {
