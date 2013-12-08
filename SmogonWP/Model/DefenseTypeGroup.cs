@@ -8,6 +8,8 @@ namespace SmogonWP.Model
   {
     StrongDefense,
     WeakDefense,
+    VeryStrongDefense,
+    VeryWeakDefense,
     FullDefense
   }
 
@@ -25,6 +27,10 @@ namespace SmogonWP.Model
             return "STRONG DEFENSE AGAINST";
           case DefenseType.WeakDefense:
             return "WEAK DEFENSE AGAINST";
+          case DefenseType.VeryStrongDefense:
+            return "VERY STRONG DEFENSE AGAINST";
+          case DefenseType.VeryWeakDefense:
+            return "VERY WEAK DEFENSE AGAINST";
           case DefenseType.FullDefense:
             return "TAKES NO DAMAGE FROM";
           default:

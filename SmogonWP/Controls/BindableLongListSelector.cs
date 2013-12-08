@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using Microsoft.Phone.Controls;
 
-namespace SmogonWP.Utilities
+namespace SmogonWP.Controls
 {
   public class BindableLongListSelector : LongListSelector
   {

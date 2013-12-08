@@ -12,6 +12,7 @@
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                             xmlns:bindableApplicationBar="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             mc:Ignorable="d"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -191,7 +192,7 @@
                                Margin="12,0">
 						<Run Text="strategydex" />
                     </TextBlock>
-                    <util:BindableLongListSelector x:Name="StratNavItemList"
+                    <controls:BindableLongListSelector x:Name="StratNavItemList"
                                                    ItemsSource="{Binding StratNavItems}"
                                                    SelectedItem="{Binding SelectedStratItem, Mode=TwoWay}"
                                                    ItemTemplate="{StaticResource NavItemTemplate}"
@@ -208,7 +209,7 @@
                                Margin="12,0">
 						<Run Text="tools" />
                     </TextBlock>
-                    <util:BindableLongListSelector x:Name="ToolNavItemList"
+                    <controls:BindableLongListSelector x:Name="ToolNavItemList"
                                                    ItemsSource="{Binding ToolNavItems}"
                                                    SelectedItem="{Binding SelectedToolItem, Mode=TwoWay}"
                                                    ItemTemplate="{StaticResource NavItemTemplate}"
@@ -269,7 +270,7 @@
                     </i:Interaction.Behaviors>
                 </toolkit:PhoneTextBox>
             </StackPanel>
-            <util:BindableLongListSelector x:Name="QuickSearchList"
+            <controls:BindableLongListSelector x:Name="QuickSearchList"
                                            Grid.Row="2"
                                            Margin="12,0,12,0"
                                            Style="{StaticResource LLSFloatingScrollbarStyle}"

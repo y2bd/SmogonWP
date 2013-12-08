@@ -6,6 +6,9 @@
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -37,7 +40,7 @@
             </toolkit:NavigationOutTransition.Forward>
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
-    
+
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="NaturePivotHeaderTemplate">
             <Grid>
@@ -76,7 +79,7 @@
                                             Click="ApplicationBarIconButton_OnClick" />
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
-    
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
@@ -88,7 +91,7 @@
 
         <Border Background="#22CCCCCC"
                 Grid.RowSpan="3" />
-        
+
         <StackPanel Grid.Row="1"
                     Margin="12,6,0,24">
             <TextBlock x:Name="MoveName"
@@ -138,15 +141,36 @@
                 <phone:PivotItem Header="I'M DEFENDING WITH">
                     <Grid Margin="0,0">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="0" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                        <toolkit:PickerBox x:Name="DefensePicker"
-                                           ItemsSource="{Binding TypeChoices}"
-                                           SelectedIndex="{Binding SelectedDefenseType, Mode=TwoWay}"
-                                           Header="I'm defending with this Pokemon type..."
-                                           Margin="0,0,0,12">
+                        <toolkit:PickerBox  x:Name="DefensePicker"
+                                            Grid.Row="1"
+                                            ItemsSource="{Binding TypeChoices}"
+                                            SelectedIndex="{Binding SelectedDefenseType, Mode=TwoWay}"
+                                            Header="Primary type..."
+                                            Margin="0,0,0,12">
+                            <toolkit:PickerBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TargetNullValue='choose a type'}" />
+                                </DataTemplate>
+                            </toolkit:PickerBox.ItemTemplate>
+                        </toolkit:PickerBox>
+
+                        <toolkit:PickerBox  x:Name="SecondDefensePicker"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            ItemsSource="{Binding SecondaryTypeChoices}"
+                                            SelectedIndex="{Binding SelectedSecondDefenseType, Mode=TwoWay}"
+                                            Header="Secondary type..."
+                                            Margin="0,0,0,12">
                             <toolkit:PickerBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding TargetNullValue='choose a type'}" />
@@ -155,7 +179,8 @@
                         </toolkit:PickerBox>
 
                         <phone:LongListSelector x:Name="DefenseTypeList"
-                                                Grid.Row="1"
+                                                Grid.Row="2"
+                                                Grid.ColumnSpan="2"
                                                 IsGroupingEnabled="True"
                                                 HideEmptyGroups="True"
                                                 Style="{StaticResource LLSFloatingScrollbarStyle}"

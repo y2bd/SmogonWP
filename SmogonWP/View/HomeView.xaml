@@ -7,6 +7,7 @@
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:util="clr-namespace:SmogonWP.Utilities"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -81,7 +82,7 @@
         <StackPanel x:Name="ContentPanel"
                     Grid.Row="1"
                     Margin="12,0,12,0">
-            <util:BindableLongListSelector x:Name="NavigationList"
+            <controls:BindableLongListSelector x:Name="NavigationList"
                                            ItemsSource="{Binding NIVMs}"
                                            ItemTemplate="{StaticResource NavItemTemplate}"
                                            SelectedItem="{Binding SelectedNavItem, Mode=TwoWay}"

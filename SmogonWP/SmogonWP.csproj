@@ -96,6 +96,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BindableLongListSelector.cs" />
+    <Compile Include="Controls\DataTemplateSelector.cs" />
     <Compile Include="Controls\SetupChoiceTemplateSelector.cs" />
     <Compile Include="Controls\TextElementTemplateSelector.cs" />
     <Compile Include="Controls\Tiles\FlipTileWide.xaml.cs">
@@ -140,8 +142,6 @@
     <Compile Include="Services\SimpleNavigationService.cs" />
     <Compile Include="Services\TombstoneService.cs" />
     <Compile Include="Services\TrayService.cs" />
-    <Compile Include="Utilities\BindableLongListSelector.cs" />
-    <Compile Include="Utilities\DataTemplateSelector.cs" />
     <Compile Include="Utilities\LinqUtils.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\StatCalculator.cs" />

@@ -10,6 +10,7 @@
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -147,7 +148,7 @@
             </i:Interaction.Behaviors>
         </toolkit:PhoneTextBox>
 
-        <util:BindableLongListSelector x:Name="MoveList"
+        <controls:BindableLongListSelector x:Name="MoveList"
                                        Grid.Row="4"
                                        Margin="12,0,12,0"
                                        ItemsSource="{Binding FilteredMoves}"

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace SmogonWP.Utilities
+namespace SmogonWP.Controls
 {
   public abstract class DataTemplateSelector : ContentControl
   {

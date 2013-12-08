@@ -54,8 +54,8 @@ namespace SchmogonDB.Tools
       var type1Def = GetTypeDefenseEffect(type1);
       var type2Def = GetTypeDefenseEffect(type2);
 
-      var weak1 = new HashSet<Type>(type2Def.WeakDefenseAgainst);
-      var strong1 = new HashSet<Type>(type2Def.StrongDefenseAgainst);
+      var weak1 = new HashSet<Type>(type1Def.WeakDefenseAgainst);
+      var strong1 = new HashSet<Type>(type1Def.StrongDefenseAgainst);
 
       var weak2 = new HashSet<Type>(type2Def.WeakDefenseAgainst);
       var strong2 = new HashSet<Type>(type2Def.StrongDefenseAgainst);

@@ -10,6 +10,7 @@
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -279,7 +280,7 @@
                 <phone:PivotItem Header="RELATED MOVES"
                                  Margin="12,12,12,0">
                     <Grid>
-                        <util:BindableLongListSelector x:Name="RelatedList"
+                        <controls:BindableLongListSelector x:Name="RelatedList"
                                                        ItemsSource="{Binding Path=MDVM.RelatedMoves}"
                                                        SelectedItem="{Binding SelectedRelatedMove, Mode=TwoWay}"
                                                        ItemTemplate="{StaticResource RelatedItemTemplate}"

@@ -9,6 +9,7 @@
                             xmlns:converters="clr-namespace:SmogonWP.Converters"
                             xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             xmlns:utilities="clr-namespace:SmogonWP.Utilities"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -403,7 +404,7 @@
                 </phone:PivotItem>
                 <phone:PivotItem Header="MOVESETS"
                                  Margin="12,12,12,0">
-                    <utilities:BindableLongListSelector x:Name="MovesetList"
+                    <controls:BindableLongListSelector x:Name="MovesetList"
                                                         ItemsSource="{Binding Path=PDVM.Movesets}"
                                                         SelectedItem="{Binding SelectedMoveset, Mode=TwoWay}"
                                                         Style="{StaticResource LLSFloatingScrollbarStyle}"
@@ -412,7 +413,7 @@
                 </phone:PivotItem>
                 <phone:PivotItem Header="MOVE POOL"
                                  Margin="10,10,14,2">
-                    <utilities:BindableLongListSelector x:Name="RelatedList"
+                    <controls:BindableLongListSelector x:Name="RelatedList"
                                                         ItemsSource="{Binding Path=PDVM.Moves}"
                                                         SelectedItem="{Binding SelectedMove, Mode=TwoWay}"
                                                         ItemTemplate="{StaticResource RelatedItemTemplate}"
