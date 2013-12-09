@@ -1,26 +1,23 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using Microsoft.Phone.Tasks;
+using Nito.AsyncEx;
+using SchmogonDB.Model.Moves;
+using SmogonWP.Messages;
+using SmogonWP.Services;
+using SmogonWP.Services.Messaging;
+using SmogonWP.ViewModel.AppBar;
+using SmogonWP.ViewModel.Items;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using Microsoft.Phone.Tasks;
-using Nito.AsyncEx;
-using Schmogon;
-using Schmogon.Data.Moves;
-using SmogonWP.Messages;
-using SmogonWP.Services;
-using SmogonWP.Services.Messaging;
-using SmogonWP.Utilities;
-using SmogonWP.ViewModel.AppBar;
-using SmogonWP.ViewModel.Items;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -30,18 +27,14 @@ namespace SmogonWP.ViewModel
     private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
 
     private readonly SimpleNavigationService _navigationService;
-    private readonly ISchmogonClient _schmogonClient;
+    private readonly IDataLoadingService _dataService;
 
     private readonly MessageReceiver<ItemSearchedMessage<Move>> _moveSearchReceiver;
     private readonly MessageReceiver<ItemSelectedMessage<Move>> _pokemonMoveSelectedReceiver; 
     private readonly MessageSender<ItemSelectedMessage<Type>> _moveTypeSelectedSender; 
 
     private readonly Stack<MoveDataItemViewModel> _moveStack;
-
-    // if a network request fails, we'll try again one more time
-    // otherwise we'll give up and tell the user
-    private bool _failedOnce;
-
+    
     private string _pageLocation;
 
     #region props
@@ -165,7 +158,6 @@ namespace SmogonWP.ViewModel
     }
 
     private RelayCommand _moveTypeSelected;
-
     public RelayCommand MoveTypeSelected
     {
       get
@@ -183,10 +175,10 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public MoveDataViewModel(SimpleNavigationService navigationService, ISchmogonClient schmogonClient, TrayService trayService)
+    public MoveDataViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService)
     {
       _navigationService = navigationService;
-      _schmogonClient = schmogonClient;
+      _dataService = dataService;
       _trayService = trayService;
 
       _moveSearchReceiver = new MessageReceiver<ItemSearchedMessage<Move>>(onMoveSearched, true);
@@ -338,11 +330,18 @@ namespace SmogonWP.ViewModel
 
       try
       {
-        moveData = await _schmogonClient.GetMoveDataAsync(move);
+        moveData = await _dataService.FetchMoveDataAsync(move);
       }
-      catch (HttpRequestException)
+      catch (Exception)
       {
-        reloadMoveData(move);
+        MessageBox.Show(
+          "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+
+        Debugger.Break();
+
+        cleanup();
+
         return;
       }
 
@@ -353,53 +352,12 @@ namespace SmogonWP.ViewModel
       Name = MDVM.Name;
 
       _pageLocation = move.PageLocation;
-
-      Type type;
-
-      if (Enum.TryParse(MDVM.Type, true, out type))
-      {
-        TypeBackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[type]);
-      }
+      
+      TypeBackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[moveData.Stats.Type]);
 
       TrayService.RemoveJob("fetchdata");
     }
-
-    private void reloadMoveData(Move move)
-    {
-      if (_failedOnce)
-      {
-        // we failed, give up
-        cleanup();
-
-        Name = "Sorry :(";
-
-        MessageBox.Show(
-          "I'm sorry, but we couldn't load the move data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
-          "Oh no!", MessageBoxButton.OK);
-
-        _failedOnce = false;
-      }
-      else if (!NetUtilities.IsNetwork())
-      {
-        // crafty bastard somehow lost network connectivity midway
-        cleanup();
-
-        Name = "Sorry :(";
-
-        MessageBox.Show(
-          "Downloading move data requires an internet connection. Please get one of those and try again later.",
-          "No internet!", MessageBoxButton.OK);
-      }
-      else {
-        // let's try again
-        Debug.WriteLine("Move load failed once.");
-
-        _failedOnce = true;
-
-        scheduleMoveFetch(move);
-      }
-    }
-
+    
     private void cleanup()
     {
       MDVM = null;

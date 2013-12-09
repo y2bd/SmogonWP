@@ -1,7 +1,8 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using Schmogon;
+using SchmogonDB;
+using SchmogonDB.Tools;
 using SmogonWP.Services;
 
 namespace SmogonWP.ViewModel
@@ -25,6 +26,7 @@ namespace SmogonWP.ViewModel
     public const string PokemonSearchPath = "/View/PokemonSearchView.xaml";
     public const string PokemonDataPath = "/View/PokemonDataView.xaml";
     public const string MovesetPath = "/View/MovesetView.xaml";
+    public const string StatsPath = "/View/StatsView.xaml";
 
     /// <summary>
     /// Initializes a new instance of the ViewModelLocator class.
@@ -35,19 +37,22 @@ namespace SmogonWP.ViewModel
 
       if (ViewModelBase.IsInDesignModeStatic)
       {
-        RegisterIfUnregistered<ISchmogonClient, Design.DesignSchmogonClient>();
         RegisterIfUnregistered<IDataLoadingService, Design.DesignDataLoadingService>();
+        RegisterIfUnregistered<ISchmogonDBClient, Design.DesignSchmogonDBClient>();
       }
       else
       {
-        RegisterIfUnregistered<ISchmogonClient, SchmogonClient>();
         RegisterIfUnregistered<IDataLoadingService, DataLoadingService>();
+        RegisterIfUnregistered<ISchmogonDBClient, SchmogonDBClient>();
       }
+
+      RegisterIfUnregistered<SchmogonToolset>();
 
       SimpleIoc.Default.Register<SimpleNavigationService>();
       SimpleIoc.Default.Register<TombstoneService>();
       SimpleIoc.Default.Register<TrayService>();
       SimpleIoc.Default.Register<IsolatedStorageService>();
+      SimpleIoc.Default.Register<LiveTileService>();
 
       SimpleIoc.Default.Register<HomeViewModel>();
       SimpleIoc.Default.Register<HubViewModel>();
@@ -67,6 +72,7 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<PokemonSearchViewModel>();
       SimpleIoc.Default.Register<PokemonDataViewModel>();
       SimpleIoc.Default.Register<MovesetViewModel>();
+      SimpleIoc.Default.Register<StatsViewModel>();
     }
 
     public HomeViewModel Home
@@ -171,7 +177,14 @@ namespace SmogonWP.ViewModel
       {
         return ServiceLocator.Current.GetInstance<MovesetViewModel>();
       }
-      
+    }
+
+    public StatsViewModel Stats
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<StatsViewModel>();
+      }
     }
 
     private void RegisterIfUnregistered<T>() where T : class

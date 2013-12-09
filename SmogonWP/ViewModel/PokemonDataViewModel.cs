@@ -1,26 +1,22 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using Microsoft.Phone.Tasks;
+using Nito.AsyncEx;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
+using SmogonWP.Messages;
+using SmogonWP.Services;
+using SmogonWP.Services.Messaging;
+using SmogonWP.ViewModel.AppBar;
+using SmogonWP.ViewModel.Items;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using Microsoft.Phone.Tasks;
-using Nito.AsyncEx;
-using Schmogon;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
-using SmogonWP.Messages;
-using SmogonWP.Services;
-using SmogonWP.Services.Messaging;
-using SmogonWP.Utilities;
-using SmogonWP.ViewModel.AppBar;
-using SmogonWP.ViewModel.Items;
-using Type = Schmogon.Data.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -29,7 +25,7 @@ namespace SmogonWP.ViewModel
     private const string SmogonPrefix = "http://www.smogon.com";
     private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
 
-    private readonly ISchmogonClient _schmogonClient;
+    private readonly IDataLoadingService _dataService;
     private readonly SimpleNavigationService _navigationService;
 
     private readonly MessageReceiver<ItemSearchedMessage<Pokemon>> _pokemonSearchReceiver;
@@ -37,9 +33,7 @@ namespace SmogonWP.ViewModel
     private readonly MessageSender<ItemSelectedMessage<Ability>> _pokemonAbilitySelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Move>> _pokemonMoveSelectedSender;
     private readonly MessageSender<ItemSelectedMessage<MovesetItemViewModel>> _movesetSelectedSender; 
-
-    private bool _failedOnce;
-
+    
     private string _pageLocation;
 
     #region props
@@ -196,9 +190,9 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public PokemonDataViewModel(ISchmogonClient schmogonClient, SimpleNavigationService navigationService, TrayService trayService)
+    public PokemonDataViewModel(IDataLoadingService dataService, SimpleNavigationService navigationService, TrayService trayService)
     {
-      _schmogonClient = schmogonClient;
+      _dataService = dataService;
       _navigationService = navigationService;
       _trayService = trayService;
 
@@ -338,11 +332,18 @@ namespace SmogonWP.ViewModel
 
       try
       {
-        pokemonData = await _schmogonClient.GetPokemonDataAsync(pokemon);
+        pokemonData = await _dataService.FetchPokemonDataAsync(pokemon);
       }
-      catch (HttpRequestException)
+      catch (Exception)
       {
-        reloadPokemonData(pokemon);
+        MessageBox.Show(
+          "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+
+        Debugger.Break();
+
+        cleanup();
+
         return;
       }
 
@@ -353,44 +354,7 @@ namespace SmogonWP.ViewModel
 
       TrayService.RemoveJob("fetchdata");
     }
-
-    private void reloadPokemonData(Pokemon pokemon)
-    {
-      if (_failedOnce)
-      {
-        // we failed, give up
-        cleanup();
-
-        Name = "Sorry :(";
-
-        MessageBox.Show(
-          "I'm sorry, but we couldn't load the pokemon data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
-          "Oh no!", MessageBoxButton.OK);
-
-        _failedOnce = false;
-      }
-      else if (!NetUtilities.IsNetwork())
-      {
-        // crafty bastard somehow lost network connectivity midway
-        cleanup();
-
-        Name = "Sorry :(";
-
-        MessageBox.Show(
-          "Downloading pokemon data requires an internet connection. Please get one of those and try again later.",
-          "No internet!", MessageBoxButton.OK);
-      }
-      else
-      {
-        // let's try again
-        Debug.WriteLine("Move load failed once.");
-
-        _failedOnce = true;
-
-        SchedulePokemonFetch(pokemon);
-      }
-    }
-
+    
     private void cleanup()
     {
       PDVM = null;

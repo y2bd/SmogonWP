@@ -10,6 +10,7 @@
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -42,10 +43,7 @@
     </toolkit:TransitionService.NavigationOutTransition>
 
     <phone:PhoneApplicationPage.Resources>
-        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
         <converters:UppercaseConverter x:Key="UppercaseConverter" />
-        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter" />
-        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
 
         <DataTemplate x:Key="PokemonItemTemplate">
             <StackPanel Margin="0,0,24,15"
@@ -168,7 +166,7 @@
             </i:Interaction.Behaviors>
         </toolkit:PhoneTextBox>
 
-        <util:BindableLongListSelector x:Name="PokemonList"
+        <controls:BindableLongListSelector x:Name="PokemonList"
                                        Grid.Row="4"
                                        Margin="12,0,12,0"
                                        HorizontalContentAlignment="Left"

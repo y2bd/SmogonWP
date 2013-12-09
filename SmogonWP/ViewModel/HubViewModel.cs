@@ -1,35 +1,30 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Nito.AsyncEx;
-using Nito.AsyncEx.Synchronous;
-using Schmogon.Data;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Pokemon;
+using SchmogonDB;
+using SchmogonDB.Model;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
-using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Windows.Phone.Speech.VoiceCommands;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -37,6 +32,7 @@ namespace SmogonWP.ViewModel
   {
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
+    private readonly LiveTileService _tileService;
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokeSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Ability>> _abilSearchSender;
@@ -272,11 +268,12 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService)
+    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, LiveTileService tileService)
     {
       _navigationService = navigationService;
       _dataService = dataService;
       _trayService = trayService;
+      _tileService = tileService;
 
       _pokeSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
       _abilSearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
@@ -345,6 +342,14 @@ namespace SmogonWP.ViewModel
           BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Bug]),
           IconPath = "/Assets/Icons/fire.png"
         },
+        new NavigationItemViewModel
+        {
+          Title = "Stat Calculator",
+          Description = "Fine-tune the stats of your perfect Pokemon",
+          NavigationPath = ViewModelLocator.StatsPath,
+          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Dragon]),
+          IconPath = "/Assets/Icons/calc.png"
+        }
       };
     }
 
@@ -386,12 +391,17 @@ namespace SmogonWP.ViewModel
         }
       };
     }
-
-
-
+    
     private async Task fetchSearchData()
     {
+      var st = new Stopwatch();
+
+      st.Start();
       await Task.Run(new Func<Task>(pleaseOffThread));
+      st.Stop();
+      Debug.WriteLine("JSON load: {0}", st.ElapsedMilliseconds);
+
+      await updateLiveTile();
     }
 
     // better name in future
@@ -409,36 +419,32 @@ namespace SmogonWP.ViewModel
       {
         await Task.WhenAll(pokeTask, moveTask, abilTask, itemTask);
 
-        _allSearchItems = new List<ISearchItem>()
-        .Concat((await pokeTask).Select(p => new PokemonItemViewModel(p)))
-        .Concat((await moveTask).Select(m => new MoveItemViewModel(m)))
-        .Concat((await abilTask).Select(a => new AbilityItemViewModel(a)))
-        .Concat((await itemTask).Select(i => new ItemItemViewModel(i)))
-        .OrderBy(i => i.Name)
-        .ToList();
-
+        var poke = await pokeTask;
+        var move = await moveTask;
+        var abil = await abilTask;
+        var item = await itemTask;
+        
         DispatcherHelper.CheckBeginInvokeOnUI(() =>
         {
+          _allSearchItems = new List<ISearchItem>()
+            .Concat((poke).Select(p => new PokemonItemViewModel(p)))
+            .Concat((move).Select(m => new MoveItemViewModel(m)))
+            .Concat((abil).Select(a => new AbilityItemViewModel(a)))
+            .Concat((item).Select(i => new ItemItemViewModel(i)))
+            .OrderBy(i => i.Name)
+            .ToList();
+
           FilteredSearchItems = new ObservableCollection<ISearchItem>();
           IsAppBarOpen = true;
         });
       }
-      catch (Exception e)
+      catch (Exception)
       {
-        if (!NetUtilities.IsNetwork())
-        {
           DispatcherHelper.CheckBeginInvokeOnUI(() => MessageBox.Show(
-            "Downloading search data requires an internet connection. Please get one of those and try again later.",
-            "No internet!", MessageBoxButton.OK));
-        }
-        else
-        {
-          DispatcherHelper.CheckBeginInvokeOnUI(() => MessageBox.Show(
-            "I'm sorry, but we couldn't load the search data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+            "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
             "Oh no!", MessageBoxButton.OK));
 
           Debugger.Break();
-        }
       }
 
       DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("fetchall"));
@@ -517,6 +523,49 @@ namespace SmogonWP.ViewModel
 
       IsSearchPanelOpen = false;
       IsAppBarOpen = true;
+    }
+
+    private async Task testDB()
+    {
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("dbstuff", "DOING DB STUFF"));
+
+      var db = new SchmogonDBClient();
+
+      await db.InitializeDatabase();
+
+      var poketask = db.FetchPokemonSearchDataAsync();
+      var movetask = db.FetchMoveSearchDataAsync();
+      var abiltask = db.FetchAbilitySearchDataAsync();
+      var itemtask = db.FetchItemSearchDataAsync();
+
+      await Task.WhenAll(poketask, movetask, abiltask, itemtask);
+
+      var poke = await poketask;
+      var move = await movetask;
+      var abil = await abiltask;
+      var item = await itemtask;
+      
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
+
+      var sel = poke.First(p => p.Name == "Gardevoir");
+
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("dbstuff", "DOING POKEMON STUFF"));
+
+      var pokenew = await db.FetchPokemonDataAsync(sel);
+
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
+    }
+
+    private async Task updateLiveTile()
+    {
+      try
+      {
+        await _tileService.GenerateFlipTileAsync();
+      }
+      catch (Exception)
+      {
+        Debug.WriteLine("tile creation failed, aw well");
+      }
     }
   }
 }

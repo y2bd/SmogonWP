@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Schmogon.Model.Text;
+using SchmogonDB.Model.Text;
 using SmogonWP.Utilities;
 
 namespace SmogonWP.Controls

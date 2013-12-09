@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Pokemon;
-using Schmogon.Model.Text;
+using SchmogonDB.Model;
+using SchmogonDB.Model.Natures;
+using SchmogonDB.Model.Pokemon;
+using SchmogonDB.Model.Text;
 using SmogonWP.Utilities;
 
 namespace SmogonWP.ViewModel.Items
@@ -69,19 +70,19 @@ namespace SmogonWP.ViewModel.Items
 
       Abilities = data.Abilities == null ? 
         new List<AbilityItemViewModel>() 
-        : data.Abilities.Select(a => new AbilityItemViewModel(a)).ToList();
+        : data.Abilities.Select((a, i) => new AbilityItemViewModel(a, i)).ToList();
 
       Natures = data.Natures == null 
-        ? new List<string>() 
-        : data.Natures.Select(n => Enum.GetName(typeof(Nature), n)).ToList();
+        ? new List<string>()
+        : data.Natures.Select((n, i) => Enum.GetName(typeof(Nature), n)).ToList();
 
       Items = data.Items == null
         ? new List<ItemItemViewModel>()
-        : data.Items.Select(i => new ItemItemViewModel(i)).ToList();
+        : data.Items.Select((i, ind) => new ItemItemViewModel(i, ind)).ToList();
 
       Moves = data.Moves == null
         ? new List<GroupedMoveItemViewModel>()
-        : data.Moves.SelectMany((mg, i) => mg.Select(m => new GroupedMoveItemViewModel(m, i)));
+        : data.Moves.Select((mg, gi) => new {mg, gi}).SelectMany(a => a.mg.Select(m => new {m, a.gi})).Select((a, i) => new GroupedMoveItemViewModel(a.m, a.gi, i));
 
       // TODO: Write the DataTemplates in the View that can display this new type of list
 

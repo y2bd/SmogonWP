@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Phone.Controls;
 using SmogonWP.Messages;
@@ -9,6 +10,8 @@ namespace SmogonWP.View
 {
   public partial class TypeView : PhoneApplicationPage
   {
+    private bool _pickerSelected;
+
     public TypeView()
     {
       InitializeComponent();
@@ -46,6 +49,9 @@ namespace SmogonWP.View
       else if (msg.Content.Equals("switchToDefense"))
       {
         PhasePivot.SelectedIndex = 1;
+      }
+      else if (msg.Content.Equals("dontfocus"))
+      {
       }
     }
   }

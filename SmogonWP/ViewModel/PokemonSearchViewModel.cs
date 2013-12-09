@@ -4,22 +4,19 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Windows.Foundation.Metadata;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
-using Schmogon;
-using Schmogon.Data.Pokemon;
+using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
 using SmogonWP.ViewModel.Items;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -395,18 +392,9 @@ namespace SmogonWP.ViewModel
       }
       catch (Exception e)
       {
-        if (!NetUtilities.IsNetwork())
-        {
-          MessageBox.Show(
-          "Downloading Pokemon data requires an internet connection. Please get one of those and try again later.",
-          "No internet!", MessageBoxButton.OK);
-        }
-        else
-        {
-          MessageBox.Show(
-          "I'm sorry, but we couldn't load the Pokemon data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+        MessageBox.Show(
+          "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
           "Oh no!", MessageBoxButton.OK);
-        }
 
         Debugger.Break();
 

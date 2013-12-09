@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using Schmogon.Data;
-using Schmogon.Data.Pokemon;
+using SchmogonDB.Model;
+using SchmogonDB.Model.Pokemon;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -33,6 +33,11 @@ namespace SmogonWP.ViewModel.Items
       Pokemon = pokemon;
 
       Types = pokemon.Types.Select(t => new TypeItemViewModel(t));
+    }
+
+    public override string ToString()
+    {
+      return Name;
     }
   }
 }

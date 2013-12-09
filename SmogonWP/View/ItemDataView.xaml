@@ -40,8 +40,6 @@
     </toolkit:TransitionService.NavigationOutTransition>
 
     <phone:PhoneApplicationPage.Resources>
-        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
-
         <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
             <Grid>
                 <TextBlock Text="{Binding}"

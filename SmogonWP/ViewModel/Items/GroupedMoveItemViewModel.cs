@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Media;
-using Schmogon.Data.Moves;
+using SchmogonDB.Model.Moves;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -31,6 +31,23 @@ namespace SmogonWP.ViewModel.Items
       }
     }
 
+    private int _rowIndex;
+    public int RowIndex
+    {
+      get
+      {
+        return _rowIndex;
+      }
+      set
+      {
+        if (_rowIndex != value)
+        {
+          _rowIndex = value;
+          RaisePropertyChanged(() => RowIndex);
+        }
+      }
+    }			
+
     public SolidColorBrush BackgroundBrush
     {
       get
@@ -39,9 +56,10 @@ namespace SmogonWP.ViewModel.Items
       }
     }
 
-    public GroupedMoveItemViewModel(Move move, int groupIndex) : base(move)
+    public GroupedMoveItemViewModel(Move move, int groupIndex, int rowIndex) : base(move)
     {
       _groupIndex = groupIndex;
+      _rowIndex = rowIndex;
     }
   }
 }

@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using Schmogon;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Stats;
+using SchmogonDB.Model.Natures;
+using SchmogonDB.Model.Stats;
+using SchmogonDB.Tools;
 using SmogonWP.Messages;
 using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.Items;
@@ -13,7 +13,7 @@ namespace SmogonWP.ViewModel
 {
   public class NatureViewModel : ViewModelBase
   {
-    private readonly ISchmogonClient _schmogonClient;
+    private readonly SchmogonToolset _toolset;
 
     private readonly MessageReceiver<ItemSelectedMessage<Nature>> _natureSelectedReceiver; 
 
@@ -157,11 +157,11 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => PivotIndex);
         }
       }
-    }			
+    }
 
-    public NatureViewModel(ISchmogonClient schmogonClient)
+    public NatureViewModel(SchmogonToolset toolset)
     {
-      _schmogonClient = schmogonClient;
+      _toolset = toolset;
       _natureSelectedReceiver = new MessageReceiver<ItemSelectedMessage<Nature>>(onNatureSelected, true);
 
       setup();
@@ -183,7 +183,7 @@ namespace SmogonWP.ViewModel
         // NO HP PLS
         if (stat == StatType.HP) continue;
 
-        _statChoices.Add(StatUtils.GetStatName(stat).ToLowerInvariant());
+        _statChoices.Add(StatUtils.GetName(stat).ToLowerInvariant());
       }
     }
 
@@ -191,7 +191,7 @@ namespace SmogonWP.ViewModel
     {
       var nature = (Nature) SelectedNature;
 
-      NatureHad = new NatureItemViewModel(_schmogonClient.GetNatureEffect(nature));
+      NatureHad = new NatureItemViewModel(_toolset.GetNatureEffect(nature));
     }
 
     private void onSelectedStatsChange()
@@ -206,28 +206,28 @@ namespace SmogonWP.ViewModel
       if (boost == null && loss == null)
       {
         NaturesWanted = new ObservableCollection<NatureItemViewModel>(
-          _schmogonClient.GetAllNatureEffects()
+          _toolset.GetAllNatureEffects()
           .Select(n => new NatureItemViewModel(n))
         );
       }
       else if (boost == null)
       {
         NaturesWanted = new ObservableCollection<NatureItemViewModel>(
-          _schmogonClient.GetNatureEffectsWhereDecreased((StatType)loss)
+          _toolset.GetNatureEffectsWhereDecreased((StatType)loss)
           .Select(n => new NatureItemViewModel(n))
         );
       }
       else if (loss == null)
       {
         NaturesWanted = new ObservableCollection<NatureItemViewModel>(
-          _schmogonClient.GetNatureEffectsWhereIncreased((StatType)boost)
+          _toolset.GetNatureEffectsWhereIncreased((StatType)boost)
           .Select(n => new NatureItemViewModel(n))
         );
       }
       else
       {
         NaturesWanted = new ObservableCollection<NatureItemViewModel>(
-          _schmogonClient.GetNatureEffectsWhere((StatType)boost, (StatType)loss)
+          _toolset.GetNatureEffectsWhere((StatType)boost, (StatType)loss)
           .Select(n => new NatureItemViewModel(n))
         );
       }

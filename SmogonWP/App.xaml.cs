@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.IO.IsolatedStorage;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using Windows.Storage;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
@@ -60,10 +64,57 @@ namespace SmogonWP
 
     }
 
+    private async Task writeDBToIsolatedStorage()
+    {
+      // okay, explanation time
+      // for whatever dumb reason, sqlite can't create the database file in a signed wp store app
+      // so we have to copy it from the resource store to the right location
+      // this works!
+
+      var dbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "pokemon.db");
+
+      StorageFile dbFile = null;
+      try
+      {
+        // Try to get the db just in case it exists
+        dbFile = await StorageFile.GetFileFromPathAsync(dbPath);
+      }
+      catch (FileNotFoundException)
+      {
+        if (dbFile == null)
+        {
+          // Copy file from installation folder to local folder.
+          // Obtain the virtual store for the application.
+          var iso = IsolatedStorageFile.GetUserStoreForApplication();
+
+          // Create a stream for the file in the installation folder.
+          using (var input = GetResourceStream(new Uri("pokemon.db", UriKind.Relative)).Stream)
+          {
+            // Create a stream for the new file in the local folder.
+            using (var output = iso.CreateFile(dbPath))
+            {
+              // Initialize the buffer.
+              var readBuffer = new byte[4096];
+              int bytesRead;
+
+              // Copy the file from the installation folder to the local folder.
+              while ((bytesRead = input.Read(readBuffer, 0, readBuffer.Length)) > 0)
+              {
+                output.Write(readBuffer, 0, bytesRead);
+              }
+            }
+          }
+
+          iso.Dispose();
+        }
+      }
+    }
+
     // Code to execute when the application is launching (eg, from Start)
     // This code will not execute when the application is reactivated
-    private void Application_Launching(object sender, LaunchingEventArgs e)
+    private async void Application_Launching(object sender, LaunchingEventArgs e)
     {
+      await writeDBToIsolatedStorage();
     }
 
     // Code to execute when the application is activated (brought to foreground)

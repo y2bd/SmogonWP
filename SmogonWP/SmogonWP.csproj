@@ -96,8 +96,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BindableLongListSelector.cs" />
+    <Compile Include="Controls\DataTemplateSelector.cs" />
     <Compile Include="Controls\SetupChoiceTemplateSelector.cs" />
     <Compile Include="Controls\TextElementTemplateSelector.cs" />
+    <Compile Include="Controls\Tiles\FlipTileWide.xaml.cs">
+      <DependentUpon>FlipTileWide.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\AlternatingRowOpacityConverter.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Converters\EmptinessVisibilityConverter.cs" />
     <Compile Include="Converters\InvertedEmptinessVisibilityConverter.cs" />
@@ -106,13 +112,15 @@
     <Compile Include="Converters\RandomOpacityConverter.cs" />
     <Compile Include="Converters\TextLengthToColumnSpanConverter.cs" />
     <Compile Include="Converters\UppercaseConverter.cs" />
+    <Compile Include="Converters\WidthPercentageConverter.cs" />
     <Compile Include="Design\DesignDataLoadingService.cs" />
-    <Compile Include="Design\DesignSchmogonClient.cs" />
+    <Compile Include="Design\DesignSchmogonDBClient.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Messages\ItemSearchedMessage.cs" />
+    <Compile Include="Messages\MovesetCalculatedMessage.cs" />
     <Compile Include="Messages\PokemonTypeSelectedMessage.cs" />
     <Compile Include="Messages\ItemSelectedMessage.cs" />
     <Compile Include="Messages\ViewToVMMessage.cs" />
@@ -129,17 +137,23 @@
     <Compile Include="Services\DataLoadingService.cs" />
     <Compile Include="Services\IDataLoadingService.cs" />
     <Compile Include="Services\IsolatedStorageService.cs" />
+    <Compile Include="Services\LiveTileService.cs" />
     <Compile Include="Services\Messaging\InitMessageBase.cs" />
     <Compile Include="Services\Messaging\MessageReceiver.cs" />
     <Compile Include="Services\Messaging\MessageSender.cs" />
     <Compile Include="Services\SimpleNavigationService.cs" />
     <Compile Include="Services\TombstoneService.cs" />
     <Compile Include="Services\TrayService.cs" />
-    <Compile Include="Utilities\BindableLongListSelector.cs" />
-    <Compile Include="Utilities\DataTemplateSelector.cs" />
+    <Compile Include="Utilities\KeyboardHelper\KeyboardDependency.cs" />
+    <Compile Include="Utilities\KeyboardHelper\KeyboardHelper.cs" />
+    <Compile Include="Utilities\KeyboardHelper\KeyboardTabHelperBehavior.cs" />
     <Compile Include="Utilities\LinqUtils.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\StatCalculator.cs" />
+    <Compile Include="Utilities\TextLength.cs" />
+    <Compile Include="Utilities\ToolstackPNG\ToolStackCRCLib.cs" />
+    <Compile Include="Utilities\ToolstackPNG\ToolStackPNGWriterLib.cs" />
+    <Compile Include="Utilities\ToolstackPNG\ToolStackPNGWriterWBext.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
     <Compile Include="ViewModel\AbilityDataViewModel.cs" />
     <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
@@ -168,6 +182,7 @@
     <Compile Include="ViewModel\NatureViewModel.cs" />
     <Compile Include="ViewModel\PokemonDataViewModel.cs" />
     <Compile Include="ViewModel\PokemonSearchViewModel.cs" />
+    <Compile Include="ViewModel\StatsViewModel.cs" />
     <Compile Include="ViewModel\TypeViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AbilityDataView.xaml.cs">
@@ -206,6 +221,9 @@
     <Compile Include="View\PokemonSearchView.xaml.cs">
       <DependentUpon>PokemonSearchView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\StatsView.xaml.cs">
+      <DependentUpon>StatsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TypeView.xaml.cs">
       <DependentUpon>TypeView.xaml</DependentUpon>
     </Compile>
@@ -215,6 +233,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\Tiles\FlipTileWide.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -275,6 +297,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\StatsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\TypeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -287,6 +313,9 @@
       <LastGenOutput>GenericVCD.xml</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <Content Include="pokemon.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
@@ -294,6 +323,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />
+    <Content Include="Assets\AppBar\appbar.calc.png" />
     <Content Include="Assets\AppBar\appbar.email.png" />
     <Content Include="Assets\AppBar\appbar.filter.png" />
     <Content Include="Assets\AppBar\appbar.social.reddit.png" />
@@ -304,6 +334,7 @@
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Icons\calc.png" />
     <Content Include="Assets\Icons\conflict.png" />
     <Content Include="Assets\Icons\fire.png" />
     <Content Include="Assets\Icons\idea.png" />
@@ -340,11 +371,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GenericVCD.tt</DependentUpon>
     </Content>
-    <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Add.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Toolkit.Content\ApplicationBar.Delete.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Toolkit.Content\ApplicationBar.Select.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">
@@ -355,6 +396,9 @@
   <ItemGroup>
     <Reference Include="BindableApplicationBar">
       <HintPath>..\packages\BindableApplicationBar.1.0.0\lib\sl4-windowsphone71\BindableApplicationBar.dll</HintPath>
+    </Reference>
+    <Reference Include="Coding4Fun.Toolkit.Controls">
+      <HintPath>..\packages\Coding4Fun.Toolkit.Controls.2.0.7\lib\windowsphone8\Coding4Fun.Toolkit.Controls.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight.Extras.WP8">
       <HintPath>..\packages\MvvmLightLibs.4.1.27.1\lib\wp8\GalaSoft.MvvmLight.Extras.WP8.dll</HintPath>
@@ -404,9 +448,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\schmogon\Schmogon\Schmogon.csproj">
-      <Project>{5ECE9459-920C-4916-8D3F-1D482F8BB0CE}</Project>
-      <Name>Schmogon</Name>
+    <ProjectReference Include="..\SchmogonDB\SchmogonDB.csproj">
+      <Project>{06571FE8-12A5-41DC-847A-3606C1928777}</Project>
+      <Name>SchmogonDB</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

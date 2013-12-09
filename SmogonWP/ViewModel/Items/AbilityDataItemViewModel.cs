@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GalaSoft.MvvmLight;
-using Schmogon.Data.Abilities;
-using Schmogon.Model.Text;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Text;
 
 namespace SmogonWP.ViewModel.Items
 {

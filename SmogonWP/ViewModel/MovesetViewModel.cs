@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ServiceModel.Channels;
 using GalaSoft.MvvmLight;
-using Schmogon.Data.Abilities;
-using Schmogon.Data.Items;
-using Schmogon.Data.Moves;
-using Schmogon.Data.Natures;
-using Schmogon.Data.Pokemon;
-using Schmogon.Data.Stats;
-using Schmogon.Model.Text;
+using GalaSoft.MvvmLight.Command;
+using SchmogonDB.Model.Abilities;
+using SchmogonDB.Model.Items;
+using SchmogonDB.Model.Moves;
+using SchmogonDB.Model.Natures;
+using SchmogonDB.Model.Pokemon;
+using SchmogonDB.Model.Stats;
+using SchmogonDB.Model.Text;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
+using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -24,6 +29,7 @@ namespace SmogonWP.ViewModel
     private readonly MessageSender<ItemSelectedMessage<Nature>> _natureSelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Item>> _itemSelectedSender;  
     private readonly MessageSender<ItemSelectedMessage<Move>> _moveSelectedSender;
+    private readonly MessageSender<MovesetCalculatedMessage> _movesetCalculatedSender;
 
     private MovesetItemViewModel _msivm;
     public MovesetItemViewModel MSIVM
@@ -116,7 +122,7 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => SelectedItem);
         }
       }
-    }			
+    }
 
     private GroupedMoveItemViewModel _selectedMove;
     public GroupedMoveItemViewModel SelectedMove
@@ -135,6 +141,23 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => SelectedMove);
         }
       }
+    }
+
+    private ObservableCollection<MenuButtonViewModel> _menuButtons;
+    public ObservableCollection<MenuButtonViewModel> MenuButtons
+    {
+      get
+      {
+        return _menuButtons;
+      }
+      set
+      {
+        if (_menuButtons != value)
+        {
+          _menuButtons = value;
+          RaisePropertyChanged(() => MenuButtons);
+        }
+      }
     }			
 
     public MovesetViewModel(SimpleNavigationService navigationService)
@@ -147,6 +170,8 @@ namespace SmogonWP.ViewModel
       _natureSelectedSender = new MessageSender<ItemSelectedMessage<Nature>>();
       _itemSelectedSender = new MessageSender<ItemSelectedMessage<Item>>();
       _moveSelectedSender = new MessageSender<ItemSelectedMessage<Move>>();
+
+      _movesetCalculatedSender = new MessageSender<MovesetCalculatedMessage>();
 
       #region design data
       if (IsInDesignMode || IsInDesignModeStatic)
@@ -168,20 +193,20 @@ namespace SmogonWP.ViewModel
           {
             new List<Move>
             {
-              new Move("Chocolate Sauce", "mm dat drizzle", "")
+              new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)
             },
             new List<Move>
             {
-              new Move("Chocolate Sauce", "mm dat drizzle", "")
+              new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)
             },
             new List<Move>
             {
-              new Move("Chocolate Sauce", "mm dat drizzle", "")
+              new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal)
             },
             new List<Move>
             {
-              new Move("Chocolate Sauce", "mm dat drizzle", ""),
-              new Move("Milk Drain", "gotta get dat white stuff", "")
+              new Move("Chocolate Sauce", "mm dat drizzle", "", Type.Normal),
+              new Move("Milk Drain", "gotta get dat white stuff", "", Type.Normal)
             }
           },
           Natures = new List<Nature> { Nature.Adamant, Nature.Brave }
@@ -190,6 +215,27 @@ namespace SmogonWP.ViewModel
         MSIVM = new MovesetItemViewModel("Barbasaur", ms);
       }
       #endregion design data
+
+      setupAppBar();
+    }
+
+    private void setupAppBar()
+    {
+      MenuButtons = new ObservableCollection<MenuButtonViewModel>
+      {
+        new MenuButtonViewModel
+        {
+          Text = "stats",
+          IconUri = new Uri("/Assets/AppBar/appbar.calc.png", UriKind.RelativeOrAbsolute),
+          Command = new RelayCommand(navigateToStats)
+        }
+      };
+    }
+
+    private void navigateToStats()
+    {
+      _movesetCalculatedSender.SendMessage(new MovesetCalculatedMessage(MSIVM));
+      _navigationService.Navigate(ViewModelLocator.StatsPath);
     }
 
     private void onMovesetSelected(ItemSelectedMessage<MovesetItemViewModel> msg)

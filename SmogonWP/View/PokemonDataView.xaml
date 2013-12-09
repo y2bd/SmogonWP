@@ -9,6 +9,7 @@
                             xmlns:converters="clr-namespace:SmogonWP.Converters"
                             xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             xmlns:utilities="clr-namespace:SmogonWP.Utilities"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -167,23 +168,24 @@
                                              SelectedItem="{Binding SelectedAbility, Mode=TwoWay}"
                                              toolkit:TiltEffect.IsTiltEnabled="True"
                                              HorizontalContentAlignment="Left"
+                                             HorizontalAlignment="Left"
                                              ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                         <ListBox.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <VirtualizingStackPanel Orientation="Vertical"
-                                                                        HorizontalAlignment="Left" />
+                                                <VirtualizingStackPanel Orientation="Vertical"/>
                                             </ItemsPanelTemplate>
                                         </ListBox.ItemsPanel>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid Background="{StaticResource PhoneAccentBrush}">
                                                     <Border Background="Black"
-                                                            Opacity="{Binding Converter={StaticResource RandomOpacityConverter}}" />
+                                                            Opacity="{Binding RowIndex, Converter={StaticResource AlternatingRowOpacityConverter}}" />
 
                                                     <TextBlock Text="{Binding Name}"
                                                                Style="{StaticResource PhoneTextTitle3Style}"
                                                                Foreground="White"
                                                                VerticalAlignment="Center"
+                                                               HorizontalAlignment="Left"
                                                                Margin="9,3,9,6" />
                                                 </Grid>
                                             </DataTemplate>
@@ -402,7 +404,7 @@
                 </phone:PivotItem>
                 <phone:PivotItem Header="MOVESETS"
                                  Margin="12,12,12,0">
-                    <utilities:BindableLongListSelector x:Name="MovesetList"
+                    <controls:BindableLongListSelector x:Name="MovesetList"
                                                         ItemsSource="{Binding Path=PDVM.Movesets}"
                                                         SelectedItem="{Binding SelectedMoveset, Mode=TwoWay}"
                                                         Style="{StaticResource LLSFloatingScrollbarStyle}"
@@ -411,7 +413,7 @@
                 </phone:PivotItem>
                 <phone:PivotItem Header="MOVE POOL"
                                  Margin="10,10,14,2">
-                    <utilities:BindableLongListSelector x:Name="RelatedList"
+                    <controls:BindableLongListSelector x:Name="RelatedList"
                                                         ItemsSource="{Binding Path=PDVM.Moves}"
                                                         SelectedItem="{Binding SelectedMove, Mode=TwoWay}"
                                                         ItemTemplate="{StaticResource RelatedItemTemplate}"

@@ -10,6 +10,7 @@
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            xmlns:controls="clr-namespace:SmogonWP.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -42,9 +43,6 @@
     </toolkit:TransitionService.NavigationOutTransition>
 
     <phone:PhoneApplicationPage.Resources>
-        <converters:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
-        <converters:EmptinessVisibilityConverter x:Key="EmptinessVisibilityConverter" />
-
         <DataTemplate x:Key="MoveItemTemplate">
             <StackPanel x:Name="MoveItemStackPanel"
                         Margin="0,0,24,12">
@@ -64,10 +62,22 @@
                         </BeginStoryboard>
                     </EventTrigger>
                 </StackPanel.Resources>
-
-                <TextBlock Text="{Binding Name}"
-                           Style="{StaticResource PhoneTextTitle2Style}"
-                           Margin="12,0,12,3" />
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name}"
+                               Style="{StaticResource PhoneTextTitle2Style}"
+                               Margin="12,0,12,3" />
+                    <Border Background="{Binding Type.BackgroundBrush}"
+                            Margin="12,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Type.Name}"
+                                   Style="{StaticResource PhoneTextNormalStyle}"
+                                   Foreground="White"
+                                   Margin="9,3,9,6" />
+                    </Border>
+                </StackPanel>
+                
                 <TextBlock Text="{Binding Description}"
                            Style="{StaticResource PhoneTextSmallStyle}"
                            TextWrapping="Wrap" />
@@ -112,10 +122,10 @@
                        Style="{StaticResource PhoneTextNormalStyle}" />
 
             <TextBlock Margin="0,0,6,0"
-                       Text="{Binding TypeName}"
+                       Text="{Binding TypeDisplay.Name}"
                        Style="{StaticResource PhoneTextNormalStyle}"
                        FontFamily="{StaticResource PhoneFontFamilySemiBold}"
-                       Foreground="{Binding TypeBrush}" />
+                       Foreground="{Binding TypeDisplay.BackgroundBrush}" />
         </StackPanel>
 
         <toolkit:PhoneTextBox x:Name="SearchBox"
@@ -138,7 +148,7 @@
             </i:Interaction.Behaviors>
         </toolkit:PhoneTextBox>
 
-        <util:BindableLongListSelector x:Name="MoveList"
+        <controls:BindableLongListSelector x:Name="MoveList"
                                        Grid.Row="4"
                                        Margin="12,0,12,0"
                                        ItemsSource="{Binding FilteredMoves}"

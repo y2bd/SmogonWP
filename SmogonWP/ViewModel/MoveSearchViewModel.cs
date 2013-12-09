@@ -1,24 +1,21 @@
-﻿using System.ComponentModel;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
-using Schmogon;
-using Schmogon.Data.Moves;
+using SchmogonDB.Model.Moves;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
-using SmogonWP.Utilities;
 using SmogonWP.ViewModel.Items;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -28,7 +25,7 @@ namespace SmogonWP.ViewModel
     private readonly IDataLoadingService _dataService;
 
     private readonly MessageSender<ItemSearchedMessage<Move>> _moveSearchSender;
-    
+
     private List<MoveItemViewModel> _moves;
 
     private string _voicedMoveName;
@@ -158,36 +155,19 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private string _typeName;
-    public string TypeName
+    private TypeItemViewModel _typeDisplay;
+    public TypeItemViewModel TypeDisplay
     {
       get
       {
-        return _typeName;
+        return _typeDisplay;
       }
       set
       {
-        if (_typeName != value)
+        if (_typeDisplay != value)
         {
-          _typeName = value;
-          RaisePropertyChanged(() => TypeName);
-        }
-      }
-    }
-
-    private SolidColorBrush _typeBrush;
-    public SolidColorBrush TypeBrush
-    {
-      get
-      {
-        return _typeBrush;
-      }
-      set
-      {
-        if (_typeBrush != value)
-        {
-          _typeBrush = value;
-          RaisePropertyChanged(() => TypeBrush);
+          _typeDisplay = value;
+          RaisePropertyChanged(() => TypeDisplay);
         }
       }
     }			
@@ -251,26 +231,27 @@ namespace SmogonWP.ViewModel
       if (args.Key != Key.Enter) return;
 
       if (string.IsNullOrWhiteSpace(Query)) FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
-      
-      FilteredMoves = new ObservableCollection<MoveItemViewModel>(
-        _moves.Where(
-          m => m.Name.ToLower().Contains(Query.ToLower().Trim())
-        ).OrderBy(m => m.Name)
-      );
+      else
+      {
+        FilteredMoves = new ObservableCollection<MoveItemViewModel>(
+          _moves.Where(
+            m => m.Name.ToLower().Contains(Query.ToLower().Trim())
+            ).OrderBy(m => m.Name)
+          );
+      }
     }
 
     private void onFilterChanged()
     {
-      var filter = SelectedFilter - 1;
+      var type = SelectedFilter - 1;
 
-      var name = Enum.GetName(typeof (Type), (Type) filter);
-      if (name != null)
-        TypeName = filter == -1 ? string.Empty : name.ToUpper();
-      TypeBrush = filter == -1 ? null : new SolidColorBrush(TypeItemViewModel.TypeColors[(Type) filter]);
+      FilteredMoves = new ObservableCollection<MoveItemViewModel>(
+        _moves.Where(m => type == -1 || m.Type.Type == (Type)type)
+              .OrderBy(m => m.Name));
 
       Query = string.Empty;
 
-      scheduleMoveListFetch();
+      TypeDisplay = type == -1 ? null : new TypeItemViewModel((Type) type);
     }
 
     private void onMoveSelected(MoveItemViewModel mivm)
@@ -331,37 +312,25 @@ namespace SmogonWP.ViewModel
     private async Task fetchMoves()
     {
       FilteredMoves = null;
-
-      var filter = SelectedFilter - 1;
       
       try
       {
-        var rawMoves = filter == -1
-          ? await _dataService.FetchAllMovesAsync()
-          : await _dataService.FetchAllMovesOfTypeAsync((Type) filter);
+        var rawMoves = await _dataService.FetchAllMovesAsync();
 
         _moves = (from rawMove in rawMoves
                   select new MoveItemViewModel(rawMove))
+        .OrderBy(m => m.Name)
         .ToList();
 
         FilteredMoves = new ObservableCollection<MoveItemViewModel>(_moves);
 
         LoadFailed = false;
       }
-      catch (Exception e)
+      catch (Exception)
       {
-        if (!NetUtilities.IsNetwork())
-        {
-          MessageBox.Show(
-          "Downloading move data requires an internet connection. Please get one of those and try again later.",
-          "No internet!", MessageBoxButton.OK);
-        }
-        else
-        {
-          MessageBox.Show(
-          "I'm sorry, but we couldn't load the move data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
+        MessageBox.Show(
+          "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
           "Oh no!", MessageBoxButton.OK);
-        }
 
         Debugger.Break();
 

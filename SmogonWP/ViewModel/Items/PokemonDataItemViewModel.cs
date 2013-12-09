@@ -5,8 +5,8 @@ using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
-using Schmogon.Data.Pokemon;
-using SmogonWP.Model;
+using SchmogonDB.Model.Pokemon;
+using SmogonWP.Utilities;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -68,7 +68,7 @@ namespace SmogonWP.ViewModel.Items
     {
       Data = data;
 
-      Abilities = Data.Abilities.Select(a => new AbilityItemViewModel(a)).OrderByDescending(a => a.Name.Length).ToList();
+      Abilities = Data.Abilities.OrderByDescending(a => TextLength.EstimateTextLength(a.Name)).Select((a, i) => new AbilityItemViewModel(a, i)).ToList();
       Types = Data.Types.Select(t => new TypeItemViewModel(t)).ToList();
       Moves = Data.Moves.Select(m => new MoveItemViewModel(m)).ToList();
 

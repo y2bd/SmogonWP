@@ -7,6 +7,7 @@
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -38,8 +39,12 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
 
+    <bindable:Bindable.ApplicationBar>
+        <bindable:BindableApplicationBar ButtonsSource="{Binding MenuButtons}"
+                                         Mode="Default" />
+    </bindable:Bindable.ApplicationBar>
+    
     <phone:PhoneApplicationPage.Resources>
-        <converters:InvertedEmptinessVisibilityConverter x:Key="InvertedEmptinessVisibilityConverter" />
         <converters:RandomOpacityConverter x:Key="RandomOpacityConverter" />
         <converters:LowercaseConverter x:Key="LowercaseConverter" />
 
@@ -55,7 +60,7 @@
             <Grid Height="50"
                   Background="{StaticResource PhoneAccentBrush}">
                 <Border Background="Black"
-                        Opacity="{Binding Converter={StaticResource RandomOpacityConverter}}" />
+                        Opacity="{Binding RowIndex, Converter={StaticResource AlternatingRowOpacityConverter}}" />
                 <TextBlock Text="{Binding Name, Converter={StaticResource LowercaseConverter}}"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"
@@ -85,7 +90,7 @@
                 <Grid Margin="12,0,0,0"
                       Background="{StaticResource PhoneAccentBrush}">
                     <Border Background="Black"
-                            Opacity="{Binding Converter={StaticResource RandomOpacityConverter}, ConverterParameter='2'}" />
+                            Opacity="{Binding RowIndex, Converter={StaticResource AlternatingRowOpacityConverter}}" />
                     <TextBlock Text="{Binding Name, Converter={StaticResource LowercaseConverter}}"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left"

@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
-using Schmogon.Data;
-using Schmogon.Data.Moves;
+using SchmogonDB.Model;
+using SchmogonDB.Model.Moves;
 
 namespace SmogonWP.ViewModel.Items
 {
@@ -34,11 +34,30 @@ namespace SmogonWP.ViewModel.Items
       }
     }
 
+    private TypeItemViewModel _type;
+    public TypeItemViewModel Type
+    {
+      get
+      {
+        return _type;
+      }
+      set
+      {
+        if (_type != value)
+        {
+          _type = value;
+          RaisePropertyChanged(() => Type);
+        }
+      }
+    }			
+    
     #endregion
-
+    
     public MoveItemViewModel(Move move)
     {
       Move = move;
+
+      _type = new TypeItemViewModel(move.Type);
     }
   }
 }

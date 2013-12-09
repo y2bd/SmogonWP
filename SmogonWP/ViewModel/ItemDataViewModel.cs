@@ -10,12 +10,10 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
-using Schmogon;
-using Schmogon.Data.Items;
+using SchmogonDB.Model.Items;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
-using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 
@@ -26,15 +24,11 @@ namespace SmogonWP.ViewModel
     private const string SmogonPrefix = "http://www.smogon.com";
     private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
 
-    private readonly ISchmogonClient _schmogonClient;
+    private readonly IDataLoadingService _dataService;
 
     private readonly MessageReceiver<ItemSearchedMessage<Item>> _itemSearchReceiver;
     private readonly MessageReceiver<ItemSelectedMessage<Item>> _pokemonItemSelectedReceiver; 
     
-    // if a network request fails, we'll try again one more time
-    // otherwise we'll give up and tell the user
-    private bool _failedOnce;
-
     private string _pageLocation;
 
     #region props
@@ -115,9 +109,9 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public ItemDataViewModel(ISchmogonClient schmogonClient, TrayService trayService)
+    public ItemDataViewModel(IDataLoadingService dataService, TrayService trayService)
     {
-      _schmogonClient = schmogonClient;
+      _dataService = dataService;
       _trayService = trayService;
 
       _itemSearchReceiver = new MessageReceiver<ItemSearchedMessage<Item>>(onItemSearched, true);
@@ -229,11 +223,18 @@ namespace SmogonWP.ViewModel
 
       try
       {
-        itemData = await _schmogonClient.GetItemDataAsync(item);
+        itemData = await _dataService.FetchItemDataAsync(item);
       }
-      catch (HttpRequestException)
+      catch (Exception)
       {
-        reloadItemData(item);
+        MessageBox.Show(
+          "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK);
+
+        Debugger.Break();
+
+        cleanup();
+
         return;
       }
 
@@ -244,43 +245,7 @@ namespace SmogonWP.ViewModel
 
       TrayService.RemoveJob("fetchdata");
     }
-
-    private void reloadItemData(Item item)
-    {
-      if (_failedOnce)
-      {
-        // we failed, give up
-        cleanup();
-
-        Name = "Sorry :(";
-
-        MessageBox.Show(
-          "I'm sorry, but we couldn't load the item data. Perhaps your internet is down?\n\nIf this is happening a lot, please contact the developer.",
-          "Oh no!", MessageBoxButton.OK);
-
-        _failedOnce = false;
-      }
-      else if (!NetUtilities.IsNetwork())
-      {
-        // crafty bastard somehow lost network connectivity midway
-        cleanup();
-
-        Name = "Sorry :(";
-
-        MessageBox.Show(
-          "Downloading item data requires an internet connection. Please get one of those and try again later.",
-          "No internet!", MessageBoxButton.OK);
-      }
-      else {
-        // let's try again
-        Debug.WriteLine("Move load failed once.");
-
-        _failedOnce = true;
-
-        scheduleItemFetch(item);
-      }
-    }
-
+    
     private void cleanup()
     {
       IDVM = null;

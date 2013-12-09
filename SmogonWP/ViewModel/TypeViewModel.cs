@@ -1,25 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using Schmogon;
-using Schmogon.Data.Types;
+using GalaSoft.MvvmLight.Messaging;
+using SchmogonDB.Tools;
 using SmogonWP.Messages;
 using SmogonWP.Model;
 using SmogonWP.Services.Messaging;
-using SmogonWP.View;
 using SmogonWP.ViewModel.Items;
-using Type = Schmogon.Data.Types.Type;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
   public class TypeViewModel : ViewModelBase
   {
-    private readonly ISchmogonClient _schmogonClient;
+    private readonly SchmogonToolset _toolset;
 
     private readonly MessageReceiver<ItemSelectedMessage<Type>> _moveTypeSelectedMessage;
-    private readonly MessageReceiver<PokemonTypeSelectedMessage> _pokemonTypeSelectedMessage; 
-
+    private readonly MessageReceiver<PokemonTypeSelectedMessage> _pokemonTypeSelectedMessage;
+    
     private ObservableCollection<string> _typeChoices;
     public ObservableCollection<string> TypeChoices
     {
@@ -36,6 +36,23 @@ namespace SmogonWP.ViewModel
         }
       }
     }
+
+    private ObservableCollection<string> _secondaryTypeChoices;
+    public ObservableCollection<string> SecondaryTypeChoices
+    {
+      get
+      {
+        return _secondaryTypeChoices;
+      }
+      set
+      {
+        if (_secondaryTypeChoices != value)
+        {
+          _secondaryTypeChoices = value;
+          RaisePropertyChanged(() => SecondaryTypeChoices);
+        }
+      }
+    }			
 
     private int _selectedOffensiveType = -1;
     public int SelectedOffensiveType
@@ -75,6 +92,25 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private int _selectedSecondDefenseType = -1;
+    public int SelectedSecondDefenseType
+    {
+      get
+      {
+        return _selectedSecondDefenseType;
+      }
+      set
+      {
+        if (_selectedSecondDefenseType != value)
+        {
+          _selectedSecondDefenseType = value;
+          RaisePropertyChanged(() => SelectedSecondDefenseType);
+
+          onDefenseTypeChange();
+        }
+      }
+    }			
+    
     private int _pivotIndex;
     public int PivotIndex
     {
@@ -90,8 +126,8 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => PivotIndex);
         }
       }
-    }			
-
+    }
+    
     private ObservableCollection<OffenseTypeGroup> _offenseTypeData;
     public ObservableCollection<OffenseTypeGroup> OffenseTypeData
     {
@@ -124,11 +160,11 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => DefenseTypeData);
         }
       }
-    }			
+    }
 
-    public TypeViewModel(ISchmogonClient schmogonClient)
+    public TypeViewModel(SchmogonToolset toolset)
     {
-      _schmogonClient = schmogonClient;
+      _toolset = toolset;
 
       _moveTypeSelectedMessage = new MessageReceiver<ItemSelectedMessage<Type>>(onMoveTypeSelected, true);
       _pokemonTypeSelectedMessage = new MessageReceiver<PokemonTypeSelectedMessage>(onPokemonTypeSelected, true);
@@ -139,6 +175,7 @@ namespace SmogonWP.ViewModel
       {
         SelectedOffensiveType = 8;
         SelectedDefenseType = 4;
+        SelectedSecondDefenseType = 6;
 
         onOffenseTypeChange();
         onDefenseTypeChange();
@@ -150,8 +187,10 @@ namespace SmogonWP.ViewModel
       var typeNames = Enum.GetNames(typeof(Type))
                       .Select(s => s.ToLowerInvariant())
                       .ToList();
-      
+
       TypeChoices = new ObservableCollection<string>(typeNames);
+
+      SecondaryTypeChoices = new ObservableCollection<string>(new List<string> {"none"}.Concat(typeNames));
     }
 
     private void onOffenseTypeChange()
@@ -160,7 +199,7 @@ namespace SmogonWP.ViewModel
 
       var type = (Type) SelectedOffensiveType;
 
-      var effect = _schmogonClient.GetTypeOffenseEffect(type);
+      var effect = _toolset.GetTypeOffenseEffect(type);
 
       OffenseTypeData = new ObservableCollection<OffenseTypeGroup>
       {
@@ -182,22 +221,50 @@ namespace SmogonWP.ViewModel
 
       var type = (Type) SelectedDefenseType;
 
-      var effect = _schmogonClient.GetTypeDefenseEffect(type);
-
-      DefenseTypeData = new ObservableCollection<DefenseTypeGroup>
+      if (SelectedSecondDefenseType <= 0 || SelectedSecondDefenseType - 1 == SelectedDefenseType)
       {
-        new DefenseTypeGroup(
-          effect.StrongDefenseAgainst.Select(t => new TypeItemViewModel(t)),
-          DefenseType.StrongDefense),
-        new DefenseTypeGroup(
-          effect.WeakDefenseAgainst.Select(t => new TypeItemViewModel(t)),
-          DefenseType.WeakDefense),
-        new DefenseTypeGroup(
-          effect.FullDefenseAgainst.Select(t => new TypeItemViewModel(t)),
-          DefenseType.FullDefense),
-      };
-    }
+        var effect = _toolset.GetTypeDefenseEffect(type);
 
+        DefenseTypeData = new ObservableCollection<DefenseTypeGroup>
+        {
+          new DefenseTypeGroup(
+            effect.StrongDefenseAgainst.Select(t => new TypeItemViewModel(t)),
+            DefenseType.StrongDefense),
+          new DefenseTypeGroup(
+            effect.WeakDefenseAgainst.Select(t => new TypeItemViewModel(t)),
+            DefenseType.WeakDefense),
+          new DefenseTypeGroup(
+            effect.FullDefenseAgainst.Select(t => new TypeItemViewModel(t)),
+            DefenseType.FullDefense),
+        };
+      }
+      else
+      {
+        var secondType = (Type) (SelectedSecondDefenseType - 1);
+
+        var effect = _toolset.GetTypeDefenseEffect(type, secondType);
+
+        DefenseTypeData = new ObservableCollection<DefenseTypeGroup>
+        {
+          new DefenseTypeGroup(
+            effect.VeryStrongDefenseAgainst.Select(t => new TypeItemViewModel(t)),
+            DefenseType.VeryStrongDefense),
+          new DefenseTypeGroup(
+            effect.StrongDefenseAgainst.Select(t => new TypeItemViewModel(t)),
+            DefenseType.StrongDefense),
+          new DefenseTypeGroup(
+            effect.WeakDefenseAgainst.Select(t => new TypeItemViewModel(t)),
+            DefenseType.WeakDefense),
+          new DefenseTypeGroup(
+            effect.VeryWeakDefenseAgainst.Select(t => new TypeItemViewModel(t)),
+            DefenseType.VeryWeakDefense),
+          new DefenseTypeGroup(
+            effect.FullDefenseAgainst.Select(t => new TypeItemViewModel(t)),
+            DefenseType.FullDefense),
+        };
+      }
+    }
+    
     private void onMoveTypeSelected(ItemSelectedMessage<Type> msg)
     {
       var type = msg.Item;
@@ -214,6 +281,7 @@ namespace SmogonWP.ViewModel
       PivotIndex = 1;
 
       SelectedDefenseType = (int)type;
+      SelectedSecondDefenseType = 0;
     }
   }
 }

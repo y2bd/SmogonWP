@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="SmogonWP.Controls.Tiles.FlipTileWide"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             FontFamily="{StaticResource PhoneFontFamilyNormal}"
+             FontSize="{StaticResource PhoneFontSizeNormal}"
+             Foreground="White"
+             d:DesignHeight="336"
+             d:DesignWidth="691">
+
+    <Grid x:Name="LayoutRoot"
+          Background="Transparent"
+          Margin="0,-9,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0"
+                    Margin="10,12,0,0"
+                    VerticalAlignment="Top">
+            <TextBlock FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                       FontSize="{StaticResource PhoneFontSizeExtraExtraLarge}"
+                       Margin="12,0"
+                       Foreground="White"
+                       Text="GARDEVOIR" 
+                       x:Name="PokemonName"/>
+            
+        </StackPanel>
+        
+        <TextBlock Grid.Row="1"
+                   Style="{StaticResource PhoneTextTitle2Style}"
+                   FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                   Foreground="White"
+                   Margin="24,0,24,0"
+                   Height="296"
+                   TextWrapping="Wrap"
+                   TextTrimming="WordEllipsis"
+                   x:Name="PokemonDescription">
+            While Gardevoir is strictly a very good Pokemon in NU, most of the roles where it would normally shine are ones that other Pokemon in the tier can perform much better. Offensively, there is little reason to use Gardevoir over Jynx, a Pokemon with a fantastic secondary STAB, a sleep-inducing move in Lovely Kiss, greater Speed, and a Water-type immunity. Defensively, Musharna outshines Gardevoir thanks to its far superior bulk and more reliable form of recovery. However, Gardevoir is able to separate itself with its superb Special Attack stat and amazing ability, Trace. It also has some support moves, such as Healing Wish, Memento, and Destiny Bond, that are difficult to find in NU. Overall, Gardevoir still has a lot of potential, but you should always consider your other options before choosing it.
+        </TextBlock>
+    </Grid>
+</UserControl>
