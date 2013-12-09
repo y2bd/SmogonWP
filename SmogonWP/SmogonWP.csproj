@@ -313,6 +313,9 @@
       <LastGenOutput>GenericVCD.xml</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <Content Include="pokemon.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
