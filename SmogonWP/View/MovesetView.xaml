@@ -7,6 +7,7 @@
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:converters="clr-namespace:SmogonWP.Converters"
+                            xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -38,6 +39,11 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
 
+    <bindable:Bindable.ApplicationBar>
+        <bindable:BindableApplicationBar ButtonsSource="{Binding MenuButtons}"
+                                         Mode="Default" />
+    </bindable:Bindable.ApplicationBar>
+    
     <phone:PhoneApplicationPage.Resources>
         <converters:RandomOpacityConverter x:Key="RandomOpacityConverter" />
         <converters:LowercaseConverter x:Key="LowercaseConverter" />

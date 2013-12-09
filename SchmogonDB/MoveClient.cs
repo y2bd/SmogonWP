@@ -73,13 +73,15 @@ namespace SchmogonDB
 
     public async Task<MoveData> FetchMoveDataAsync(Move move)
     {
-      var desc = await fetchTextElements(move.Name, OwnerType.Move, ElementType.Description);
-      var comp = await fetchTextElements(move.Name, OwnerType.Move, ElementType.Competitive);
+      // that dang hidden power
+      var name = move.Name.Contains("Hidden Power") ? "Hidden Power" : move.Name;
+      var desc = await fetchTextElements(name, OwnerType.Move, ElementType.Description);
+      var comp = await fetchTextElements(name, OwnerType.Move, ElementType.Competitive);
       var stat = await fetchMoveStats(move);
       var relm = await fetchRelatedMoves(move);
       
       return new MoveData(
-        move.Name,
+        name,
         stat,
         desc,
         comp,
@@ -89,8 +91,11 @@ namespace SchmogonDB
 
     private async Task<MoveStats> fetchMoveStats(Move move)
     {
+      // that dang hidden power
+      var name = move.Name.Contains("Hidden Power") ? "Hidden Power" : move.Name;
+
       var statement = await _database.PrepareStatementAsync(FetchMoveStatsQuery);
-      statement.BindTextParameterWithName("@name", move.Name);
+      statement.BindTextParameterWithName("@name", name);
 
       statement.StepSync();
       
@@ -108,10 +113,13 @@ namespace SchmogonDB
 
     private async Task<IEnumerable<Move>> fetchRelatedMoves(Move move)
     {
+      // that dang hidden power
+      var moveName = move.Name.Contains("Hidden Power") ? "Hidden Power" : move.Name;
+
       var relatedMoves = new List<Move>();
 
       var statement = await _database.PrepareStatementAsync(FetchRelatedMovesQuery);
-      statement.BindTextParameterWithName("@name", move.Name);
+      statement.BindTextParameterWithName("@name", moveName);
 
       while (statement.StepSync())
       {

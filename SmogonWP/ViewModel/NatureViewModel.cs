@@ -183,7 +183,7 @@ namespace SmogonWP.ViewModel
         // NO HP PLS
         if (stat == StatType.HP) continue;
 
-        _statChoices.Add(StatUtils.GetStatName(stat).ToLowerInvariant());
+        _statChoices.Add(StatUtils.GetName(stat).ToLowerInvariant());
       }
     }
 

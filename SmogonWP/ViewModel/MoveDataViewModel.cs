@@ -353,7 +353,7 @@ namespace SmogonWP.ViewModel
 
       _pageLocation = move.PageLocation;
       
-      TypeBackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[move.Type]);
+      TypeBackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[moveData.Stats.Type]);
 
       TrayService.RemoveJob("fetchdata");
     }

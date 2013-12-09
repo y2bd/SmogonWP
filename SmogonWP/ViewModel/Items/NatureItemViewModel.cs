@@ -78,8 +78,8 @@ namespace SmogonWP.ViewModel.Items
     public NatureItemViewModel(NatureEffect effect)
     {
       Name = Enum.GetName(typeof(Nature), effect.Nature);
-      BoostStat = StatUtils.GetStatName(effect.Increased);
-      LossStat = StatUtils.GetStatName(effect.Decreased);
+      BoostStat = StatUtils.GetName(effect.Increased);
+      LossStat = StatUtils.GetName(effect.Decreased);
     }
 
     public NatureItemViewModel(NatureEffect effect, int rowIndex)

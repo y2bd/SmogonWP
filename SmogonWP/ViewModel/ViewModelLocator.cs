@@ -26,6 +26,7 @@ namespace SmogonWP.ViewModel
     public const string PokemonSearchPath = "/View/PokemonSearchView.xaml";
     public const string PokemonDataPath = "/View/PokemonDataView.xaml";
     public const string MovesetPath = "/View/MovesetView.xaml";
+    public const string StatsPath = "/View/StatsView.xaml";
 
     /// <summary>
     /// Initializes a new instance of the ViewModelLocator class.
@@ -71,6 +72,7 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<PokemonSearchViewModel>();
       SimpleIoc.Default.Register<PokemonDataViewModel>();
       SimpleIoc.Default.Register<MovesetViewModel>();
+      SimpleIoc.Default.Register<StatsViewModel>();
     }
 
     public HomeViewModel Home
@@ -175,7 +177,14 @@ namespace SmogonWP.ViewModel
       {
         return ServiceLocator.Current.GetInstance<MovesetViewModel>();
       }
-      
+    }
+
+    public StatsViewModel Stats
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<StatsViewModel>();
+      }
     }
 
     private void RegisterIfUnregistered<T>() where T : class

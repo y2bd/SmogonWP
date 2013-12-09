@@ -34,5 +34,10 @@ namespace SmogonWP.ViewModel.Items
 
       Types = pokemon.Types.Select(t => new TypeItemViewModel(t));
     }
+
+    public override string ToString()
+    {
+      return Name;
+    }
   }
 }

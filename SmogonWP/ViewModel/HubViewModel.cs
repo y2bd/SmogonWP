@@ -342,6 +342,14 @@ namespace SmogonWP.ViewModel
           BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Bug]),
           IconPath = "/Assets/Icons/fire.png"
         },
+        new NavigationItemViewModel
+        {
+          Title = "Stat Calculator",
+          Description = "Fine-tune the stats of your perfect Pokemon",
+          NavigationPath = ViewModelLocator.StatsPath,
+          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Dragon]),
+          IconPath = "/Assets/Icons/calc.png"
+        }
       };
     }
 

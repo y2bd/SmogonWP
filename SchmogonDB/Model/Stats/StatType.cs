@@ -24,9 +24,24 @@ namespace SchmogonDB.Model.Stats
       {StatType.Speed, "Speed"}
     };
 
-    public static string GetStatName(StatType stat)
+    private static readonly IDictionary<StatType, string> ShortNames = new Dictionary<StatType, string>
+    {
+      {StatType.Attack, "Atk"},
+      {StatType.Defense, "Def"},
+      {StatType.HP, "HP"},
+      {StatType.SpecialAttack, "SpA"},
+      {StatType.SpecialDefense, "SpD"},
+      {StatType.Speed, "Spe"}
+    };
+
+    public static string GetName(StatType stat)
     {
       return StatNames[stat];
+    }
+
+    public static string GetShortName(StatType stat)
+    {
+      return ShortNames[stat];
     }
   }
 }
