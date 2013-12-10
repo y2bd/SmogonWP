@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
@@ -47,22 +49,22 @@ namespace SmogonWP.ViewModel.Items
       }
     }
 
-    private ImageSource _sprite;
-    public ImageSource Sprite
+    private string _spritePath;
+    public string SpritePath
     {
       get
       {
-        return _sprite;
+        return _spritePath;
       }
       set
       {
-        if (_sprite != value)
+        if (_spritePath != value)
         {
-          _sprite = value;
-          RaisePropertyChanged(() => Sprite);
+          _spritePath = value;
+          RaisePropertyChanged(() => SpritePath);
         }
       }
-    }
+    }			
 
     public PokemonDataItemViewModel(PokemonData data)
     {
@@ -72,7 +74,7 @@ namespace SmogonWP.ViewModel.Items
       Types = Data.Types.Select(t => new TypeItemViewModel(t)).ToList();
       Moves = Data.Moves.Select(m => new MoveItemViewModel(m)).ToList();
 
-      Sprite = new BitmapImage(new Uri(SmogonBase + Data.SpritePath));
+      SpritePath = SmogonBase + Data.SpritePath;
 
       _movesets = new ObservableCollection<MovesetItemViewModel>(Data.Movesets.Select(m => new MovesetItemViewModel(Data.Name, m)));
     }

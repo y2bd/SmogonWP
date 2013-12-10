@@ -1,5 +1,12 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.IO;
+using System.Net.Http;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Windows.Storage.Streams;
+using Coding4Fun.Toolkit.Controls.Common;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
 using SchmogonDB.Model.Abilities;
@@ -17,6 +24,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace SmogonWP.ViewModel
 {
@@ -71,6 +79,23 @@ namespace SmogonWP.ViewModel
         }
       }
     }
+
+    private ImageSource _sprite;
+    public ImageSource Sprite
+    {
+      get
+      {
+        return _sprite;
+      }
+      set
+      {
+        if (_sprite != value)
+        {
+          _sprite = value;
+          RaisePropertyChanged(() => Sprite);
+        }
+      }
+    }			
 
     private AbilityItemViewModel _selectedAbility;
     public AbilityItemViewModel SelectedAbility
@@ -328,6 +353,8 @@ namespace SmogonWP.ViewModel
     {
       TrayService.AddJob("fetchdata", "Fetching pokemon data...");
 
+      Sprite = null;
+
       PokemonData pokemonData;
 
       try
@@ -350,6 +377,8 @@ namespace SmogonWP.ViewModel
       PDVM = new PokemonDataItemViewModel(pokemonData);
       Name = PDVM.Name;
 
+      fetchThumbnailImage(PDVM.SpritePath).ContinueWith(thumbnailFetchFaulted, TaskContinuationOptions.OnlyOnFaulted);
+
       _pageLocation = pokemon.PageLocation;
 
       TrayService.RemoveJob("fetchdata");
@@ -362,5 +391,29 @@ namespace SmogonWP.ViewModel
       TrayService.RemoveAllJobs();
     }
 
+    private async Task fetchThumbnailImage(string path)
+    {
+      Stream s;
+
+      using (var client = new HttpClient())
+      {
+        var bytes = await client.GetByteArrayAsync(path);
+
+        s = new MemoryStream(bytes);
+      }
+
+      DispatcherHelper.CheckBeginInvokeOnUI(() =>
+      {
+        var wbs = new WriteableBitmap(96, 96);
+        wbs.SetSource(s);
+
+        Sprite = wbs.Resize(140, 140, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+      });
+    }
+
+    private void thumbnailFetchFaulted(Task t)
+    {
+      var ex = t.Exception;
+    }
   }
 }

@@ -131,14 +131,14 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Border Grid.Column="0"
-                                        Background="#33808080"
-                                        BorderBrush="#33808080"
+                                        Background="#29808080"
+                                        BorderBrush="#29808080"
                                         VerticalAlignment="Stretch">
                                     <Image HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            Width="140"
                                            Height="140"
-                                           Source="{Binding PDVM.Sprite}" />
+                                           Source="{Binding Sprite}" />
                                 </Border>
 
                                 <StackPanel Grid.Column="2">
