@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.IO;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;

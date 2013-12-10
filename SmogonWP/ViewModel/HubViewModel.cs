@@ -1,6 +1,9 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.Windows.Controls;
+using Coding4Fun.Toolkit.Controls;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
+using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
 using SchmogonDB;
 using SchmogonDB.Model;
@@ -33,6 +36,7 @@ namespace SmogonWP.ViewModel
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
     private readonly LiveTileService _tileService;
+    private readonly SettingsService _settingsService;
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokeSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Ability>> _abilSearchSender;
@@ -183,6 +187,23 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private ObservableCollection<MenuItemViewModel> _menuItems;
+    public ObservableCollection<MenuItemViewModel> MenuItems
+    {
+      get
+      {
+        return _menuItems;
+      }
+      set
+      {
+        if (_menuItems != value)
+        {
+          _menuItems = value;
+          RaisePropertyChanged(() => MenuItems);
+        }
+      }
+    }			
+
     private string _filter;
     public string Filter
     {
@@ -198,7 +219,7 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => Filter);
         }
       }
-    }			
+    }
 
     private ObservableCollection<ISearchItem> _filteredSearchItems;
     public ObservableCollection<ISearchItem> FilteredSearchItems
@@ -234,8 +255,8 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => SelectedSearchItem);
         }
       }
-    }			
-    
+    }
+
     #endregion props
 
     #region commands
@@ -268,12 +289,13 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, LiveTileService tileService)
+    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, LiveTileService tileService, SettingsService settingsService)
     {
       _navigationService = navigationService;
       _dataService = dataService;
       _trayService = trayService;
       _tileService = tileService;
+      _settingsService = settingsService;
 
       _pokeSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
       _abilSearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
@@ -284,6 +306,67 @@ namespace SmogonWP.ViewModel
       setupAppBar();
       initializeVCD();
       scheduleSearchDataFetch();
+
+      showWelcomePopup();
+    }
+
+    private void showWelcomePopup()
+    {
+      if (_settingsService.Load("haswelcomed", false)) return;
+
+      const string message = @"Thanks for downloading SmogonWP! Before you use the app, let me tell you two important things.
+
+First of all, this app is not and will never be a standard Pokedex app. This app will not tell you what routes you can catch Ralts on or at what level she'll evolve into a Gardevoir. That is not its purpose.
+
+Second, as Pokemon X and Y have come out very recently, websites are still in the process of compiling information. Because of this, this app only contains data up to Black and White. You will not find X and Y Pokemon or moves in this app.
+
+If you have any questions, sliding up the appbar at the bottom will give you the option to email me, the developer. Happy battling!";
+
+      MessageBox.Show(message, "Hey there!", MessageBoxButton.OK);
+
+      _settingsService.Save("haswelcomed", true);
+    }
+
+    private void showTipOfTheDay()
+    {
+      string[] tips = {
+        "This app has an awesome forum (via Reddit) that you can visit by swiping up on the appbar below!",
+        "This app has a live tile! Pin it to your start page to see!",
+        "Although this app doesn't have X and Y data, you can still see how the Fairy type fares on the Type page!",
+        "After choosing any of a Pokemon's movesets, you can click the stats button to jump straight to the stats calculator with values filled in!",
+        "Many things are tappable! Try tapping on something and see what happens!",
+        "Studies have shown that rating applications makes you at least twenty percent more awesome!",
+        "On the Pokemon search page, you can filter your search by both type and tier at the same time!",
+        "Many pages let you open up Bulbapedia! Just look for the minimized appbar at the bottom.",
+        "Web scraping is hard! If you find an entry that looks wrong, email the developer and help him fix it!",
+        "Blissey has an HP base stat of 255, the highest possible base stat!",
+        "Shuckle takes the record for highest defense and special defense base stats, both being 230!",
+        "Pokemon with multiple forms are all listed seperately for ease of searching!",
+        "This app has a beta! Email the dev for information on how to join!",
+        "The app is open-source! Swipe up on the appbar and open the 'about + credits' page if you want to learn more.",
+        "You can swipe these annoying toast prompts away!",
+        "The developer's favorite Pokemon is Haunter!",
+        "On the Move page, tapping on the move's type will bring you to the Type page with fields filled in!",
+        "Some colors in the app depend on your accent color, while others depends on Type colors!",
+        "The app also looks fantastic with your phone's Light theme!",
+        "If you have any suggestions for the app, you should email the developer!",
+        "This app has voice commands! Try holding down your home button and saying 'Smogon, search for Gardevoir'!"
+      };
+
+      var rnd = new Random();
+
+      if (rnd.Next(5) > 1) return;
+
+      var tip = tips[rnd.Next(tips.Length)];
+
+      var toast = new ToastPrompt
+      {
+        Title = "Did you know?",
+        Message = tip,
+        TextWrapping = TextWrapping.Wrap,
+      };
+
+      toast.Show();
     }
 
     private void setupNavigation()
@@ -362,6 +445,34 @@ namespace SmogonWP.ViewModel
           Text = "quicksearch",
           IconUri = new Uri("/Assets/AppBar/feature.search.png", UriKind.RelativeOrAbsolute),
           Command = new RelayCommand(onSearchButtonClicked)
+        },
+      };
+
+      var rateButton = new MenuButtonViewModel
+      {
+        Text = "rate app",
+        IconUri = new Uri("/Assets/AppBar/appbar.marketplace.png", UriKind.RelativeOrAbsolute),
+        Command = new RelayCommand(onRateButtonClicked)
+      };
+
+      if (!_settingsService.Load("hasrated", false)) MenuButtons.Add(rateButton);
+
+      MenuItems = new ObservableCollection<MenuItemViewModel>
+      {
+        new MenuItemViewModel
+        {
+          Text = "email developer",
+          Command = new RelayCommand(onEmailDevClicked)
+        },
+        new MenuItemViewModel
+        {
+          Text = "visit forum",
+          Command = new RelayCommand(onVisitForumClicked)
+        },
+        new MenuItemViewModel
+        {
+          Text = "about + credits",
+          Command = new RelayCommand(onCreditsClicked)
         }
       };
     }
@@ -391,7 +502,7 @@ namespace SmogonWP.ViewModel
         }
       };
     }
-    
+
     private async Task fetchSearchData()
     {
       var st = new Stopwatch();
@@ -414,7 +525,7 @@ namespace SmogonWP.ViewModel
       var moveTask = _dataService.FetchAllMovesAsync();
       var abilTask = _dataService.FetchAllAbilitiesAsync();
       var itemTask = _dataService.FetchAllItemsAsync();
-      
+
       try
       {
         await Task.WhenAll(pokeTask, moveTask, abilTask, itemTask);
@@ -423,7 +534,7 @@ namespace SmogonWP.ViewModel
         var move = await moveTask;
         var abil = await abilTask;
         var item = await itemTask;
-        
+
         DispatcherHelper.CheckBeginInvokeOnUI(() =>
         {
           _allSearchItems = new List<ISearchItem>()
@@ -440,16 +551,20 @@ namespace SmogonWP.ViewModel
       }
       catch (Exception)
       {
-          DispatcherHelper.CheckBeginInvokeOnUI(() => MessageBox.Show(
-            "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
-            "Oh no!", MessageBoxButton.OK));
+        DispatcherHelper.CheckBeginInvokeOnUI(() => MessageBox.Show(
+          "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",
+          "Oh no!", MessageBoxButton.OK));
 
-          Debugger.Break();
+        Debugger.Break();
       }
 
-      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("fetchall"));
+      DispatcherHelper.CheckBeginInvokeOnUI(() =>
+      {
+        TrayService.RemoveJob("fetchall");
+        showTipOfTheDay();
+      });
     }
-    
+
     private void onNavItemSelected(NavigationItemViewModel item)
     {
       if (item == null) return;
@@ -467,6 +582,42 @@ namespace SmogonWP.ViewModel
     {
       IsSearchPanelOpen = true;
       IsAppBarOpen = false;
+    }
+
+    private void onRateButtonClicked()
+    {
+      _settingsService.Save("hasrated", true);
+
+      var mrt = new MarketplaceReviewTask();
+
+      mrt.Show();
+    }
+
+    private void onEmailDevClicked()
+    {
+      var ect = new EmailComposeTask
+      {
+        To = "jason@y2bd.me",
+        Subject = "SmogonWP Inquiry",
+        Body = "(please include your phone model with your email)"
+      };
+
+      ect.Show();
+    }
+
+    private void onVisitForumClicked()
+    {
+      var wbt = new WebBrowserTask
+      {
+        Uri = new Uri("https://smogonwp.reddit.com/", UriKind.Absolute)
+      };
+
+      wbt.Show();
+    }
+
+    private void onCreditsClicked()
+    {
+      _navigationService.Navigate(ViewModelLocator.CreditsPath);
     }
 
     private void onBackKeyPressed(CancelEventArgs e)
@@ -544,7 +695,7 @@ namespace SmogonWP.ViewModel
       var move = await movetask;
       var abil = await abiltask;
       var item = await itemtask;
-      
+
       DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
 
       var sel = poke.First(p => p.Name == "Gardevoir");

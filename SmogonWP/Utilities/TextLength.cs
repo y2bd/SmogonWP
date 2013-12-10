@@ -5,8 +5,8 @@ namespace SmogonWP.Utilities
 {
   public static class TextLength
   {
-    private const string FatChars = "mogw";
-    private const string WideChars = "abcdehknpqsuvxyz ";
+    private const string FatChars = "mgw";
+    private const string WideChars = "abcdehknppqsuvxyz ";
     private const string NarrowChars = "fijlrt-";
 
     public static int EstimateTextLength(string text)

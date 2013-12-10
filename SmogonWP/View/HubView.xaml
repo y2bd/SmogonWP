@@ -90,6 +90,7 @@
     <bindableApplicationBar:Bindable.ApplicationBar>
         <bindableApplicationBar:BindableApplicationBar x:Name="AppBar"
                                                        ButtonsSource="{Binding MenuButtons}"
+                                                       MenuItemsSource="{Binding MenuItems}"
                                                        IsVisible="{Binding IsAppBarOpen}" />
     </bindableApplicationBar:Bindable.ApplicationBar>
 
