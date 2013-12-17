@@ -40,11 +40,13 @@ namespace SmogonWP.ViewModel
       {
         RegisterIfUnregistered<IDataLoadingService, Design.DesignDataLoadingService>();
         RegisterIfUnregistered<ISchmogonDBClient, Design.DesignSchmogonDBClient>();
+        RegisterIfUnregistered<ISettingsService, Design.DesignSettingsService>();
       }
       else
       {
         RegisterIfUnregistered<IDataLoadingService, DataLoadingService>();
         RegisterIfUnregistered<ISchmogonDBClient, SchmogonDBClient>();
+        RegisterIfUnregistered<ISettingsService, SettingsService>();
       }
 
       RegisterIfUnregistered<SchmogonToolset>();
@@ -54,7 +56,6 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<TrayService>();
       SimpleIoc.Default.Register<IsolatedStorageService>();
       SimpleIoc.Default.Register<LiveTileService>();
-      SimpleIoc.Default.Register<SettingsService>();
 
       SimpleIoc.Default.Register<HomeViewModel>();
       SimpleIoc.Default.Register<HubViewModel>();

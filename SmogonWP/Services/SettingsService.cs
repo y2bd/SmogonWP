@@ -1,9 +1,18 @@
 ﻿using System;
 using System.IO.IsolatedStorage;
+using GalaSoft.MvvmLight;
 
 namespace SmogonWP.Services
 {
-  public class SettingsService
+  public interface ISettingsService
+  {
+    void Save(string key, object value, bool deferSave = false);
+    T Load<T>(string key, T defaultValue = default(T));
+    bool SettingRegistered(string key);
+    void UnregisterSetting(string key);
+  }
+
+  public class SettingsService : ISettingsService
   {
     private IsolatedStorageSettings _settings;
 

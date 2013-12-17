@@ -115,6 +115,7 @@
     <Compile Include="Converters\WidthPercentageConverter.cs" />
     <Compile Include="Design\DesignDataLoadingService.cs" />
     <Compile Include="Design\DesignSchmogonDBClient.cs" />
+    <Compile Include="Design\DesignSettingsService.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

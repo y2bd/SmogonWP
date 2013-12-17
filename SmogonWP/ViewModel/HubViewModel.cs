@@ -1,5 +1,4 @@
-﻿using System.Windows.Controls;
-using Coding4Fun.Toolkit.Controls;
+﻿using Coding4Fun.Toolkit.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
@@ -36,7 +35,7 @@ namespace SmogonWP.ViewModel
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
     private readonly LiveTileService _tileService;
-    private readonly SettingsService _settingsService;
+    private readonly ISettingsService _settingsService;
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokeSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Ability>> _abilSearchSender;
@@ -289,7 +288,7 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, LiveTileService tileService, SettingsService settingsService)
+    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, LiveTileService tileService, ISettingsService settingsService)
     {
       _navigationService = navigationService;
       _dataService = dataService;
@@ -307,7 +306,8 @@ namespace SmogonWP.ViewModel
       initializeVCD();
       scheduleSearchDataFetch();
 
-      showWelcomePopup();
+      if (!IsInDesignMode)
+        showWelcomePopup();
     }
 
     private void showWelcomePopup()

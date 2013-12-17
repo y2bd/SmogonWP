@@ -279,9 +279,12 @@ namespace SmogonWP.ViewModel
 
     private void onOpenSmogonPressed()
     {
+      // damn hidden power
+      var pl = _pageLocation.Contains("hidden_power") ? "/bw/moves/hidden_power" : _pageLocation;
+
       var wbt = new WebBrowserTask
       {
-        Uri = new Uri(SmogonPrefix + _pageLocation)
+        Uri = new Uri(SmogonPrefix + pl)
       };
 
       wbt.Show();
