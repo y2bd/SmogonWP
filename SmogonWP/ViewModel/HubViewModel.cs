@@ -1,7 +1,9 @@
-﻿using Coding4Fun.Toolkit.Controls;
+﻿using System.IO;
+using Coding4Fun.Toolkit.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
+using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
 using SchmogonDB;
@@ -13,6 +15,7 @@ using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
+using SmogonWP.Utilities;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 using System;
@@ -280,6 +283,16 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private RelayCommand<NavigationItemViewModel> _pinToStartCommand;
+    public RelayCommand<NavigationItemViewModel> PinToStartCommand
+    {
+      get
+      {
+        return _pinToStartCommand ??
+               (_pinToStartCommand = new RelayCommand<NavigationItemViewModel>(onPinToStart));
+      }
+    }
+
     #endregion commands
 
     #region async handlers
@@ -461,12 +474,12 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       {
         new MenuItemViewModel
         {
-          Text = "email developer",
+          Text = "email developer...",
           Command = new RelayCommand(onEmailDevClicked)
         },
         new MenuItemViewModel
         {
-          Text = "visit forum",
+          Text = "visit forum...",
           Command = new RelayCommand(onVisitForumClicked)
         },
         new MenuItemViewModel
@@ -674,6 +687,55 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
       IsSearchPanelOpen = false;
       IsAppBarOpen = true;
+    }
+
+    private void onPinToStart(NavigationItemViewModel nivm)
+    {
+      if (IsInDesignMode) return;
+
+      var uri = new Uri(nivm.NavigationPath, UriKind.RelativeOrAbsolute);
+
+      // don't create a tile if we already have one
+      if (findExistingTile(uri) != null)
+      {
+        var already = new ToastPrompt
+        {
+          Title = "Sorry!",
+          Message = "You already pinned this to your start screen!"
+        };
+
+        already.Show();
+
+        return;
+      }
+
+      var name = TextUtils.ToTitleCase(nivm.Title);
+
+      var iconName = Path.GetFileName(nivm.IconPath) ?? "pokeball2.png";
+
+      var iconUri = new Uri(Path.Combine("/Assets/Tiles/Secondary/", iconName), UriKind.RelativeOrAbsolute);
+
+      var tileData = createSecondaryTileData(name, iconUri);
+
+      ShellTile.Create(uri, tileData);
+    }
+
+    private ShellTile findExistingTile(Uri uri)
+    {
+      return ShellTile.ActiveTiles.FirstOrDefault(t => t.NavigationUri.Equals(uri));
+    }
+
+    private StandardTileData createSecondaryTileData(string title, Uri iconUri)
+    {
+      var tileData = new StandardTileData
+      {
+        Title = title ?? string.Empty,
+        BackgroundImage = iconUri ?? new Uri("", UriKind.Relative),
+        BackTitle = "SmogonWP",
+        BackBackgroundImage = iconUri ?? new Uri("", UriKind.Relative)
+      };
+
+      return tileData;
     }
 
     private async Task testDB()

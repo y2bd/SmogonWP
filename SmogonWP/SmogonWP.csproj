@@ -152,7 +152,7 @@
     <Compile Include="Utilities\LinqUtils.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
     <Compile Include="Utilities\StatCalculator.cs" />
-    <Compile Include="Utilities\TextLength.cs" />
+    <Compile Include="Utilities\TextUtils.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />
     <Compile Include="ViewModel\AbilityDataViewModel.cs" />
     <Compile Include="ViewModel\AbilitySearchViewModel.cs" />
@@ -314,6 +314,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Tiles\Secondary\Thumbs.db" />
     <None Include="GenericVCD.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <CustomToolNamespace>SmogonWP.Templates</CustomToolNamespace>
@@ -321,6 +322,13 @@
     </None>
     <None Include="packages.config" />
     <Content Include="Assets\AppBar\appbar.marketplace.png" />
+    <Content Include="Assets\Tiles\Secondary\calc.png" />
+    <Content Include="Assets\Tiles\Secondary\conflict.png" />
+    <Content Include="Assets\Tiles\Secondary\fire.png" />
+    <Content Include="Assets\Tiles\Secondary\idea.png" />
+    <Content Include="Assets\Tiles\Secondary\pill.png" />
+    <Content Include="Assets\Tiles\Secondary\pokeball2.png" />
+    <Content Include="Assets\Tiles\Secondary\smile.png" />
     <Content Include="pokemon.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

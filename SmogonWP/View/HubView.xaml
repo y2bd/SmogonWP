@@ -56,6 +56,14 @@
                                    TextWrapping="Wrap" />
                     </StackPanel>
                 </Grid>
+
+                <toolkit:ContextMenuService.ContextMenu>
+                    <toolkit:ContextMenu>
+                        <toolkit:MenuItem Header="pin to start"
+                                          Command="{Binding Hub.PinToStartCommand, Source={StaticResource Locator}}"
+                                          CommandParameter="{Binding}" />
+                    </toolkit:ContextMenu>
+                </toolkit:ContextMenuService.ContextMenu>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="QuickSearchItemTemplate">
@@ -99,7 +107,7 @@
                                  IsVisible="{Binding Path=TrayService.IsLoading}"
                                  Text="{Binding Path=TrayService.CurrentMessage}" />
     </shell:SystemTray.ProgressIndicator>
-    
+
     <!--LayoutRoot contains the root grid where all other page content is placed-->
     <Grid x:Name="LayoutRoot">
         <i:Interaction.Triggers>
@@ -113,7 +121,7 @@
                 <ec:GoToStateAction x:Name="ShowSearchPanel"
                                     StateName="Visible" />
             </ec:DataTrigger>
-            
+
             <i:EventTrigger EventName="Loaded">
                 <ec:GoToStateAction x:Name="TriggerBaseState"
                                     StateName="Collapsed" />
@@ -194,10 +202,11 @@
 						<Run Text="strategydex" />
                     </TextBlock>
                     <controls:BindableLongListSelector x:Name="StratNavItemList"
-                                                   ItemsSource="{Binding StratNavItems}"
-                                                   SelectedItem="{Binding SelectedStratItem, Mode=TwoWay}"
-                                                   ItemTemplate="{StaticResource NavItemTemplate}"
-                                                   toolkit:TurnstileFeatherEffect.FeatheringIndex="2" />
+                                                       ItemsSource="{Binding StratNavItems}"
+                                                       SelectedItem="{Binding SelectedStratItem, Mode=TwoWay}"
+                                                       ItemTemplate="{StaticResource NavItemTemplate}"
+                                                       toolkit:TurnstileFeatherEffect.FeatheringIndex="2"
+                                                       Style="{StaticResource LLSFloatingScrollbarStyle}" />
                 </StackPanel>
             </phone:PanoramaItem>
 
@@ -211,10 +220,11 @@
 						<Run Text="tools" />
                     </TextBlock>
                     <controls:BindableLongListSelector x:Name="ToolNavItemList"
-                                                   ItemsSource="{Binding ToolNavItems}"
-                                                   SelectedItem="{Binding SelectedToolItem, Mode=TwoWay}"
-                                                   ItemTemplate="{StaticResource NavItemTemplate}"
-                                                   toolkit:TurnstileFeatherEffect.FeatheringIndex="2" />
+                                                       ItemsSource="{Binding ToolNavItems}"
+                                                       SelectedItem="{Binding SelectedToolItem, Mode=TwoWay}"
+                                                       ItemTemplate="{StaticResource NavItemTemplate}"
+                                                       toolkit:TurnstileFeatherEffect.FeatheringIndex="2"
+                                                       Style="{StaticResource LLSFloatingScrollbarStyle}" />
                 </StackPanel>
             </phone:PanoramaItem>
         </phone:Panorama>
@@ -272,13 +282,13 @@
                 </toolkit:PhoneTextBox>
             </StackPanel>
             <controls:BindableLongListSelector x:Name="QuickSearchList"
-                                           Grid.Row="2"
-                                           Margin="12,0,12,0"
-                                           Style="{StaticResource LLSFloatingScrollbarStyle}"
-                                           ItemsSource="{Binding FilteredSearchItems}"
-                                           SelectedItem="{Binding SelectedSearchItem, Mode=TwoWay}"
-                                           ItemTemplate="{StaticResource QuickSearchItemTemplate}" 
-                                           toolkit:TiltEffect.IsTiltEnabled="True"/>
+                                               Grid.Row="2"
+                                               Margin="12,0,12,0"
+                                               Style="{StaticResource LLSFloatingScrollbarStyle}"
+                                               ItemsSource="{Binding FilteredSearchItems}"
+                                               SelectedItem="{Binding SelectedSearchItem, Mode=TwoWay}"
+                                               ItemTemplate="{StaticResource QuickSearchItemTemplate}"
+                                               toolkit:TiltEffect.IsTiltEnabled="True" />
         </Grid>
     </Grid>
 

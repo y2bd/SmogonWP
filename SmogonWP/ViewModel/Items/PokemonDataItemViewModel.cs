@@ -70,7 +70,7 @@ namespace SmogonWP.ViewModel.Items
     {
       Data = data;
 
-      Abilities = Data.Abilities.OrderByDescending(a => TextLength.EstimateTextLength(a.Name)).Select((a, i) => new AbilityItemViewModel(a, i)).ToList();
+      Abilities = Data.Abilities.OrderByDescending(a => TextUtils.EstimateTextLength(a.Name)).Select((a, i) => new AbilityItemViewModel(a, i)).ToList();
       Types = Data.Types.Select(t => new TypeItemViewModel(t)).ToList();
       Moves = Data.Moves.Select(m => new MoveItemViewModel(m)).ToList();
 
