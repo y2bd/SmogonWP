@@ -278,5 +278,12 @@ namespace SmogonWP.Design
     {
       await Task.Delay(0);
     }
+
+    public async Task<IEnumerable<ITextElement>> FetchTextElementsAsync(string ownerId, SchmogonDB.Population.OwnerType ownerType, SchmogonDB.Population.ElementType elementType)
+    {
+      await Task.Delay(0);
+
+      return new List<ITextElement>();
+    }
   }
 }

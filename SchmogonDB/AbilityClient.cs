@@ -41,8 +41,8 @@ namespace SchmogonDB
 
     public async Task<AbilityData> FetchAbilityDataAsync(Ability ability)
     {
-      var desc = await fetchTextElements(ability.Name, OwnerType.Ability, ElementType.Description);
-      var comp = await fetchTextElements(ability.Name, OwnerType.Ability, ElementType.Competitive);
+      var desc = await FetchTextElementsAsync(ability.Name, OwnerType.Ability, ElementType.Description);
+      var comp = await FetchTextElementsAsync(ability.Name, OwnerType.Ability, ElementType.Competitive);
 
       return new AbilityData(
         ability.Name,

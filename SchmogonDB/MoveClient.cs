@@ -75,8 +75,8 @@ namespace SchmogonDB
     {
       // that dang hidden power
       var name = move.Name.Contains("Hidden Power") ? "Hidden Power" : move.Name;
-      var desc = await fetchTextElements(name, OwnerType.Move, ElementType.Description);
-      var comp = await fetchTextElements(name, OwnerType.Move, ElementType.Competitive);
+      var desc = await FetchTextElementsAsync(name, OwnerType.Move, ElementType.Description);
+      var comp = await FetchTextElementsAsync(name, OwnerType.Move, ElementType.Competitive);
       var stat = await fetchMoveStats(move);
       var relm = await fetchRelatedMoves(move);
       

@@ -1,28 +1,19 @@
-﻿using Newtonsoft.Json;
-
-namespace SchmogonDB.Model.Stats
+﻿namespace SchmogonDB.Model.Stats
 {
   public struct BaseStat
   {
-    [JsonProperty("HP")]
-    public int HP { get; internal set; }
+    public int HP { get; set; }
 
-    [JsonProperty("Attack")]
-    public int Attack { get; internal set; }
+    public int Attack { get; set; }
 
-    [JsonProperty("Defense")]
-    public int Defense { get; internal set; }
+    public int Defense { get; set; }
 
-    [JsonProperty("SpecialAttack")]
-    public int SpecialAttack { get; internal set; }
+    public int SpecialAttack { get; set; }
 
-    [JsonProperty("SpecialDefense")]
-    public int SpecialDefense { get; internal set; }
+    public int SpecialDefense { get; set; }
 
-    [JsonProperty("Speed")]
-    public int Speed { get; internal set; }
+    public int Speed { get; set; }
 
-    [JsonIgnore]
     public int BaseStatTotal
     {
       get
@@ -40,7 +31,7 @@ namespace SchmogonDB.Model.Stats
       SpecialDefense = specialDefense;
       Speed = speed;
     }
-
+    
     public override string ToString()
     {
       return string.Format("{0} / {1} / {2} / {3} / {4} / {5}", 

@@ -41,8 +41,8 @@ namespace SchmogonDB
 
     public async Task<ItemData> FetchItemDataAsync(Item item)
     {
-      var desc = await fetchTextElements(item.Name, OwnerType.Item, ElementType.Description);
-      var comp = await fetchTextElements(item.Name, OwnerType.Item, ElementType.Competitive);
+      var desc = await FetchTextElementsAsync(item.Name, OwnerType.Item, ElementType.Description);
+      var comp = await FetchTextElementsAsync(item.Name, OwnerType.Item, ElementType.Competitive);
 
       return new ItemData(
         item.Name,

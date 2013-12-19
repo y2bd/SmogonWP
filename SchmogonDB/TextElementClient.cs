@@ -20,7 +20,7 @@ namespace SchmogonDB
           AND te.ElementType = @elementType
         GROUP BY te.id";
 
-    private async Task<IEnumerable<ITextElement>> fetchTextElements(
+    public async Task<IEnumerable<ITextElement>> FetchTextElementsAsync(
       string ownerId, 
       OwnerType ownerType,
       ElementType elementType)

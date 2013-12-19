@@ -2,6 +2,12 @@
 {
   public class Ability : ISearchItem
   {
+    public string Name { get; set; }
+
+    public string Description { get; set; }
+
+    public string PageLocation { get; set; }
+
     public Ability(string name, string description, string pageLocation)
     {
       Name = name;
@@ -9,11 +15,7 @@
       PageLocation = pageLocation;
     }
 
-    public string Name { get; private set; }
-
-    public string Description { get; private set; }
-
-    public string PageLocation { get; private set; }
+    public Ability() {}
 
     public override string ToString()
     {

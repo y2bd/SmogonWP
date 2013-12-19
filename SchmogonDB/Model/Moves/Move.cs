@@ -4,21 +4,25 @@ namespace SchmogonDB.Model.Moves
 {
   public class Move : ISearchItem
   {
+    public string Name { get; set; }
+
+    public string Description { get; set; }
+
+    public string PageLocation { get; set; }
+
+    public Type Type { get; set; }
+
     public Move(string name, string description, string pageLocation, Type type)
     {
-      PageLocation = pageLocation;
-      Description = description;
       Name = name;
+      Description = description;
+      PageLocation = pageLocation;
       Type = type;
     }
 
-    public string Name { get; private set; }
-
-    public string Description { get; private set; }
-
-    public string PageLocation { get; private set; }
-
-    public Type Type { get; private set; }
+    public Move()
+    {
+    }
 
     public override string ToString()
     {

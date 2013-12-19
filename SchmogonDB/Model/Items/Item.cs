@@ -2,9 +2,9 @@
 {
   public class Item : ISearchItem
   {
-    public string Name { get; private set; }
-    public string Description { get; private set; }
-    public string PageLocation { get; private set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string PageLocation { get; set; }
 
     public Item(string name, string description, string pageLocation)
     {
@@ -12,6 +12,8 @@
       Description = description;
       PageLocation = pageLocation;
     }
+
+    public Item() {}
 
     public override string ToString()
     {

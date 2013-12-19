@@ -23,5 +23,6 @@ namespace SchmogonDB.Model.Moves
     public IEnumerable<ITextElement> Competitive { get; private set; }
 
     public IEnumerable<Move> RelatedMoves { get; private set; }
+
   }
 }

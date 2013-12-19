@@ -24,7 +24,7 @@ namespace SchmogonDB.Model.Pokemon
     public IEnumerable<IEnumerable<Move>> Moves { get; set; }
 
     public BaseStat EVSpread { get; set; }
-
+    
     public ICollection<ITextElement> Description { get; set; }
 
     public override string ToString()

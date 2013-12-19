@@ -129,9 +129,9 @@ namespace SchmogonDB
       var spritePath = await fetchPokemonSpritePath(pokemon);
 
       var movepool = await fetchPokemonMoves(pokemon);
-      var overview = await fetchTextElements(pokemon.Name, OwnerType.Pokemon, ElementType.Description);
-      var options = await fetchTextElements(pokemon.Name, OwnerType.Pokemon, ElementType.Options);
-      var counters = await fetchTextElements(pokemon.Name, OwnerType.Pokemon, ElementType.Counters);
+      var overview = await FetchTextElementsAsync(pokemon.Name, OwnerType.Pokemon, ElementType.Description);
+      var options = await FetchTextElementsAsync(pokemon.Name, OwnerType.Pokemon, ElementType.Options);
+      var counters = await FetchTextElementsAsync(pokemon.Name, OwnerType.Pokemon, ElementType.Counters);
 
       var movesets = await fetchMovesets(pokemon);
 
@@ -209,7 +209,7 @@ namespace SchmogonDB
 
         var mid = statement.GetIntAt(11);
 
-        var desc = await fetchTextElements(mid.ToString(CultureInfo.InvariantCulture), OwnerType.Moveset, ElementType.Description);
+        var desc = await FetchTextElementsAsync(mid.ToString(CultureInfo.InvariantCulture), OwnerType.Moveset, ElementType.Description);
 
         movesets.Add(
           new Moveset

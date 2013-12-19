@@ -7,17 +7,17 @@ namespace SchmogonDB.Model.Pokemon
 {
   public class Pokemon : ISearchItem
   {
-    public string Name { get; private set; }
+    public string Name { get; set; }
 
-    public IEnumerable<Type> Types { get; private set; } 
+    public IEnumerable<Type> Types { get; set; } 
 
-    public Tier Tier { get; private set; }
+    public Tier Tier { get; set; }
 
-    public IEnumerable<Ability> Abilities { get; private set; } 
+    public IEnumerable<Ability> Abilities { get; set; } 
 
-    public BaseStat BaseStats { get; private set; }
+    public BaseStat BaseStats { get; set; }
 
-    public string PageLocation { get; private set; }
+    public string PageLocation { get; set; }
 
     public Pokemon(string name, IEnumerable<Type> types, Tier tier, IEnumerable<Ability> abilities, BaseStat baseStats, string pageLocation)
     {
