@@ -35,6 +35,7 @@ namespace SmogonWP.ViewModel
 
     private readonly IDataLoadingService _dataService;
     private readonly SimpleNavigationService _navigationService;
+    private readonly TombstoneService _tombstoneService;
 
     private readonly MessageReceiver<ItemSearchedMessage<Pokemon>> _pokemonSearchReceiver;
     private readonly MessageSender<PokemonTypeSelectedMessage> _pokemonTypeSelectedSender;
@@ -44,9 +45,12 @@ namespace SmogonWP.ViewModel
     
     private string _pageLocation;
 
+    // used for tombstoning
+    private Pokemon _rawPokemon;
+
     #region props
 
-    private string _name;
+    private string _name = string.Empty;
     public string Name
     {
       get
@@ -215,11 +219,12 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public PokemonDataViewModel(IDataLoadingService dataService, SimpleNavigationService navigationService, TrayService trayService)
+    public PokemonDataViewModel(IDataLoadingService dataService, SimpleNavigationService navigationService, TrayService trayService, TombstoneService tombstoneService)
     {
       _dataService = dataService;
       _navigationService = navigationService;
       _trayService = trayService;
+      _tombstoneService = tombstoneService;
 
       _pokemonSearchReceiver = new MessageReceiver<ItemSearchedMessage<Pokemon>>(onPokemonSearched, true);
       _pokemonTypeSelectedSender = new MessageSender<PokemonTypeSelectedMessage>();
@@ -233,6 +238,9 @@ namespace SmogonWP.ViewModel
       }
 
       setupAppBar();
+
+      MessengerInstance.Register(this, new Action<TombstoneMessage<PokemonDataViewModel>>(m => tombstone()));
+      MessengerInstance.Register(this, new Action<RestoreMessage<PokemonDataViewModel>>(m => restore()));
     }
 
     #region event handlers
@@ -353,6 +361,8 @@ namespace SmogonWP.ViewModel
     {
       TrayService.AddJob("fetchdata", "Fetching pokemon data...");
 
+      _rawPokemon = pokemon;
+
       Sprite = null;
 
       PokemonData pokemonData;
@@ -384,13 +394,6 @@ namespace SmogonWP.ViewModel
       TrayService.RemoveJob("fetchdata");
     }
     
-    private void cleanup()
-    {
-      PDVM = null;
-      FetchPokemonDataNotifier = null;
-      TrayService.RemoveAllJobs();
-    }
-
     private async Task fetchThumbnailImage(string path)
     {
       Stream s;
@@ -414,6 +417,36 @@ namespace SmogonWP.ViewModel
     private void thumbnailFetchFaulted(Task t)
     {
       var ex = t.Exception;
+    }
+
+    private void cleanup()
+    {
+      PDVM = null;
+      FetchPokemonDataNotifier = null;
+      TrayService.RemoveAllJobs();
+    }
+
+    private async void tombstone()
+    {
+      if (_rawPokemon != null)
+        await _tombstoneService.Store("ts_pokemon", _rawPokemon);
+
+      Debug.WriteLine("Done tombstoning Pokemon");
+
+      //await _tombstoneService.Save();
+    }
+
+    private async void restore()
+    {
+      if (PDVM != null) return;
+
+      var loaded = await _tombstoneService.Load<Pokemon>("ts_pokemon");
+
+      if (loaded != null)
+      {
+        Name = loaded.Name;
+        SchedulePokemonFetch(loaded);
+      }
     }
   }
 }

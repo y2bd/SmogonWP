@@ -25,15 +25,18 @@ namespace SmogonWP.ViewModel
     private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
 
     private readonly IDataLoadingService _dataService;
+    private readonly TombstoneService _tombstoneService;
 
     private readonly MessageReceiver<ItemSearchedMessage<Ability>> _abilitySearchReceiver;
     private readonly MessageReceiver<ItemSelectedMessage<Ability>> _pokemonAbilitySelectedReceiver; 
     
     private string _pageLocation;
 
+    private Ability _rawAbility;
+
     #region props
 
-    private string _name;
+    private string _name = string.Empty;
     public string Name
     {
       get
@@ -123,10 +126,11 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public AbilityDataViewModel(IDataLoadingService dataService, TrayService trayService)
+    public AbilityDataViewModel(IDataLoadingService dataService, TrayService trayService, TombstoneService tombstoneService)
     {
       _dataService = dataService;
       _trayService = trayService;
+      _tombstoneService = tombstoneService;
 
       _abilitySearchReceiver = new MessageReceiver<ItemSearchedMessage<Ability>>(onAbilitySearched, true);
       _pokemonAbilitySelectedReceiver = new MessageReceiver<ItemSelectedMessage<Ability>>(onPokemonAbilitySelected, true);
@@ -137,6 +141,9 @@ namespace SmogonWP.ViewModel
       }
 
       setupAppBar();
+
+      MessengerInstance.Register(this, new Action<TombstoneMessage<AbilityDataViewModel>>(m => tombstone()));
+      MessengerInstance.Register(this, new Action<RestoreMessage<AbilityDataViewModel>>(m => restore()));
     }
 
     #region event handlers
@@ -237,7 +244,9 @@ namespace SmogonWP.ViewModel
     private async Task fetchAbilityData(Ability ability)
     {
       TrayService.AddJob("fetchdata", "Fetching ability data...");
-      
+
+      _rawAbility = ability;
+
       AbilityData abilityData;
 
       try
@@ -270,6 +279,27 @@ namespace SmogonWP.ViewModel
       ADVM = null;
       FetchAbilityDataNotifier = null;
       TrayService.RemoveAllJobs();
+    }
+
+    private async void tombstone()
+    {
+      if (_rawAbility != null)
+        await _tombstoneService.Store("ts_ability", _rawAbility);
+
+      //await _tombstoneService.Save();
+    }
+
+    private async void restore()
+    {
+      if (ADVM != null) return;
+
+      var loaded = await _tombstoneService.Load<Ability>("ts_ability");
+
+      if (loaded != null)
+      {
+        Name = loaded.Name;
+        scheduleAbilityFetch(loaded);
+      }
     }
   }
 }

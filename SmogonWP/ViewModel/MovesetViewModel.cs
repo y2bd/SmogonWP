@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ServiceModel.Channels;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using SchmogonDB;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
 using SchmogonDB.Model.Moves;
@@ -23,11 +26,12 @@ namespace SmogonWP.ViewModel
   public class MovesetViewModel : ViewModelBase
   {
     private readonly SimpleNavigationService _navigationService;
+    private readonly TombstoneService _tombstoneService;
 
     private readonly MessageReceiver<ItemSelectedMessage<MovesetItemViewModel>> _movesetSelectedReceiver;
     private readonly MessageSender<ItemSelectedMessage<Ability>> _abilitySelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Nature>> _natureSelectedSender;
-    private readonly MessageSender<ItemSelectedMessage<Item>> _itemSelectedSender;  
+    private readonly MessageSender<ItemSelectedMessage<Item>> _itemSelectedSender;
     private readonly MessageSender<ItemSelectedMessage<Move>> _moveSelectedSender;
     private readonly MessageSender<MovesetCalculatedMessage> _movesetCalculatedSender;
 
@@ -47,6 +51,7 @@ namespace SmogonWP.ViewModel
 
           RaisePropertyChanged(() => Name);
           RaisePropertyChanged(() => OwnerName);
+
         }
       }
     }
@@ -55,7 +60,7 @@ namespace SmogonWP.ViewModel
     {
       get
       {
-        return MSIVM.Data.Name.ToUpperInvariant();
+        return MSIVM == null ? string.Empty : MSIVM.Data.Name.ToUpperInvariant();
       }
     }
 
@@ -63,7 +68,7 @@ namespace SmogonWP.ViewModel
     {
       get
       {
-        return MSIVM.OwnerName.ToUpperInvariant();
+        return MSIVM == null ? string.Empty : MSIVM.OwnerName.ToUpperInvariant();
       }
     }
 
@@ -158,11 +163,12 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => MenuButtons);
         }
       }
-    }			
+    }
 
-    public MovesetViewModel(SimpleNavigationService navigationService)
+    public MovesetViewModel(SimpleNavigationService navigationService, TombstoneService tombstoneService)
     {
       _navigationService = navigationService;
+      _tombstoneService = tombstoneService;
 
       _movesetSelectedReceiver = new MessageReceiver<ItemSelectedMessage<MovesetItemViewModel>>(onMovesetSelected, true);
 
@@ -217,6 +223,9 @@ namespace SmogonWP.ViewModel
       #endregion design data
 
       setupAppBar();
+
+      MessengerInstance.Register(this, new Action<TombstoneMessage<MovesetViewModel>>(m => tombstone()));
+      MessengerInstance.Register(this, new Action<RestoreMessage<MovesetViewModel>>(m => restore()));
     }
 
     private void setupAppBar()
@@ -280,5 +289,121 @@ namespace SmogonWP.ViewModel
       _moveSelectedSender.SendMessage(new ItemSelectedMessage<Move>(gmivm.Move));
       _navigationService.Navigate(ViewModelLocator.MoveDataPath);
     }
+
+    private async void tombstone()
+    {
+      if (MSIVM != null)
+      {
+        var sms = SerializeableMoveset.FromMoveset(MSIVM.Data, MSIVM.OwnerName);
+
+        await _tombstoneService.Store("ts_moveset", sms);
+      }
+
+      //await _tombstoneService.Save();
+    }
+
+    private async void restore()
+    {
+      if (MSIVM != null) return;
+
+      var loaded = await _tombstoneService.Load<SerializeableMoveset>("ts_moveset");
+
+      if (loaded != null)
+      {
+        var ownerName = loaded.OwnerName;
+        var ms = loaded.ToMoveset();
+
+        MSIVM = new MovesetItemViewModel(ownerName, ms);
+      }
+    }
+
+    #region serialization
+    public class SerializeableMoveset : Moveset
+    {
+      public new ICollection<SerializeableTextElement> Description { get; set; }
+
+      public string OwnerName { get; set; }
+      
+      public Moveset ToMoveset()
+      {
+        return new Moveset
+        {
+          Name = this.Name,
+          Items = this.Items,
+          Abilities = this.Abilities,
+          Natures = this.Natures,
+          Moves = this.Moves,
+          EVSpread = this.EVSpread,
+          Description = this.Description.Select(SerializeableTextElement.ConvertBack).ToList()
+        };
+      }
+
+      public static SerializeableMoveset FromMoveset(Moveset ms, string ownerName)
+      {
+        return new SerializeableMoveset
+        {
+          OwnerName = ownerName,
+          Name = ms.Name,
+          Items = ms.Items,
+          Abilities = ms.Abilities,
+          Natures = ms.Natures,
+          Moves = ms.Moves,
+          EVSpread = ms.EVSpread,
+          Description = ms.Description.Select(SerializeableTextElement.Convert).ToList()
+        };
+      }
+    }
+
+    [KnownType(typeof(SerializeableParagraph))]
+    [KnownType(typeof(SerializeableUnorderedList))]
+    public abstract class SerializeableTextElement
+    {
+      public static SerializeableTextElement Convert(ITextElement t)
+      {
+        var paragraph = t as Paragraph;
+        if (paragraph != null)
+        {
+          return new SerializeableParagraph { Content = paragraph.Content };
+        }
+
+        var list = t as UnorderedList;
+        if (list != null)
+        {
+          return new SerializeableUnorderedList { Elements = list.Elements };
+        }
+
+        return null;
+      }
+
+      public static ITextElement ConvertBack(SerializeableTextElement t)
+      {
+        var paragraph = t as SerializeableParagraph;
+        if (paragraph != null)
+        {
+          return new Paragraph { Content = paragraph.Content };
+        }
+
+        var list = t as SerializeableUnorderedList;
+        if (list != null)
+        {
+          return new UnorderedList { Elements = list.Elements };
+        }
+
+        return null;
+      }
+    }
+
+    public class SerializeableParagraph : SerializeableTextElement
+    {
+      public string Content { get; set; }
+    }
+
+    public class SerializeableUnorderedList : SerializeableTextElement
+    {
+      public IEnumerable<string> Elements { get; set; }
+    }
+    #endregion serialization
   }
+
+
 }

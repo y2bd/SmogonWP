@@ -10,6 +10,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
+using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
 using SmogonWP.Messages;
 using SmogonWP.Services;
@@ -25,15 +26,18 @@ namespace SmogonWP.ViewModel
     private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
 
     private readonly IDataLoadingService _dataService;
+    private readonly TombstoneService _tombstoneService;
 
     private readonly MessageReceiver<ItemSearchedMessage<Item>> _itemSearchReceiver;
     private readonly MessageReceiver<ItemSelectedMessage<Item>> _pokemonItemSelectedReceiver; 
     
     private string _pageLocation;
 
+    private Item _rawItem;
+
     #region props
 
-    private string _name;
+    private string _name = string.Empty;
     public string Name
     {
       get
@@ -109,10 +113,11 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public ItemDataViewModel(IDataLoadingService dataService, TrayService trayService)
+    public ItemDataViewModel(IDataLoadingService dataService, TrayService trayService, TombstoneService tombstoneService)
     {
       _dataService = dataService;
       _trayService = trayService;
+      _tombstoneService = tombstoneService;
 
       _itemSearchReceiver = new MessageReceiver<ItemSearchedMessage<Item>>(onItemSearched, true);
       _pokemonItemSelectedReceiver = new MessageReceiver<ItemSelectedMessage<Item>>(onPokemonItemSelected, true);
@@ -123,6 +128,9 @@ namespace SmogonWP.ViewModel
       }
 
       setupAppBar();
+
+      MessengerInstance.Register(this, new Action<TombstoneMessage<ItemDataViewModel>>(m => tombstone()));
+      MessengerInstance.Register(this, new Action<RestoreMessage<ItemDataViewModel>>(m => restore()));
     }
 
     #region event handlers
@@ -218,6 +226,8 @@ namespace SmogonWP.ViewModel
     private async Task fetchItemData(Item item)
     {
       TrayService.AddJob("fetchdata", "Fetching item data...");
+
+      _rawItem = item;
       
       ItemData itemData;
 
@@ -251,6 +261,27 @@ namespace SmogonWP.ViewModel
       IDVM = null;
       FetchItemDataNotifier = null;
       TrayService.RemoveAllJobs();
+    }
+
+    private async void tombstone()
+    {
+      if (_rawItem != null)
+        await _tombstoneService.Store("ts_item", _rawItem);
+
+      //await _tombstoneService.Save();
+    }
+
+    private async void restore()
+    {
+      if (IDVM != null) return;
+
+      var loaded = await _tombstoneService.Load<Item>("ts_item");
+
+      if (loaded != null)
+      {
+        Name = loaded.Name;
+        scheduleItemFetch(loaded);
+      }
     }
   }
 }

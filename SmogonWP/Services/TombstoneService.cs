@@ -1,20 +1,32 @@
-﻿using System;
-using System.IO.IsolatedStorage;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Nito.AsyncEx;
 
 namespace SmogonWP.Services
 {
   public class TombstoneService
   {
-    private IsolatedStorageSettings _store;
+    private readonly AsyncLock _aLock;
 
-    public TombstoneService()
+    private const string Filename = "settings.txt";
+
+    private readonly IsolatedStorageService _storageService;
+
+    private IDictionary<string, object> _store;
+
+    public TombstoneService(IsolatedStorageService storageService)
     {
-      getSettingsStore();
+      _storageService = storageService;
+
+      _aLock = new AsyncLock();
     }
 
-    public void Store(string key, object toSave)
+    public async Task Store(string key, object toSave)
     {
-      if (_store.Contains(key))
+      await LoadSettingsStoreAsync();
+      
+      if (_store.ContainsKey(key))
       {
         _store[key] = toSave;
       }
@@ -24,33 +36,56 @@ namespace SmogonWP.Services
       }
     }
 
-    public void Save()
+    public async Task Save()
     {
-      _store.Save();
+      await saveSettingsStore();
     }
 
-    public T Load<T>(string key)
+    public async Task<T> Load<T>(string key)
     {
-      T result;
+      await LoadSettingsStoreAsync();
 
-      if (!_store.TryGetValue(key, out result))
+      if (!_store.ContainsKey(key))
       {
-        result = default(T);
+        return default(T);
       }
 
-      return result;
+      var result = _store[key];
+
+      if (result == null) return default(T);
+
+      return (T)result;
     }
 
-    private void getSettingsStore()
+    public async Task LoadSettingsStoreAsync()
     {
-      try
+      using (await _aLock.LockAsync())
       {
-        _store = IsolatedStorageSettings.ApplicationSettings;
-      }
-      catch (Exception e)
-      {
-        throw new Exception("Failed to access ApplicationSettings.", e);
+        if (_store != null) return;
+
+        if (await _storageService.FileExistsAsync(Filename))
+        {
+          var content = await _storageService.ReadStringFromFileAsync(Filename);
+
+          var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects};
+
+          _store = await JsonConvert.DeserializeObjectAsync<IDictionary<string, object>>(content, settings);
+        }
+        else
+        {
+          _store = new Dictionary<string, object>();
+        }
       }
     }
+
+    private async Task saveSettingsStore()
+    {
+      var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects};
+
+      var cereal = await JsonConvert.SerializeObjectAsync(_store, Formatting.None, settings);
+
+      await _storageService.WriteStringToFileAsync(Filename, cereal);
+    }
+
   }
 }

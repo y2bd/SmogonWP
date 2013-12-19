@@ -29,6 +29,9 @@ namespace SchmogonDB.Model.Pokemon
       PageLocation = pageLocation;
     }
 
+    // for serial only!!
+    public Pokemon() {}
+
     public override string ToString()
     {
       return Name;

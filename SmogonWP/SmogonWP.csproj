@@ -124,8 +124,8 @@
     <Compile Include="Messages\MovesetCalculatedMessage.cs" />
     <Compile Include="Messages\PokemonTypeSelectedMessage.cs" />
     <Compile Include="Messages\ItemSelectedMessage.cs" />
-    <Compile Include="Messages\ViewToVMMessage.cs" />
-    <Compile Include="Messages\VMToViewMessage.cs" />
+    <Compile Include="Messages\TombstoneMessages.cs" />
+    <Compile Include="Messages\VMViewMessages.cs" />
     <Compile Include="Model\DefenseTypeGroup.cs" />
     <Compile Include="Model\MovesetGroup.cs" />
     <Compile Include="Model\OffenseTypeGroup.cs" />
@@ -433,6 +433,10 @@
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\portable-net45+wp80+win8\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Nito.AsyncEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=09d695329ca273b7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

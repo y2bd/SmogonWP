@@ -1,5 +1,4 @@
-﻿using System.IO;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
@@ -29,18 +28,22 @@ namespace SmogonWP.ViewModel
 
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
+    private readonly TombstoneService _tombstoneService; 
 
     private readonly MessageReceiver<ItemSearchedMessage<Move>> _moveSearchReceiver;
     private readonly MessageReceiver<ItemSelectedMessage<Move>> _pokemonMoveSelectedReceiver; 
     private readonly MessageSender<ItemSelectedMessage<Type>> _moveTypeSelectedSender; 
 
-    private readonly Stack<MoveDataItemViewModel> _moveStack;
+    private readonly Stack<MoveDataItemViewModel> _mdivmStack;
     
     private string _pageLocation;
 
+    // for serial
+    private Stack<Move> _moveStack; 
+
     #region props
 
-    private string _name;
+    private string _name = string.Empty;
     public string Name
     {
       get
@@ -176,24 +179,29 @@ namespace SmogonWP.ViewModel
 
     #endregion async handlers
 
-    public MoveDataViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService)
+    public MoveDataViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, TombstoneService tombstoneService)
     {
       _navigationService = navigationService;
       _dataService = dataService;
       _trayService = trayService;
+      _tombstoneService = tombstoneService;
+
+      _mdivmStack = new Stack<MoveDataItemViewModel>();
+      _moveStack = new Stack<Move>();
 
       _moveSearchReceiver = new MessageReceiver<ItemSearchedMessage<Move>>(onMoveSearched, true);
       _pokemonMoveSelectedReceiver = new MessageReceiver<ItemSelectedMessage<Move>>(onPokemonMoveSelected, true);
       _moveTypeSelectedSender = new MessageSender<ItemSelectedMessage<Type>>();
-
-      _moveStack = new Stack<MoveDataItemViewModel>();
-
+      
       if (IsInDesignMode || IsInDesignModeStatic)
       {
         FetchMoveDataNotifier = NotifyTaskCompletion.Create(fetchMoveData(null));
       }
 
       setupAppBar();
+
+      MessengerInstance.Register(this, new Action<TombstoneMessage<MoveDataViewModel>>(m => tombstone()));
+      MessengerInstance.Register(this, new Action<RestoreMessage<MoveDataViewModel>>(m => restore()));
     }
 
     #region event handlers
@@ -213,7 +221,7 @@ namespace SmogonWP.ViewModel
     private void onPokemonMoveSelected(ItemSelectedMessage<Move> msg)
     {
       // JUST IN CASE
-      if (_moveStack != null) _moveStack.Clear();
+      if (_mdivmStack != null) _mdivmStack.Clear();
 
       MDVM = null;
 
@@ -231,7 +239,7 @@ namespace SmogonWP.ViewModel
 
     private void onBackKeyPressed(CancelEventArgs args)
     {
-      if (_moveStack.Count <= 0)
+      if (_mdivmStack.Count <= 0)
       {
         return;
       }
@@ -239,8 +247,10 @@ namespace SmogonWP.ViewModel
       // stop from going to the last page
       args.Cancel = true;
 
-      MDVM = _moveStack.Pop();
+      MDVM = _mdivmStack.Pop();
       Name = MDVM.Name;
+
+      _moveStack.Pop();
     }
 
     private void onMoveTypeSelected()
@@ -330,6 +340,8 @@ namespace SmogonWP.ViewModel
     {
       TrayService.AddJob("fetchdata", "Fetching move data...");
       
+      _moveStack.Push(move);
+
       MoveData moveData;
 
       try
@@ -350,7 +362,10 @@ namespace SmogonWP.ViewModel
       }
 
       // push the current move onto the move stack if there is one
-      if (MDVM != null) _moveStack.Push(MDVM);
+      if (MDVM != null)
+      {
+        _mdivmStack.Push(MDVM);
+      }
 
       MDVM = new MoveDataItemViewModel(moveData);
       Name = MDVM.Name;
@@ -366,8 +381,35 @@ namespace SmogonWP.ViewModel
     {
       MDVM = null;
       FetchMoveDataNotifier = null;
-      _moveStack.Clear();
+      _mdivmStack.Clear();
       TrayService.RemoveAllJobs();
+    }
+
+    private async void tombstone()
+    {
+      // we're only going to store the most recent move
+      // sorry low-end devices
+      
+      if (_moveStack != null && _moveStack.Count > 0)
+      {
+        var toSave = _moveStack.Peek();
+        await _tombstoneService.Store("ts_move", toSave);
+      }
+
+      //await _tombstoneService.Save();
+    }
+
+    private async void restore()
+    {
+      if (MDVM != null) return;
+
+      var loaded = await _tombstoneService.Load<Move>("ts_move");
+
+      if (loaded != null)
+      {
+        Name = loaded.Name;
+        scheduleMoveFetch(loaded);
+      }
     }
   }
 }

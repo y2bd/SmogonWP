@@ -10,7 +10,10 @@ using Windows.Storage;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Microsoft.Practices.ServiceLocation;
 using SmogonWP.Resources;
+using SmogonWP.Services;
+using SmogonWP.ViewModel;
 
 namespace SmogonWP
 {
@@ -119,14 +122,18 @@ namespace SmogonWP
 
     // Code to execute when the application is activated (brought to foreground)
     // This code will not execute when the application is first launched
-    private void Application_Activated(object sender, ActivatedEventArgs e)
+    private async void Application_Activated(object sender, ActivatedEventArgs e)
     {
+      var ts = ServiceLocator.Current.GetInstance<TombstoneService>();
+      await ts.LoadSettingsStoreAsync();
     }
 
     // Code to execute when the application is deactivated (sent to background)
     // This code will not execute when the application is closing
-    private void Application_Deactivated(object sender, DeactivatedEventArgs e)
+    private async void Application_Deactivated(object sender, DeactivatedEventArgs e)
     {
+      var ts = ServiceLocator.Current.GetInstance<TombstoneService>();
+      await ts.Save();
     }
 
     // Code to execute when the application is closing (eg, user hit Back)
