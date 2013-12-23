@@ -125,15 +125,13 @@ namespace SmogonWP
     private async void Application_Activated(object sender, ActivatedEventArgs e)
     {
       var ts = ServiceLocator.Current.GetInstance<TombstoneService>();
-      await ts.LoadSettingsStoreAsync();
+      await ts.LoadSettingsStoreAsync(true);
     }
 
     // Code to execute when the application is deactivated (sent to background)
     // This code will not execute when the application is closing
     private async void Application_Deactivated(object sender, DeactivatedEventArgs e)
     {
-      var ts = ServiceLocator.Current.GetInstance<TombstoneService>();
-      await ts.Save();
     }
 
     // Code to execute when the application is closing (eg, user hit Back)

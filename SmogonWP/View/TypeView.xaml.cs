@@ -1,29 +1,22 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Phone.Controls;
 using SmogonWP.Messages;
+using SmogonWP.ViewModel;
 
 namespace SmogonWP.View
 {
   public partial class TypeView : PhoneApplicationPage
   {
-    private bool _pickerSelected;
+    private bool _isNewInstance;
 
     public TypeView()
     {
       InitializeComponent();
-
-      Messenger.Default.Register<VmToViewMessage<string, TypeView>>(this, onVmMessage);
-
-      Unloaded += OnUnloaded;
-    }
-    
-    private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
-    {
-      Messenger.Default.Unregister(this);
+      _isNewInstance = true;
     }
 
     private void ApplicationBarIconButton_OnClick(object sender, EventArgs e)
@@ -40,19 +33,27 @@ namespace SmogonWP.View
       }
     }
 
-    private void onVmMessage(VmToViewMessage<string, TypeView> msg)
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
-      if (msg.Content.Equals("switchToOffense"))
+      base.OnNavigatedFrom(e);
+
+      if (e.NavigationMode != NavigationMode.Back)
       {
-        PhasePivot.SelectedIndex = 0;
-      }
-      else if (msg.Content.Equals("switchToDefense"))
-      {
-        PhasePivot.SelectedIndex = 1;
-      }
-      else if (msg.Content.Equals("dontfocus"))
-      {
+        this.State["tombstoned"] = true;
+        Messenger.Default.Send(new TombstoneMessage<TypeViewModel>());
       }
     }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+      if (_isNewInstance && this.State.ContainsKey("tombstoned"))
+      {
+        Messenger.Default.Send(new RestoreMessage<TypeViewModel>());
+
+        this.State.Remove("tombstoned");
+        _isNewInstance = false;
+      }
+    }
+
   }
 }

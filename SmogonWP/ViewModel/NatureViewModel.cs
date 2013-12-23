@@ -2,10 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
+using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Natures;
 using SchmogonDB.Model.Stats;
 using SchmogonDB.Tools;
 using SmogonWP.Messages;
+using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.Items;
 
@@ -14,6 +16,7 @@ namespace SmogonWP.ViewModel
   public class NatureViewModel : ViewModelBase
   {
     private readonly SchmogonToolset _toolset;
+    private readonly TombstoneService _tombstoneService;
 
     private readonly MessageReceiver<ItemSelectedMessage<Nature>> _natureSelectedReceiver; 
 
@@ -159,12 +162,16 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    public NatureViewModel(SchmogonToolset toolset)
+    public NatureViewModel(SchmogonToolset toolset, TombstoneService tombstoneService)
     {
       _toolset = toolset;
+      _tombstoneService = tombstoneService;
       _natureSelectedReceiver = new MessageReceiver<ItemSelectedMessage<Nature>>(onNatureSelected, true);
 
       setup();
+
+      MessengerInstance.Register(this, new Action<TombstoneMessage<AbilityDataViewModel>>(m => tombstone()));
+      MessengerInstance.Register(this, new Action<RestoreMessage<AbilityDataViewModel>>(m => restore()));
     }
 
     private void setup()
@@ -237,6 +244,40 @@ namespace SmogonWP.ViewModel
     {
       SelectedNature = (int) msg.Item;
       PivotIndex = 1;
+    }
+
+    private async void tombstone()
+    {
+      var cache = new NatureTombstone
+      {
+        PivotIndex = PivotIndex,
+        SelectedNature = SelectedNature,
+        SelectedBoost = SelectedBoostStat,
+        SelectedLower = SelectedLossStat
+      };
+
+      await _tombstoneService.Store("ts_nature", cache);
+    }
+
+    private async void restore()
+    {
+      var loaded = await _tombstoneService.Load<NatureTombstone>("ts_nature");
+
+      if (loaded != null)
+      {
+        SelectedNature = loaded.SelectedNature;
+        SelectedBoostStat = loaded.SelectedBoost;
+        SelectedLossStat = loaded.SelectedLower;
+        PivotIndex = loaded.PivotIndex;
+      }
+    }
+
+    public class NatureTombstone
+    {
+      public int SelectedNature { get; set; }
+      public int SelectedBoost { get; set; }
+      public int SelectedLower { get; set; }
+      public int PivotIndex { get; set; }
     }
   }
 }

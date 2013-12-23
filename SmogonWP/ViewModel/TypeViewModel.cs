@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Messaging;
 using SchmogonDB.Tools;
 using SmogonWP.Messages;
 using SmogonWP.Model;
+using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.Items;
 using Type = SchmogonDB.Model.Types.Type;
@@ -16,6 +16,7 @@ namespace SmogonWP.ViewModel
   public class TypeViewModel : ViewModelBase
   {
     private readonly SchmogonToolset _toolset;
+    private readonly TombstoneService _tombstoneService;
 
     private readonly MessageReceiver<ItemSelectedMessage<Type>> _moveTypeSelectedMessage;
     private readonly MessageReceiver<PokemonTypeSelectedMessage> _pokemonTypeSelectedMessage;
@@ -162,9 +163,10 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    public TypeViewModel(SchmogonToolset toolset)
+    public TypeViewModel(SchmogonToolset toolset, TombstoneService tombstoneService)
     {
       _toolset = toolset;
+      _tombstoneService = tombstoneService;
 
       _moveTypeSelectedMessage = new MessageReceiver<ItemSelectedMessage<Type>>(onMoveTypeSelected, true);
       _pokemonTypeSelectedMessage = new MessageReceiver<PokemonTypeSelectedMessage>(onPokemonTypeSelected, true);
@@ -180,6 +182,9 @@ namespace SmogonWP.ViewModel
         onOffenseTypeChange();
         onDefenseTypeChange();
       }
+
+      MessengerInstance.Register(this, new Action<TombstoneMessage<AbilityDataViewModel>>(m => tombstone()));
+      MessengerInstance.Register(this, new Action<RestoreMessage<AbilityDataViewModel>>(m => restore()));
     }
 
     private void setup()
@@ -282,6 +287,40 @@ namespace SmogonWP.ViewModel
 
       SelectedDefenseType = (int)type;
       SelectedSecondDefenseType = 0;
+    }
+
+    private async void tombstone()
+    {
+      var cache = new TypeTombstone
+      {
+        PivotIndex = PivotIndex,
+        SelectedOffense = SelectedOffensiveType,
+        SelectedDefense = SelectedDefenseType,
+        SelectedSecondDefense = SelectedSecondDefenseType
+      };
+
+      await _tombstoneService.Store("ts_type", cache);
+    }
+
+    private async void restore()
+    {
+      var loaded = await _tombstoneService.Load<TypeTombstone>("ts_type");
+
+      if (loaded != null)
+      {
+        SelectedOffensiveType = loaded.SelectedOffense;
+        SelectedDefenseType = loaded.SelectedDefense;
+        SelectedSecondDefenseType = loaded.SelectedSecondDefense;
+        PivotIndex = loaded.PivotIndex;
+      }
+    }
+
+    public class TypeTombstone
+    {
+      public int SelectedOffense { get; set; }
+      public int SelectedDefense { get; set; }
+      public int SelectedSecondDefense { get; set; }
+      public int PivotIndex { get; set; }
     }
   }
 }

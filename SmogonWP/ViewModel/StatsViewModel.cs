@@ -11,7 +11,6 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Nito.AsyncEx;
 using SchmogonDB.Model.Natures;
-using SchmogonDB.Model.Pokemon;
 using SchmogonDB.Model.Stats;
 using SchmogonDB.Tools;
 using SmogonWP.Messages;
@@ -27,8 +26,9 @@ namespace SmogonWP.ViewModel
   {
     private readonly IDataLoadingService _dataService;
     private readonly SchmogonToolset _toolset;
+    private readonly TombstoneService _tombstoneService;
 
-    private readonly MessageReceiver<MovesetCalculatedMessage> _movesetCalculatedReceiver; 
+    private readonly MessageReceiver<MovesetCalculatedMessage> _movesetCalculatedReceiver;
 
     private BaseStat _baseStats;
 
@@ -313,7 +313,7 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => SpePct);
         }
       }
-    }			
+    }
 
     #endregion bar props
 
@@ -353,7 +353,7 @@ namespace SmogonWP.ViewModel
           // recalculateStats();
         }
       }
-    }					
+    }
 
     private ObservableCollection<string> _natureChoices;
     public ObservableCollection<string> NatureChoices
@@ -389,7 +389,7 @@ namespace SmogonWP.ViewModel
           recalculateStats();
         }
       }
-    }			
+    }
 
     #endregion setup props
 
@@ -507,7 +507,7 @@ namespace SmogonWP.ViewModel
           onEVChanged();
         }
       }
-    }			
+    }
 
     #endregion ev props
 
@@ -625,7 +625,7 @@ namespace SmogonWP.ViewModel
           onIVChanged();
         }
       }
-    }			
+    }
 
     #endregion iv props
 
@@ -654,25 +654,26 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => MenuButtons);
         }
       }
-    }			
+    }
 
     public INotifyTaskCompletion FetchPokemonNotifier { get; private set; }
 
-    public StatsViewModel(IDataLoadingService dataService, SchmogonToolset toolset, TrayService trayService)
+    public StatsViewModel(IDataLoadingService dataService, SchmogonToolset toolset, TrayService trayService, TombstoneService tombstoneService)
     {
       _dataService = dataService;
       _toolset = toolset;
       _trayService = trayService;
-      
+      _tombstoneService = tombstoneService;
+
       NatureChoices = new ObservableCollection<string>();
 
       foreach (var nature in Enum.GetValues(typeof(Nature)).Cast<Nature>())
       {
         var effect = _toolset.GetNatureEffect(nature);
 
-        var name = Enum.GetName(typeof (Nature), nature);
+        var name = Enum.GetName(typeof(Nature), nature);
 
-        var suffix = string.Format("(+{0}, -{1})", 
+        var suffix = string.Format("(+{0}, -{1})",
           StatUtils.GetShortName(effect.Increased).ToLower(),
           StatUtils.GetShortName(effect.Decreased).ToLower());
 
@@ -684,6 +685,9 @@ namespace SmogonWP.ViewModel
       setupAppBar();
 
       _movesetCalculatedReceiver = new MessageReceiver<MovesetCalculatedMessage>(onMovesetCalculated, true);
+
+      MessengerInstance.Register(this, new Action<TombstoneMessage<StatsViewModel>>(m => tombstone()));
+      MessengerInstance.Register(this, new Action<RestoreMessage<StatsViewModel>>(m => restore()));
     }
 
     private void setupAppBar()
@@ -705,7 +709,7 @@ namespace SmogonWP.ViewModel
 
       SearchedPokemon = string.Empty;
       SelectedNature = 0;
-      
+
       EVHP = string.Empty;
       EVAtk = string.Empty;
       EVDef = string.Empty;
@@ -780,7 +784,7 @@ namespace SmogonWP.ViewModel
       int ivspe;
       int.TryParse(IVSpe, out ivspe);
 
-      var effect = _toolset.GetNatureEffect((Nature) SelectedNature);
+      var effect = _toolset.GetNatureEffect((Nature)SelectedNature);
 
       var atkBonus = decideNatureBonus(effect, StatType.Attack);
       var defBonus = decideNatureBonus(effect, StatType.Defense);
@@ -800,7 +804,7 @@ namespace SmogonWP.ViewModel
       AtkPct = (((double)Attack / StatCalculator.MaxAttack * 100));
       DefPct = (((double)Defense / StatCalculator.MaxDefense * 100));
       SpAPct = (((double)SpecialAttack / StatCalculator.MaxSpecialAttack * 100));
-      SpDPct =  (((double)SpecialDefense / StatCalculator.MaxSpecialDefense * 100));
+      SpDPct = (((double)SpecialDefense / StatCalculator.MaxSpecialDefense * 100));
       SpePct = (((double)Speed / StatCalculator.MaxSpeed * 100));
     }
 
@@ -938,7 +942,7 @@ namespace SmogonWP.ViewModel
 
       SearchedPokemon = ms.OwnerName.ToLower();
 
-      SelectedNature = (int) Enum.Parse(typeof(Nature), ms.Natures.First(), true);
+      SelectedNature = (int)Enum.Parse(typeof(Nature), ms.Natures.First(), true);
 
       EVHP = ms.Data.EVSpread.HP.ToString(CultureInfo.InvariantCulture);
       EVAtk = ms.Data.EVSpread.Attack.ToString(CultureInfo.InvariantCulture);
@@ -968,6 +972,88 @@ namespace SmogonWP.ViewModel
       if (effect.Decreased == type) return 0.9;
 
       return 1;
+    }
+
+    private async void tombstone()
+    {
+      var cache = new StatsTombstone
+      {
+        Pokemon = SearchedPokemon,
+        SelectedNature = SelectedNature,
+        EV = new SerialStat
+        {
+          HP = EVHP,
+          Atk = EVAtk,
+          Def = EVDef,
+          SpA = EVSpA,
+          SpD = EVSpD,
+          Spe = EVSpe
+        },
+        IV = new SerialStat
+        {
+          HP = IVHP,
+          Atk = IVAtk,
+          Def = IVDef,
+          SpA = IVSpA,
+          SpD = IVSpD,
+          Spe = IVSpe
+        },
+        Level = Level
+      };
+
+      await _tombstoneService.Store("ts_stats", cache);
+    }
+
+    private async void restore()
+    {
+      TrayService.AddJob("statresume", "Resuming...");
+
+      var loaded = await _tombstoneService.Load<StatsTombstone>("ts_stats");
+
+      if (loaded != null)
+      {
+        SearchedPokemon = loaded.Pokemon;
+        SelectedNature = loaded.SelectedNature;
+
+        EVHP = loaded.EV.HP;
+        EVAtk = loaded.EV.Atk;
+        EVDef = loaded.EV.Def;
+        EVSpA = loaded.EV.SpA;
+        EVSpD = loaded.EV.SpD;
+        EVSpe = loaded.EV.Spe;
+
+        IVHP = loaded.IV.HP;
+        IVAtk = loaded.IV.Atk;
+        IVDef = loaded.IV.Def;
+        IVSpA = loaded.IV.SpA;
+        IVSpD = loaded.IV.SpD;
+        IVSpe = loaded.IV.Spe;
+
+        Level = loaded.Level;
+        
+        recalculateStats();
+      }
+
+      TrayService.RemoveJob("statresume");
+    }
+
+    public class SerialStat
+    {
+      public string HP { get; set; }
+      public string Atk { get; set; }
+      public string Def { get; set; }
+      public string SpA { get; set; }
+      public string SpD { get; set; }
+      public string Spe { get; set; }
+    }
+
+    public class StatsTombstone
+    {
+      public string Pokemon { get; set; }
+      public int SelectedNature { get; set; }
+      public SerialStat EV { get; set; }
+      public SerialStat IV { get; set; }
+      public int Level { get; set; }
     }
   }
 }
