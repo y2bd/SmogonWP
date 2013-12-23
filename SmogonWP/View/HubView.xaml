@@ -235,6 +235,12 @@
                     Background="#FF896FA0"
                     Orientation="Horizontal"
                     toolkit:TurnstileFeatherEffect.FeatheringIndex="0">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Tap">
+                    <i:InvokeCommandAction Command="{Binding LogoTapCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            
             <Image Source="/Assets/Icons/smogon.png"
                    Height="64"
                    Margin="12,0,-12,0" />

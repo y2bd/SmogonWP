@@ -1,0 +1,1 @@
+All tiles adapted from wallpapers source from [MapleRose's PokeWalls blog](http://pokewalls.wordpress.com/).

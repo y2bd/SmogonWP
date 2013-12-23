@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Phone.Shell;
@@ -9,6 +11,39 @@ namespace SmogonWP.Services
 {
   public class LiveTileService
   {
+    private static readonly List<string> SecretTiles = new List<string>
+    {
+      "beedrill",
+      "braixen",
+      "charizard",
+      "furret",
+      "gardevoir",
+      "gastly",
+      "glaceon",
+      "growlithe",
+      "haunter",
+      "inkay",
+      "koffing",
+      "lilligant",
+      "lopunny",
+      "ludicolo",
+      "m_ampharos",
+      "m_blaziken",
+      "m_mawile",
+      "meloetta",
+      "milotic",
+      "murkrow",
+      "names",
+      "pancham",
+      "pichu",
+      "rotom",
+      "scizor",
+      "solosis",
+      "sylveon",
+      "typhlosion",
+      "wynaut",
+    };
+
     private readonly IDataLoadingService _dataService;
 
     public LiveTileService(IDataLoadingService dataService)
@@ -16,7 +51,7 @@ namespace SmogonWP.Services
       _dataService = dataService;
     }
 
-    public async Task GenerateFlipTileAsync()
+    public async Task GenerateFlipTileAsync(bool withSecret=false)
     {
       var pokemon = await getRandomPokemon();
 
@@ -28,7 +63,7 @@ namespace SmogonWP.Services
         return;
       }
       
-      var tileData = createTileData(name, desc.Content);
+      var tileData = createTileData(name, desc.Content, withSecret);
 
       updateTile(tileData);
     }
@@ -44,15 +79,28 @@ namespace SmogonWP.Services
       return await _dataService.FetchPokemonDataAsync(chosen);
     }
     
-    private FlipTileData createTileData(string pokemonName, string description)
+    private FlipTileData createTileData(string pokemonName, string description, bool withSecret)
     {
+      var wideBackgroundImage = new Uri("/Assets/Tiles/smogon_widetile.png", UriKind.RelativeOrAbsolute);
+
+      if (withSecret)
+      {
+        var rnd = new Random();
+
+        var rndSecret = SecretTiles[rnd.Next(SecretTiles.Count)];
+
+        wideBackgroundImage = constructSecretTilePath(rndSecret);
+      }
+
       return new FlipTileData
       {
+        WideBackgroundImage = wideBackgroundImage,
         WideBackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
         WideBackContent = description,
         BackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
         BackContent = description,
-        BackTitle = pokemonName
+        BackTitle = pokemonName,
+        Title = "SmogonWP"
       };
     }
 
@@ -64,6 +112,13 @@ namespace SmogonWP.Services
       {
         flipTile.Update(tileData);
       }
+    }
+
+    private Uri constructSecretTilePath(string name)
+    {
+      var path = Path.Combine("/Assets/Secret/", name + ".png");
+
+      return new Uri(path, UriKind.RelativeOrAbsolute);
     }
   }
 }

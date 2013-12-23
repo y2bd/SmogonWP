@@ -3,6 +3,7 @@ using Coding4Fun.Toolkit.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
+using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
@@ -293,6 +294,17 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private RelayCommand _logoTapCommand;
+
+    public RelayCommand LogoTapCommand
+    {
+      get
+      {
+        return _logoTapCommand ??
+               (_logoTapCommand = new RelayCommand(onLogoTap));
+      }
+    }
+
     #endregion commands
 
     #region async handlers
@@ -363,7 +375,9 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         "Some colors in the app depend on your accent color, while others depends on Type colors!",
         "The app also looks fantastic with your phone's Light theme!",
         "If you have any suggestions for the app, you should email the developer!",
-        "This app has voice commands! Try holding down your home button and saying 'Smogon, search for Gardevoir'!"
+        "This app has voice commands! Try holding down your home button and saying 'Smogon, search for Gardevoir'!",
+        "You can pin any of the menu items below to your start screen. Just press and hold!",
+        "There's a master ball hidden underneath this message! No, seriously!"
       };
 
       var rnd = new Random();
@@ -771,14 +785,45 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private async Task updateLiveTile()
     {
+      var secretEnabled = _settingsService.Load<bool>("secret");
+
       try
       {
-        await _tileService.GenerateFlipTileAsync();
+        await _tileService.GenerateFlipTileAsync(secretEnabled);
       }
       catch (Exception)
       {
         Debug.WriteLine("tile creation failed, aw well");
       }
+    }
+
+    private void onLogoTap()
+    {
+      var prompt = new CustomMessageBox
+      {
+        Caption = "You found the master ball!",
+        Message = "Wouid you like to enable the super-secret wide tile for this app?\n\nYou might need to close the app fully and start it again to get the tile to appear.",
+        LeftButtonContent = "enable",
+        RightButtonContent = "disable",
+      };
+
+      prompt.Dismissed += async (sender, args) =>
+      {
+        if (args.Result == CustomMessageBoxResult.LeftButton)
+        {
+          _settingsService.Save("secret", true);
+          await updateLiveTile();
+        }
+        else if (args.Result == CustomMessageBoxResult.RightButton)
+        {
+          _settingsService.Save("secret", false);
+          await updateLiveTile();
+        }
+
+        
+      };
+
+      prompt.Show();
     }
   }
 }
