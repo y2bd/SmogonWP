@@ -1,8 +1,8 @@
-﻿using System.Windows.Navigation;
-using GalaSoft.MvvmLight.Messaging;
+﻿using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Phone.Controls;
 using SmogonWP.Messages;
 using SmogonWP.ViewModel;
+using System.Windows.Navigation;
 
 namespace SmogonWP.View
 {

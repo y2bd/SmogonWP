@@ -145,6 +145,7 @@
     <Compile Include="Services\RateService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SimpleNavigationService.cs" />
+    <Compile Include="Services\TipService.cs" />
     <Compile Include="Services\TombstoneService.cs" />
     <Compile Include="Services\TrayService.cs" />
     <Compile Include="Utilities\KeyboardHelper\KeyboardDependency.cs" />

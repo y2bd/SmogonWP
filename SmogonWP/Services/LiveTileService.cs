@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Microsoft.Phone.Shell;
+using SchmogonDB.Model.Pokemon;
+using SchmogonDB.Model.Text;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Phone.Shell;
-using SchmogonDB.Model.Pokemon;
-using SchmogonDB.Model.Text;
 
 namespace SmogonWP.Services
 {
   public class LiveTileService
   {
+    #region main tile
     private static readonly List<string> SecretTiles = new List<string>
     {
       "beedrill",
@@ -53,15 +54,17 @@ namespace SmogonWP.Services
 
     public async Task GenerateFlipTileAsync(bool withSecret=false)
     {
-      var pokemon = await getRandomPokemon();
+      string name;
+      Paragraph desc;
 
-      var name = pokemon.Name;
-      var desc = pokemon.Overview.First(e => e is Paragraph) as Paragraph;
-
-      if (desc == null)
+      do
       {
-        return;
-      }
+        var pokemon = await getRandomPokemon();
+
+        name = pokemon.Name;
+        desc = pokemon.Overview.FirstOrDefault(e => e is Paragraph) as Paragraph;
+
+      } while (desc == null);
       
       var tileData = createTileData(name, desc.Content, withSecret);
 
@@ -120,5 +123,44 @@ namespace SmogonWP.Services
 
       return new Uri(path, UriKind.RelativeOrAbsolute);
     }
+
+    #endregion main tiles
+
+    #region secondary tiles
+    /// <summary>
+    /// Creates a secondary tile.
+    /// </summary>
+    /// <param name="title"></param>
+    /// <param name="navUri"></param>
+    /// <param name="iconUri"></param>
+    /// <returns>Returns false if the tile already exists.</returns>
+    public bool CreateSecondaryTile(string title, Uri navUri, Uri iconUri)
+    {
+      if (tileExists(navUri)) return false;
+
+      var tileData = createSecondaryTileData(title, iconUri);
+
+      ShellTile.Create(navUri, tileData);
+
+      return true;
+    }
+
+    private bool tileExists(Uri navUri)
+    {
+      return ShellTile.ActiveTiles.FirstOrDefault(t => t.NavigationUri.Equals(navUri)) != null;
+    }
+
+    private StandardTileData createSecondaryTileData(string title, Uri iconUri)
+    {
+      return new StandardTileData
+      {
+        Title = title ?? string.Empty,
+        BackgroundImage = iconUri ?? new Uri(string.Empty, UriKind.Relative),
+        BackTitle = "SmogonWP",
+        BackBackgroundImage = iconUri ?? new Uri(string.Empty, UriKind.Relative)
+      };
+    }
+    #endregion secondary tiles
+
   }
 }

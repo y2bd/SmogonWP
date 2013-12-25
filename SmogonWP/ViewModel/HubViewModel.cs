@@ -1,10 +1,8 @@
-﻿using System.IO;
-using Coding4Fun.Toolkit.Controls;
+﻿using Coding4Fun.Toolkit.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
 using SchmogonDB.Model;
@@ -23,13 +21,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using Windows.Phone.Speech.VoiceCommands;
-using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.ViewModel
 {
@@ -295,7 +292,6 @@ namespace SmogonWP.ViewModel
     }
 
     private RelayCommand _logoTapCommand;
-
     public RelayCommand LogoTapCommand
     {
       get
@@ -338,134 +334,28 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private bool showWelcomePopup()
+    private void showWelcomePopup()
     {
-      if (_settingsService.Load("haswelcomed", false)) return false;
+      if (_settingsService.Load("haswelcomed", false)) return;
 
       const string message = @"Thanks for downloading SmogonWP! Before you use the app, let me tell you two important things.
 
 First of all, this app is not and will never be a standard Pokedex app. This app will not tell you what routes you can catch Ralts on or at what level she'll evolve into a Gardevoir. That is not its purpose.
 
-Second, as Pokemon X and Y have come out very recently, websites are still in the process of compiling information. Because of this, this app only contains data up to Black and White. You will not find X and Y Pokemon or moves in this app.
+Second, as Pokemon X and Y have come out very recently, websites are still in the process of compiling information. Because of this, XY data will be slowly trickling into this app over the next several weeks. Stay tuned!
 
 If you have any questions, sliding up the appbar at the bottom will give you the option to email me, the developer. Happy battling!";
 
       MessageBox.Show(message, "Hey there!", MessageBoxButton.OK);
 
       _settingsService.Save("haswelcomed", true);
-
-      return true;
-    }
-
-    private void showTipOfTheDay()
-    {
-      string[] tips = {
-        "This app has an awesome forum (via Reddit) that you can visit by swiping up on the appbar below!",
-        "This app has a live tile! Pin it to your start page to see!",
-        "Although this app doesn't have X and Y data, you can still see how the Fairy type fares on the Type page!",
-        "After choosing any of a Pokemon's movesets, you can click the stats button to jump straight to the stats calculator with values filled in!",
-        "Many things are tappable! Try tapping on something and see what happens!",
-        "Studies have shown that rating applications makes you at least twenty percent more awesome!",
-        "On the Pokemon search page, you can filter your search by both type and tier at the same time!",
-        "Many pages let you open up Bulbapedia! Just look for the minimized appbar at the bottom.",
-        "Web scraping is hard! If you find an entry that looks wrong, email the developer and help him fix it!",
-        "Blissey has an HP base stat of 255, the highest possible base stat!",
-        "Shuckle takes the record for highest defense and special defense base stats, both being 230!",
-        "Pokemon with multiple forms are all listed seperately for ease of searching!",
-        "This app has a beta! Email the dev for information on how to join!",
-        "The app is open-source! Swipe up on the appbar and open the 'about + credits' page if you want to learn more.",
-        "You can swipe these annoying toast prompts away!",
-        "The developer's favorite Pokemon is Haunter!",
-        "On the Move page, tapping on the move's type will bring you to the Type page with fields filled in!",
-        "Some colors in the app depend on your accent color, while others depends on Type colors!",
-        "The app also looks fantastic with your phone's Light theme!",
-        "If you have any suggestions for the app, you should email the developer!",
-        "This app has voice commands! Try holding down your home button and saying 'Smogon, search for Gardevoir'!",
-        "You can pin any of the menu items below to your start screen. Just press and hold!",
-        "There's a master ball hidden underneath this message! No, seriously!"
-      };
-
-      var rnd = new Random();
-
-      if (rnd.Next(5) > 1) return;
-
-      var tip = tips[rnd.Next(tips.Length)];
-
-      var toast = new ToastPrompt
-      {
-        Title = "Did you know?",
-        Message = tip,
-        TextWrapping = TextWrapping.Wrap,
-      };
-
-      toast.Show();
     }
 
     private void setupNavigation()
     {
-      StratNavItems = new ObservableCollection<NavigationItemViewModel>
-      {
-        new NavigationItemViewModel
-        {
-          Title = "Pokemon",
-          Description = "Search through Pokemon and compose your team",
-          NavigationPath = ViewModelLocator.PokemonSearchPath,
-          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Water]),
-          IconPath = "/Assets/Icons/pokeball2.png"
-        },
-        new NavigationItemViewModel
-        {
-          Title = "Moves",
-          Description = "Learn about every single move that your Pokemon can battle with",
-          NavigationPath = ViewModelLocator.MoveSearchPath,
-          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Fire]),
-          IconPath = "/Assets/Icons/conflict.png"
-        },
-        new NavigationItemViewModel
-        {
-          Title = "Abilities",
-          Description = "Explore the various innate powers that your Pokemon possess",
-          NavigationPath = ViewModelLocator.AbilitySearchPath,
-          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Grass]),
-          IconPath = "/Assets/Icons/idea.png"
-        },
-        new NavigationItemViewModel
-        {
-          Title = "Items",
-          Description = "Shop through various items that can give boosts in battle",
-          NavigationPath = ViewModelLocator.ItemSearchPath,
-          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Ground]),
-          IconPath = "/Assets/Icons/pill.png"
-        },
-      };
+      StratNavItems = new ObservableCollection<NavigationItemViewModel>(NavigationItemFactory.MakeStratNavItems());
 
-      ToolNavItems = new ObservableCollection<NavigationItemViewModel>
-      {
-        new NavigationItemViewModel
-        {
-          Title = "Natures",
-          Description = "Check out how natures affect your Pokemon's stats",
-          NavigationPath = ViewModelLocator.NaturePath,
-          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Psychic]),
-          IconPath = "/Assets/Icons/smile.png"
-        },
-        new NavigationItemViewModel
-        {
-          Title = "Types",
-          Description = "See how typing affects your Pokemon's performance in battle",
-          NavigationPath = ViewModelLocator.TypePath,
-          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Bug]),
-          IconPath = "/Assets/Icons/fire.png"
-        },
-        new NavigationItemViewModel
-        {
-          Title = "Stat Calculator",
-          Description = "Fine-tune the stats of your perfect Pokemon",
-          NavigationPath = ViewModelLocator.StatsPath,
-          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Dragon]),
-          IconPath = "/Assets/Icons/calc.png"
-        }
-      };
+      ToolNavItems = new ObservableCollection<NavigationItemViewModel>(NavigationItemFactory.MakeToolNavItems());
     }
 
     private void setupAppBar()
@@ -511,11 +401,6 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private async void initializeVCD()
     {
-      /*
-      if (!IsInDesignMode && !IsInDesignModeStatic)
-        await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///BaseVCD.xml"));
-       * */
-
       if (!IsInDesignMode && !IsInDesignModeStatic)
         await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///GenericVCD.xml"));
     }
@@ -545,7 +430,9 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       try
       {
         if (!_rateService.CheckForRateReminder())
-          showTipOfTheDay();
+        {
+          TipService.ShowTipOfTheDay();
+        }
       }
       catch (Exception)
       {
@@ -559,8 +446,6 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       Debug.WriteLine("Finished tile");
     }
 
-    // better name in future
-    // lol have fun jason
     private async Task fetchSearchData()
     {
       DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("fetchall", "Fetching search data..."));
@@ -607,13 +492,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private void onNavItemSelected(NavigationItemViewModel item)
     {
-      if (item == null) return;
-
-      if (string.IsNullOrEmpty(item.NavigationPath))
-      {
-        MessageBox.Show("That feature isn't available yet! Stay tuned though, it should be coming soon.");
-        return;
-      }
+      if (item == null || string.IsNullOrEmpty(item.NavigationPath)) return;
 
       _navigationService.Navigate(item.NavigationPath);
     }
@@ -712,11 +591,15 @@ If you have any questions, sliding up the appbar at the bottom will give you the
     private void onPinToStart(NavigationItemViewModel nivm)
     {
       if (IsInDesignMode) return;
+      
+      var name = TextUtils.ToTitleCase(nivm.Title);
+      var navUri = new Uri(nivm.NavigationPath, UriKind.RelativeOrAbsolute);
 
-      var uri = new Uri(nivm.NavigationPath, UriKind.RelativeOrAbsolute);
-
+      var iconName = Path.GetFileName(nivm.IconPath) ?? "pokeball2.png";
+      var iconUri = new Uri(Path.Combine("/Assets/Tiles/Secondary/", iconName), UriKind.RelativeOrAbsolute);
+      
       // don't create a tile if we already have one
-      if (findExistingTile(uri) != null)
+      if (!_tileService.CreateSecondaryTile(name, navUri, iconUri))
       {
         var already = new ToastPrompt
         {
@@ -725,37 +608,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         };
 
         already.Show();
-
-        return;
       }
-
-      var name = TextUtils.ToTitleCase(nivm.Title);
-
-      var iconName = Path.GetFileName(nivm.IconPath) ?? "pokeball2.png";
-
-      var iconUri = new Uri(Path.Combine("/Assets/Tiles/Secondary/", iconName), UriKind.RelativeOrAbsolute);
-
-      var tileData = createSecondaryTileData(name, iconUri);
-
-      ShellTile.Create(uri, tileData);
-    }
-
-    private ShellTile findExistingTile(Uri uri)
-    {
-      return ShellTile.ActiveTiles.FirstOrDefault(t => t.NavigationUri.Equals(uri));
-    }
-
-    private StandardTileData createSecondaryTileData(string title, Uri iconUri)
-    {
-      var tileData = new StandardTileData
-      {
-        Title = title ?? string.Empty,
-        BackgroundImage = iconUri ?? new Uri("", UriKind.Relative),
-        BackTitle = "SmogonWP",
-        BackBackgroundImage = iconUri ?? new Uri("", UriKind.Relative)
-      };
-
-      return tileData;
     }
 
     private async Task updateLiveTile()
@@ -794,8 +647,6 @@ If you have any questions, sliding up the appbar at the bottom will give you the
           _settingsService.Save("secret", false);
           await updateLiveTile();
         }
-
-        
       };
 
       prompt.Show();

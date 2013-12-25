@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using GalaSoft.MvvmLight;
-using SchmogonDB.Model.Abilities;
+﻿using GalaSoft.MvvmLight;
 using SchmogonDB.Model.Natures;
 using SchmogonDB.Model.Stats;
 using SchmogonDB.Tools;
@@ -10,6 +6,9 @@ using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.Items;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace SmogonWP.ViewModel
 {

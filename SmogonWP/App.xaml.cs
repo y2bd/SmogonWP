@@ -1,4 +1,10 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Threading;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
+using Microsoft.Practices.ServiceLocation;
+using SmogonWP.Resources;
+using SmogonWP.Services;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -7,13 +13,6 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
 using Windows.Storage;
-using GalaSoft.MvvmLight.Threading;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using Microsoft.Practices.ServiceLocation;
-using SmogonWP.Resources;
-using SmogonWP.Services;
-using SmogonWP.ViewModel;
 
 namespace SmogonWP
 {

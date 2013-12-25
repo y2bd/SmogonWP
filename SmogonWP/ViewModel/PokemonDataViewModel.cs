@@ -1,10 +1,4 @@
-﻿using System.IO;
-using System.Net.Http;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Windows.Storage.Streams;
-using Coding4Fun.Toolkit.Controls.Common;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Tasks;
@@ -21,9 +15,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace SmogonWP.ViewModel

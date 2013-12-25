@@ -1,14 +1,12 @@
-﻿using System;
-using System.Diagnostics;
-using Nito.AsyncEx;
+﻿using Nito.AsyncEx;
 using SchmogonDB;
-using SchmogonDB.Model;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
 using SchmogonDB.Model.Moves;
 using SchmogonDB.Model.Pokemon;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmogonWP.Services
 {
@@ -80,17 +78,11 @@ namespace SmogonWP.Services
 
     private async Task<TR> fetchData<T, TR>(AsyncLock alock, Func<T, Task<TR>> fetchTask, T param)
     {
-      Debug.WriteLine("Starting {0}", typeof(TR));
-
       using (await _dbInitLock.LockAsync())
       {
-        Debug.WriteLine("Starting lock {0}", typeof(TR));
         await _schmogonDBClient.InitializeDatabase();
-        Debug.WriteLine("Finished lock {0}", typeof(TR));
       }
-
-      Debug.WriteLine("Finished init {0}", typeof(TR));
-
+      
       // we use a lock so only one instance can be fetched at a time
       // wait for the last caller to get the list before the next one gets it
       // so the second is guaranteed the cache
@@ -102,17 +94,11 @@ namespace SmogonWP.Services
 
     private async Task<TR> fetchData<TR>(AsyncLock alock, Func<Task<TR>> fetchTask)
     {
-      Debug.WriteLine("Starting {0}", typeof(TR));
-
       using (await _dbInitLock.LockAsync())
       {
-        Debug.WriteLine("Starting lock {0}", typeof(TR));
         await _schmogonDBClient.InitializeDatabase();
-        Debug.WriteLine("Finished lock {0}", typeof(TR));
       }
-
-      Debug.WriteLine("Finished init {0}", typeof(TR));
-
+      
       // we use a lock so only one instance can be fetched at a time
       // wait for the last caller to get the list before the next one gets it
       // so the second is guaranteed the cache
