@@ -7,7 +7,6 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
-using SchmogonDB;
 using SchmogonDB.Model;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
@@ -40,6 +39,7 @@ namespace SmogonWP.ViewModel
     private readonly IDataLoadingService _dataService;
     private readonly LiveTileService _tileService;
     private readonly ISettingsService _settingsService;
+    private readonly RateService _rateService;
 
     private readonly MessageSender<ItemSearchedMessage<Pokemon>> _pokeSearchSender;
     private readonly MessageSender<ItemSearchedMessage<Ability>> _abilSearchSender;
@@ -309,17 +309,18 @@ namespace SmogonWP.ViewModel
 
     #region async handlers
 
-    public INotifyTaskCompletion FetchSearchDataNotifier { get; private set; }
+    public INotifyTaskCompletion StartupTasksNotifier { get; private set; }
 
     #endregion async handlers
 
-    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, LiveTileService tileService, ISettingsService settingsService)
+    public HubViewModel(SimpleNavigationService navigationService, IDataLoadingService dataService, TrayService trayService, LiveTileService tileService, ISettingsService settingsService, RateService rateService)
     {
       _navigationService = navigationService;
       _dataService = dataService;
       _trayService = trayService;
       _tileService = tileService;
       _settingsService = settingsService;
+      _rateService = rateService;
 
       _pokeSearchSender = new MessageSender<ItemSearchedMessage<Pokemon>>();
       _abilSearchSender = new MessageSender<ItemSearchedMessage<Ability>>();
@@ -329,15 +330,17 @@ namespace SmogonWP.ViewModel
       setupNavigation();
       setupAppBar();
       initializeVCD();
-      scheduleSearchDataFetch();
+      scheduleStartupTasks();
 
       if (!IsInDesignMode)
+      {
         showWelcomePopup();
+      }
     }
 
-    private void showWelcomePopup()
+    private bool showWelcomePopup()
     {
-      if (_settingsService.Load("haswelcomed", false)) return;
+      if (_settingsService.Load("haswelcomed", false)) return false;
 
       const string message = @"Thanks for downloading SmogonWP! Before you use the app, let me tell you two important things.
 
@@ -350,6 +353,8 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       MessageBox.Show(message, "Hey there!", MessageBoxButton.OK);
 
       _settingsService.Save("haswelcomed", true);
+
+      return true;
     }
 
     private void showTipOfTheDay()
@@ -482,7 +487,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         Command = new RelayCommand(onRateButtonClicked)
       };
 
-      if (!_settingsService.Load("hasrated", false)) MenuButtons.Add(rateButton);
+      if (!_rateService.HasRated()) MenuButtons.Add(rateButton);
 
       MenuItems = new ObservableCollection<MenuItemViewModel>
       {
@@ -515,36 +520,48 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///GenericVCD.xml"));
     }
 
-    private void scheduleSearchDataFetch()
+    private void scheduleStartupTasks()
     {
-      FetchSearchDataNotifier = NotifyTaskCompletion.Create(fetchSearchData());
+      StartupTasksNotifier = NotifyTaskCompletion.Create(performStartupTasks());
 
-      FetchSearchDataNotifier.PropertyChanged += (sender, args) =>
+      StartupTasksNotifier.PropertyChanged += (sender, args) =>
       {
-        if (FetchSearchDataNotifier == null) return;
+        if (StartupTasksNotifier == null) return;
 
-        if (FetchSearchDataNotifier.IsFaulted)
+        if (StartupTasksNotifier.IsFaulted)
         {
-          throw FetchSearchDataNotifier.InnerException;
+          throw StartupTasksNotifier.InnerException;
         }
       };
     }
 
-    private async Task fetchSearchData()
+    private async Task performStartupTasks()
     {
-      var st = new Stopwatch();
+      await Task.Run(new Func<Task>(fetchSearchData));
 
-      st.Start();
-      await Task.Run(new Func<Task>(pleaseOffThread));
-      st.Stop();
-      Debug.WriteLine("JSON load: {0}", st.ElapsedMilliseconds);
+      Debug.WriteLine("Finished tile");
+
+      // this is really not something to crash the phone over
+      try
+      {
+        if (!_rateService.CheckForRateReminder())
+          showTipOfTheDay();
+      }
+      catch (Exception)
+      {
+        Debug.WriteLine("either the rate or the tipoftheday service failed, eh");
+      }
+
+      Debug.WriteLine("Finished reminders");
 
       await updateLiveTile();
+
+      Debug.WriteLine("Finished tile");
     }
 
     // better name in future
     // lol have fun jason
-    private async Task pleaseOffThread()
+    private async Task fetchSearchData()
     {
       DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("fetchall", "Fetching search data..."));
 
@@ -585,11 +602,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         Debugger.Break();
       }
 
-      DispatcherHelper.CheckBeginInvokeOnUI(() =>
-      {
-        TrayService.RemoveJob("fetchall");
-        showTipOfTheDay();
-      });
+      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("fetchall"));
     }
 
     private void onNavItemSelected(NavigationItemViewModel item)
@@ -613,7 +626,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private void onRateButtonClicked()
     {
-      _settingsService.Save("hasrated", true);
+      _rateService.StopRatingPrompts();
 
       var mrt = new MarketplaceReviewTask();
 
@@ -622,14 +635,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private void onEmailDevClicked()
     {
-      var ect = new EmailComposeTask
-      {
-        To = "jason@y2bd.me",
-        Subject = "SmogonWP Inquiry",
-        Body = "(please include your phone model with your email)"
-      };
-
-      ect.Show();
+      _rateService.PopupEmailTask("TYPHLOSION");
     }
 
     private void onVisitForumClicked()
@@ -750,37 +756,6 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       };
 
       return tileData;
-    }
-
-    private async Task testDB()
-    {
-      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("dbstuff", "DOING DB STUFF"));
-
-      var db = new SchmogonDBClient();
-
-      await db.InitializeDatabase();
-
-      var poketask = db.FetchPokemonSearchDataAsync();
-      var movetask = db.FetchMoveSearchDataAsync();
-      var abiltask = db.FetchAbilitySearchDataAsync();
-      var itemtask = db.FetchItemSearchDataAsync();
-
-      await Task.WhenAll(poketask, movetask, abiltask, itemtask);
-
-      var poke = await poketask;
-      var move = await movetask;
-      var abil = await abiltask;
-      var item = await itemtask;
-
-      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
-
-      var sel = poke.First(p => p.Name == "Gardevoir");
-
-      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("dbstuff", "DOING POKEMON STUFF"));
-
-      var pokenew = await db.FetchPokemonDataAsync(sel);
-
-      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("dbstuff"));
     }
 
     private async Task updateLiveTile()

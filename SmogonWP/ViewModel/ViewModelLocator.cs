@@ -56,6 +56,7 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<TrayService>();
       SimpleIoc.Default.Register<IsolatedStorageService>();
       SimpleIoc.Default.Register<LiveTileService>();
+      SimpleIoc.Default.Register<RateService>();
 
       SimpleIoc.Default.Register<HomeViewModel>();
       SimpleIoc.Default.Register<HubViewModel>();

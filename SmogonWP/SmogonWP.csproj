@@ -142,6 +142,7 @@
     <Compile Include="Services\Messaging\InitMessageBase.cs" />
     <Compile Include="Services\Messaging\MessageReceiver.cs" />
     <Compile Include="Services\Messaging\MessageSender.cs" />
+    <Compile Include="Services\RateService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SimpleNavigationService.cs" />
     <Compile Include="Services\TombstoneService.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Utilities\KeyboardHelper\KeyboardTabHelperBehavior.cs" />
     <Compile Include="Utilities\LinqUtils.cs" />
     <Compile Include="Utilities\NetUtilities.cs" />
+    <Compile Include="Utilities\PhoneNameResolver.cs" />
     <Compile Include="Utilities\StatCalculator.cs" />
     <Compile Include="Utilities\TextUtils.cs" />
     <Compile Include="Utilities\UpdateTextBindingOnPropertyChanged.cs" />

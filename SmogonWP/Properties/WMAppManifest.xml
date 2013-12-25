@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US" />
-  <App xmlns="" ProductID="{87b3d66c-02f7-4a50-8a08-569117b54ba8}" Title="SmogonWP" RuntimeType="Silverlight" Version="1.1.0.0" Genre="apps.normal" Author="y2bd" Description="A competitive Pokemon info app for Windows Phone." Publisher="y2bd" PublisherID="{fae5bf52-17fd-470b-a501-f1119139d5c2}">
+  <App xmlns="" ProductID="{87b3d66c-02f7-4a50-8a08-569117b54ba8}" Title="SmogonWP" RuntimeType="Silverlight" Version="1.2.0.0" Genre="apps.normal" Author="y2bd" Description="A competitive Pokemon info app for Windows Phone." Publisher="y2bd" PublisherID="{fae5bf52-17fd-470b-a501-f1119139d5c2}">
     <IconPath IsRelative="true" IsResource="false">Assets\AppIcon_Smogon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
