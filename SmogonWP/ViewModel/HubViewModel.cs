@@ -401,8 +401,16 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private async void initializeVCD()
     {
-      if (!IsInDesignMode && !IsInDesignModeStatic)
+      if (IsInDesignMode || IsInDesignModeStatic) return;
+
+      try
+      {
         await VoiceCommandService.InstallCommandSetsFromFileAsync(new Uri("ms-appx:///GenericVCD.xml"));
+      }
+      catch (Exception)
+      {
+        Debug.WriteLine("Welp, voice commands don't work.");
+      }
     }
 
     private void scheduleStartupTasks()

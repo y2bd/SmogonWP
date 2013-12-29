@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight.Threading;
 using Newtonsoft.Json;
 using Nito.AsyncEx;
 
@@ -64,13 +63,10 @@ namespace SmogonWP.Services
 
     public async Task LoadSettingsStoreAsync(bool disableTrayProgress=false)
     {
-      if (!disableTrayProgress) DispatcherHelper.CheckBeginInvokeOnUI(() => _trayService.AddJob("resuming", "Resuming..."));
-
       using (await _aLock.LockAsync())
       {
         if (_store != null)
         {
-          if (!disableTrayProgress) DispatcherHelper.CheckBeginInvokeOnUI(() => _trayService.RemoveJob("resuming"));
           return;
         }
 
@@ -87,8 +83,6 @@ namespace SmogonWP.Services
           _store = new Dictionary<string, object>();
         }
       }
-
-      if (!disableTrayProgress) DispatcherHelper.CheckBeginInvokeOnUI(() => _trayService.RemoveJob("resuming"));
     }
 
     private async Task saveSettingsStore()

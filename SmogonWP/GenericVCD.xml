@@ -2,7 +2,6 @@
 
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.0">
 
-
   <CommandSet xml:lang="en-us" Name="BaseVCD">
     <CommandPrefix>Smogon</CommandPrefix>
     <Example> search for Gardevoir </Example>
@@ -3893,6 +3892,5 @@
     </PhraseList>
 
   </CommandSet>
-
 
 </VoiceCommands>

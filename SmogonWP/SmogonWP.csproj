@@ -369,6 +369,8 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="SmogonWP_2013_12_24_20_17_01.sap" />
+    <None Include="SmogonWP_2013_12_24_20_23_47.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />

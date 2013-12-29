@@ -19,8 +19,6 @@ namespace SmogonWP.View
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
-      base.OnNavigatedFrom(e);
-
       if (e.NavigationMode != NavigationMode.Back)
       {
         this.State["tombstoned"] = true;
