@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using SchmogonDB.Tools;
 using SmogonWP.Messages;
 using SmogonWP.Model;
@@ -183,6 +184,12 @@ namespace SmogonWP.ViewModel
         onDefenseTypeChange();
       }
 
+      // voice commands
+      MessengerInstance.Register<OffenseTypeMessage>(this, onOffenseTypeMessage);
+      MessengerInstance.Register<DefenseTypeMessage>(this, onDefenseTypeMessage);
+      MessengerInstance.Register<DualDefenseTypeMessage>(this, onDualDefenseTypeMessage);
+
+      // tombstoning
       MessengerInstance.Register(this, new Action<TombstoneMessage<AbilityDataViewModel>>(m => tombstone()));
       MessengerInstance.Register(this, new Action<RestoreMessage<AbilityDataViewModel>>(m => restore()));
     }
@@ -287,6 +294,36 @@ namespace SmogonWP.ViewModel
 
       SelectedDefenseType = (int)type;
       SelectedSecondDefenseType = 0;
+    }
+
+    private void onOffenseTypeMessage(OffenseTypeMessage msg)
+    {
+      var type = msg.Content;
+
+      PivotIndex = 0;
+
+      SelectedOffensiveType = (int)type;
+    }
+
+    private void onDefenseTypeMessage(DefenseTypeMessage msg)
+    {
+      var type = msg.Content;
+
+      PivotIndex = 1;
+
+      SelectedDefenseType = (int)type;
+      SelectedSecondDefenseType = 0;
+    }
+
+    private void onDualDefenseTypeMessage(DualDefenseTypeMessage msg)
+    {
+      var type = msg.Content.Item1;
+      var secondType = msg.Content.Item2;
+
+      PivotIndex = 1;
+
+      SelectedDefenseType = (int)type;
+      SelectedSecondDefenseType = (int) secondType + 1;
     }
 
     private async void tombstone()

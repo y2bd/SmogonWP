@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Phone.Controls;
 using SmogonWP.Messages;
 using SmogonWP.ViewModel;
+using Type = SchmogonDB.Model.Types.Type;
 
 namespace SmogonWP.View
 {
@@ -52,6 +53,48 @@ namespace SmogonWP.View
 
         this.State.Remove("tombstoned");
         _isNewInstance = false;
+      }
+
+      if (e.NavigationMode == NavigationMode.New &&
+          NavigationContext.QueryString.ContainsKey("voiceCommandName"))
+      {
+        var vcn = NavigationContext.QueryString["voiceCommandName"];
+
+        if (vcn == "SearchOffenseTypes")
+        {
+          var typeName = NavigationContext.QueryString["Types"];
+
+          Type type;
+
+          if (Enum.TryParse(typeName, true, out type))
+          {
+            Messenger.Default.Send(new OffenseTypeMessage(type));
+          }
+        }
+        else if (vcn == "SearchDefenseTypes")
+        {
+          var typeName = NavigationContext.QueryString["Types"];
+
+          Type type;
+
+          if (Enum.TryParse(typeName, true, out type))
+          {
+            Messenger.Default.Send(new DefenseTypeMessage(type));
+          }
+        }
+        else if (vcn == "SearchDualDefenseTypes")
+        {
+          var typeName = NavigationContext.QueryString["Types"];
+          var secondTypeName = NavigationContext.QueryString["SecondaryTypes"];
+
+          Type type, secondaryType;
+
+          if (Enum.TryParse(typeName, true, out type) &&
+              Enum.TryParse(secondTypeName, true, out secondaryType))
+          {
+            Messenger.Default.Send(new DualDefenseTypeMessage(new Tuple<Type, Type>(type, secondaryType)));
+          }
+        }
       }
     }
 
