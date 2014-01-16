@@ -2,6 +2,7 @@
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Practices.ServiceLocation;
+using SchmogonDB;
 using SmogonWP.Resources;
 using SmogonWP.Services;
 using System;
@@ -18,6 +19,9 @@ namespace SmogonWP
 {
   public partial class App : Application
   {
+    private const string CurrentDB = "pokemon_v2.db";
+    private const string IsoDB = "pokemon.db";
+
     /// <summary>
     /// Provides easy access to the root frame of the Phone Application.
     /// </summary>
@@ -73,50 +77,92 @@ namespace SmogonWP
       // so we have to copy it from the resource store to the right location
       // this works!
 
-      var dbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "pokemon.db");
+      var dbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, IsoDB);
 
+      // check if we need to update the db
+      var settings = new SettingsService();
+      var lastDBVersion = settings.Load<string>("dbversion", null);
+
+      if (lastDBVersion != CurrentDB)
+      {
+        Debug.WriteLine("Need to replace DB with new version!");
+
+        // delete old one
+        using (var iso = IsolatedStorageFile.GetUserStoreForApplication()) iso.DeleteFile(dbPath);
+
+        // force an update
+        copyDBOver(dbPath, null);
+
+        // update settings
+        settings.Save("dbversion", CurrentDB);
+      }
+
+      // otherwise check if it exists and only copy over if it doesn't
       StorageFile dbFile = null;
       try
       {
+        Debug.WriteLine("Trying to locate DB");
+
         // Try to get the db just in case it exists
         dbFile = await StorageFile.GetFileFromPathAsync(dbPath);
       }
       catch (FileNotFoundException)
       {
-        if (dbFile == null)
+        Debug.WriteLine("Need to copy DB to isolated");
+
+        copyDBOver(dbPath, dbFile); 
+      }
+    }
+
+    private void copyDBOver(string dbPath, StorageFile dbFile)
+    {
+      if (dbFile == null)
+      {
+        // Copy file from installation folder to local folder.
+        // Obtain the virtual store for the application.
+        var iso = IsolatedStorageFile.GetUserStoreForApplication();
+
+        // Create a stream for the file in the installation folder.
+        using (var input = GetResourceStream(new Uri(CurrentDB, UriKind.Relative)).Stream)
         {
-          // Copy file from installation folder to local folder.
-          // Obtain the virtual store for the application.
-          var iso = IsolatedStorageFile.GetUserStoreForApplication();
-
-          // Create a stream for the file in the installation folder.
-          using (var input = GetResourceStream(new Uri("pokemon.db", UriKind.Relative)).Stream)
+          // Create a stream for the new file in the local folder.
+          using (var output = iso.CreateFile(dbPath))
           {
-            // Create a stream for the new file in the local folder.
-            using (var output = iso.CreateFile(dbPath))
-            {
-              // Initialize the buffer.
-              var readBuffer = new byte[4096];
-              int bytesRead;
+            // Initialize the buffer.
+            var readBuffer = new byte[4096];
+            int bytesRead;
 
-              // Copy the file from the installation folder to the local folder.
-              while ((bytesRead = input.Read(readBuffer, 0, readBuffer.Length)) > 0)
-              {
-                output.Write(readBuffer, 0, bytesRead);
-              }
+            // Copy the file from the installation folder to the local folder.
+            while ((bytesRead = input.Read(readBuffer, 0, readBuffer.Length)) > 0)
+            {
+              output.Write(readBuffer, 0, bytesRead);
             }
           }
-
-          iso.Dispose();
         }
+
+        iso.Dispose();
       }
+
+      Debug.WriteLine("Done copying DB to isolated");
     }
 
     // Code to execute when the application is launching (eg, from Start)
     // This code will not execute when the application is reactivated
     private async void Application_Launching(object sender, LaunchingEventArgs e)
     {
-      await writeDBToIsolatedStorage();
+      try
+      {
+        await writeDBToIsolatedStorage();
+      }
+      catch (Exception ex)
+      {
+        Debug.WriteLine("Failed to create/overwrite database.");
+        Debugger.Break();
+      }
+
+      // var db = new SchmogonDBClient();
+
+      // await db.InitializeDatabase();
     }
 
     // Code to execute when the application is activated (brought to foreground)

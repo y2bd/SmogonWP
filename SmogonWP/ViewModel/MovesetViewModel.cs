@@ -384,7 +384,7 @@ namespace SmogonWP.ViewModel
         var list = t as SerializeableUnorderedList;
         if (list != null)
         {
-          return new UnorderedList { Elements = list.Elements };
+          return new UnorderedList { Elements = list.Elements.ToList() };
         }
 
         return null;

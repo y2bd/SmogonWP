@@ -14,7 +14,6 @@ using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
-using SmogonWP.Utilities;
 using SmogonWP.ViewModel.Items;
 using Type = SchmogonDB.Model.Types.Type;
 

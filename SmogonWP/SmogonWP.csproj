@@ -362,9 +362,9 @@
     <Content Include="Assets\Tiles\Secondary\pill.png" />
     <Content Include="Assets\Tiles\Secondary\pokeball2.png" />
     <Content Include="Assets\Tiles\Secondary\smile.png" />
-    <Content Include="pokemon.db">
+    <None Include="pokemon_v2.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>

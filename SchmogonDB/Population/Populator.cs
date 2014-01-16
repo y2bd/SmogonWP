@@ -77,6 +77,22 @@ namespace SchmogonDB.Population
       await database.ExecuteStatementAsync(query);
     }
 
+    private async Task beginTransaction(Database database)
+    {
+      const string query =
+        "BEGIN TRANSACTION;";
+
+      await database.ExecuteStatementAsync(query);
+    }
+
+    private async Task endTransaction(Database database)
+    {
+      const string query =
+        "COMMIT;";
+
+      await database.ExecuteStatementAsync(query);
+    }
+
     private async Task fillTables(Database database)
     {
       var loader = new Loader();
@@ -87,7 +103,11 @@ namespace SchmogonDB.Population
       {
         var itemSearch = data.ItemsSearch.First(i => i.Name == item.Name);
 
+        await beginTransaction(database);
+
         var key = await insertItemData(database, itemSearch, item);
+
+        await endTransaction(database);
 
         Debug.WriteLine("Inserted item {0}", key);
       }
@@ -96,7 +116,11 @@ namespace SchmogonDB.Population
       {
         var abilSearch = data.AbilitiesSearch.First(a => a.Name == ability.Name);
 
+        await beginTransaction(database);
+
         var key = await insertAbilityData(database, abilSearch, ability);
+
+        await endTransaction(database);
 
         Debug.WriteLine("Inserted ability {0}", key);
       }
@@ -105,7 +129,11 @@ namespace SchmogonDB.Population
       {
         var moveSearch = data.MovesSearch.First(m => m.Name == move.Name);
 
+        await beginTransaction(database);
+
         var key = await insertMoveData(database, moveSearch, move);
+
+        await endTransaction(database);
 
         Debug.WriteLine("Inserted {0}", key);
       }
@@ -114,6 +142,8 @@ namespace SchmogonDB.Population
       {
         try
         {
+          await beginTransaction(database);
+
           await insertRelatedMoveConnections(database, move);
         }
         catch (Exception)
@@ -124,6 +154,8 @@ namespace SchmogonDB.Population
           continue;
         }
 
+        await endTransaction(database);
+
         Debug.WriteLine("Inserted related move connections for {0}", move.Name);
       }
 
@@ -131,6 +163,8 @@ namespace SchmogonDB.Population
       {
         try
         {
+          await beginTransaction(database);
+
           await insertPokemonData(database, pokemon);
         }
         catch (Exception)
@@ -140,6 +174,8 @@ namespace SchmogonDB.Population
 
           continue;
         }
+
+        await endTransaction(database);
 
         Debug.WriteLine("Inserted Pokemon {0}", pokemon.Name);
       }
