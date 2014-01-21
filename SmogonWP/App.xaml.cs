@@ -218,7 +218,7 @@ namespace SmogonWP
       
       // Create the frame but don't set it as RootVisual yet; this allows the splash
       // screen to remain active until the application is ready to render.
-      RootFrame = new TransitionFrameSlim();
+      RootFrame = new TransitionFrame();
       RootFrame.Navigated += CompleteInitializePhoneApplication;
 
       // Handle navigation failures
