@@ -46,6 +46,92 @@
       <Navigate Target="/View/MoveSearchView.xaml"/>
     </Command>
 
+    <Command Name="SearchOffenseTypes">
+      <Example> i'm attacking with a Fire-type move</Example>
+      <ListenFor> i'm attacking with [a] {Types} [type] move</ListenFor>
+      <ListenFor> i am attacking with [a] {Types} [type] move</ListenFor>
+      <ListenFor> [i] attack with [a] {Types} [type] move</ListenFor>
+      <ListenFor> i'm defending against [a] {Types} [type] move</ListenFor>
+      <ListenFor> i am defending against [a] {Types} [type] move</ListenFor>
+      <ListenFor> i defend against [a] {Types} [type] move</ListenFor>
+      <Feedback> Generating {Types}-type offense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="SearchDefensiveTypes">
+      <Example> i'm defending with a Psychic-type Pokemon </Example>
+      <ListenFor> i'm defending with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i am defending with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i defend with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i'm attacking [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i am attacking [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i attack [a] {Types} [type] pokemon </ListenFor>
+      <Feedback> Generating {Types}-type defense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="SearchDualDefensiveTypes">
+      <Example> i'm defending with a Psychic/Fairy-type Pokemon </Example>
+      <ListenFor> i'm defending with [a] [dual] {Types} [and] {SecondaryTypes} [type] pokemon </ListenFor>
+      <ListenFor> i am defending with [a] [dual] {Types} [and] {SecondaryTypes} [type] pokemon </ListenFor>
+      <ListenFor> i defend with [a] [dual] {Types} [and] {SecondaryTypes} [type] pokemon </ListenFor>
+      <ListenFor> i'm attacking [a] [dual] {Types} [and] {SecondaryTypes} [type] pokemon </ListenFor>
+      <ListenFor> i am attacking [a] [dual] {Types} [and] {SecondaryTypes} [type] pokemon </ListenFor>
+      <ListenFor> i attack [a] [dual] {Types} [and] {SecondaryTypes} [type] pokemon </ListenFor>
+      <Feedback> Generating {Types}/{SecondaryTypes}-type defense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="TheVeryBest">
+      <Example> i wanna be the very best </Example>
+      <ListenFor> i wanna be the very best </ListenFor>
+      <ListenFor> i want to be the very best </ListenFor>
+      <Feedback> Catching them all... </Feedback>
+      <Navigate Target="/View/HubView.xaml"/>
+    </Command>
+
+    <PhraseList Label="Types">
+      <Item>Normal</Item>
+      <Item>Fire</Item>
+      <Item>Water</Item>
+      <Item>Electric</Item>
+      <Item>Grass</Item>
+      <Item>Ice</Item>
+      <Item>Fighting</Item>
+      <Item>Poison</Item>
+      <Item>Ground</Item>
+      <Item>Flying</Item>
+      <Item>Psychic</Item>
+      <Item>Bug</Item>
+      <Item>Rock</Item>
+      <Item>Ghost</Item>
+      <Item>Dragon</Item>
+      <Item>Dark</Item>
+      <Item>Steel</Item>
+      <Item>Fairy</Item>
+    </PhraseList>
+
+    <PhraseList Label="SecondaryTypes">
+      <Item>Normal</Item>
+      <Item>Fire</Item>
+      <Item>Water</Item>
+      <Item>Electric</Item>
+      <Item>Grass</Item>
+      <Item>Ice</Item>
+      <Item>Fighting</Item>
+      <Item>Poison</Item>
+      <Item>Ground</Item>
+      <Item>Flying</Item>
+      <Item>Psychic</Item>
+      <Item>Bug</Item>
+      <Item>Rock</Item>
+      <Item>Ghost</Item>
+      <Item>Dragon</Item>
+      <Item>Dark</Item>
+      <Item>Steel</Item>
+      <Item>Fairy</Item>
+    </PhraseList>
+
     <PhraseList Label="Pokemon">
       <Item>Abomasnow</Item>
       <Item>Abra</Item>

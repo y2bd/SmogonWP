@@ -122,6 +122,7 @@
     </Compile>
     <Compile Include="Messages\ItemSearchedMessage.cs" />
     <Compile Include="Messages\MovesetCalculatedMessage.cs" />
+    <Compile Include="Messages\VoiceCommandTypeMessages.cs" />
     <Compile Include="Messages\PokemonTypeSelectedMessage.cs" />
     <Compile Include="Messages\ItemSelectedMessage.cs" />
     <Compile Include="Messages\TombstoneMessages.cs" />
@@ -362,7 +363,12 @@
     <Content Include="Assets\Tiles\Secondary\pill.png" />
     <Content Include="Assets\Tiles\Secondary\pokeball2.png" />
     <Content Include="Assets\Tiles\Secondary\smile.png" />
-    <None Include="pokemon_v2.db">
+    <Content Include="GenericVCD.xml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GenericVCD.tt</DependentUpon>
+    </Content>
+    <Content Include="pokemon_v2.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\AppManifest.xml" />
@@ -415,12 +421,6 @@
     <Content Include="Assets\Tiles\smogon_smalltile.png" />
     <Content Include="Assets\Tiles\smogon_widetile.png" />
     <Content Include="BaseVCD.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GenericVCD.xml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GenericVCD.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Toolkit.Content\ApplicationBar.Add.png">

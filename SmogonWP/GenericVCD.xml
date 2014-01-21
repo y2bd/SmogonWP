@@ -1,36 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.0">
-
   <CommandSet xml:lang="en-us" Name="BaseVCD">
     <CommandPrefix>Smogon</CommandPrefix>
     <Example> search for Gardevoir </Example>
 
-    <Command Name="OpenPokemon">
-      <Example> open the Pokemon page  </Example>
-      <ListenFor> open [the] pokemon [page] </ListenFor>
-      <Feedback> Opening the Pokemon page... </Feedback>
-      <Navigate Target="/View/PokemonSearchView.xaml"/>
-    </Command>
-
-    <Command Name="OpenMoves">
-      <Example> open the moves page </Example>
-      <ListenFor> open [the] moves [page] </ListenFor>
-      <Feedback> Opening the Moves page... </Feedback>
-      <Navigate Target="/View/MoveSearchView.xaml"/>
-    </Command>
-
-    <Command Name="OpenAbilities">
-      <Example> open the abilities page  </Example>
-      <ListenFor> open [the] abilities [page] </ListenFor>
-      <Feedback> Opening the Abilities page... </Feedback>
-      <Navigate Target="/View/AbilitySearchView.xaml"/>
-    </Command>
-
-    <Command Name="SearchPokemon">
+	<Command Name="SearchPokemon">
       <Example> search for the pokemon Gardevoir</Example>
       <ListenFor> search [for] [the] pokemon {Pokemon} </ListenFor>
-      <ListenFor> loop up [the] pokemon {Pokemon} </ListenFor>
+      <ListenFor> look up [the] pokemon {Pokemon} </ListenFor>
+	  <ListenFor> look for [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> find [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> search [for] {Pokemon} </ListenFor>
       <Feedback> Searching for {Pokemon}... </Feedback>
@@ -46,6 +25,95 @@
       <Feedback> Searching for {Moves}... </Feedback>
       <Navigate Target="/View/MoveSearchView.xaml"/>
     </Command>
+
+	<Command Name="SearchOffenseTypes">
+      <Example> I'm attacking with a Fire-type move</Example>
+      <ListenFor> i'm attacking with [a] {Types} [type] move</ListenFor>
+      <ListenFor> i am attacking with [a] {Types} [type] move</ListenFor>
+      <ListenFor> [i] attack with [a] {Types} [type] move</ListenFor>
+      <ListenFor> [i] have [a] {Types} [type] move</ListenFor>
+      <ListenFor> i'm defending against [a] {Types} [type] move</ListenFor>
+      <ListenFor> i am defending against [a] {Types} [type] move</ListenFor>
+      <ListenFor> i defend against [a] {Types} [type] move</ListenFor>
+      <Feedback> Generating {Types}-type offense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="SearchDefenseTypes">
+      <Example> I'm defending with a Psychic-type Pokemon </Example>
+      <ListenFor> i'm defending with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i am defending with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i defend with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i have [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i'm attacking [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i am attacking [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i attack [a] {Types} [type] pokemon </ListenFor>
+      <Feedback> Generating {Types}-type defense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="SearchDualDefenseTypes">
+      <Example> I'm defending with a Psychic/Fairy-type Pokemon </Example>
+      <ListenFor> i'm defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i am defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i defend with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i have [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i'm attacking [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i am attacking [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i attack [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <Feedback> Generating {Types}/{SecondaryTypes}-type defense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="TheVeryBest">
+      <Example> I wanna be the very best </Example>
+      <ListenFor> i wanna be the very best </ListenFor>
+      <ListenFor> i want to be the very best </ListenFor>
+      <Feedback> Like no one ever was... </Feedback>
+      <Navigate Target="/View/HubView.xaml"/>
+    </Command>
+
+	<PhraseList Label="Types">
+      <Item>Normal</Item>
+      <Item>Fire</Item>
+      <Item>Water</Item>
+      <Item>Electric</Item>
+      <Item>Grass</Item>
+      <Item>Ice</Item>
+      <Item>Fighting</Item>
+      <Item>Poison</Item>
+      <Item>Ground</Item>
+      <Item>Flying</Item>
+      <Item>Psychic</Item>
+      <Item>Bug</Item>
+      <Item>Rock</Item>
+      <Item>Ghost</Item>
+      <Item>Dragon</Item>
+      <Item>Dark</Item>
+      <Item>Steel</Item>
+      <Item>Fairy</Item>
+    </PhraseList>
+
+	<PhraseList Label="SecondaryTypes">
+      <Item>Normal</Item>
+      <Item>Fire</Item>
+      <Item>Water</Item>
+      <Item>Electric</Item>
+      <Item>Grass</Item>
+      <Item>Ice</Item>
+      <Item>Fighting</Item>
+      <Item>Poison</Item>
+      <Item>Ground</Item>
+      <Item>Flying</Item>
+      <Item>Psychic</Item>
+      <Item>Bug</Item>
+      <Item>Rock</Item>
+      <Item>Ghost</Item>
+      <Item>Dragon</Item>
+      <Item>Dark</Item>
+      <Item>Steel</Item>
+      <Item>Fairy</Item>
+    </PhraseList>
 
     <PhraseList Label="Pokemon">
       <Item>Abomasnow</Item>
@@ -1296,38 +1364,16 @@
       <Item>Zap Cannon</Item>
       <Item>Zen Headbutt</Item>
     </PhraseList>
-
   </CommandSet>
-
   <CommandSet xml:lang="en-gb" Name="BaseVCD">
     <CommandPrefix>Smogon</CommandPrefix>
     <Example> search for Gardevoir </Example>
 
-    <Command Name="OpenPokemon">
-      <Example> open the Pokemon page  </Example>
-      <ListenFor> open [the] pokemon [page] </ListenFor>
-      <Feedback> Opening the Pokemon page... </Feedback>
-      <Navigate Target="/View/PokemonSearchView.xaml"/>
-    </Command>
-
-    <Command Name="OpenMoves">
-      <Example> open the moves page </Example>
-      <ListenFor> open [the] moves [page] </ListenFor>
-      <Feedback> Opening the Moves page... </Feedback>
-      <Navigate Target="/View/MoveSearchView.xaml"/>
-    </Command>
-
-    <Command Name="OpenAbilities">
-      <Example> open the abilities page  </Example>
-      <ListenFor> open [the] abilities [page] </ListenFor>
-      <Feedback> Opening the Abilities page... </Feedback>
-      <Navigate Target="/View/AbilitySearchView.xaml"/>
-    </Command>
-
-    <Command Name="SearchPokemon">
+	<Command Name="SearchPokemon">
       <Example> search for the pokemon Gardevoir</Example>
       <ListenFor> search [for] [the] pokemon {Pokemon} </ListenFor>
-      <ListenFor> loop up [the] pokemon {Pokemon} </ListenFor>
+      <ListenFor> look up [the] pokemon {Pokemon} </ListenFor>
+	  <ListenFor> look for [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> find [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> search [for] {Pokemon} </ListenFor>
       <Feedback> Searching for {Pokemon}... </Feedback>
@@ -1343,6 +1389,95 @@
       <Feedback> Searching for {Moves}... </Feedback>
       <Navigate Target="/View/MoveSearchView.xaml"/>
     </Command>
+
+	<Command Name="SearchOffenseTypes">
+      <Example> I'm attacking with a Fire-type move</Example>
+      <ListenFor> i'm attacking with [a] {Types} [type] move</ListenFor>
+      <ListenFor> i am attacking with [a] {Types} [type] move</ListenFor>
+      <ListenFor> [i] attack with [a] {Types} [type] move</ListenFor>
+      <ListenFor> [i] have [a] {Types} [type] move</ListenFor>
+      <ListenFor> i'm defending against [a] {Types} [type] move</ListenFor>
+      <ListenFor> i am defending against [a] {Types} [type] move</ListenFor>
+      <ListenFor> i defend against [a] {Types} [type] move</ListenFor>
+      <Feedback> Generating {Types}-type offense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="SearchDefenseTypes">
+      <Example> I'm defending with a Psychic-type Pokemon </Example>
+      <ListenFor> i'm defending with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i am defending with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i defend with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i have [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i'm attacking [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i am attacking [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i attack [a] {Types} [type] pokemon </ListenFor>
+      <Feedback> Generating {Types}-type defense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="SearchDualDefenseTypes">
+      <Example> I'm defending with a Psychic/Fairy-type Pokemon </Example>
+      <ListenFor> i'm defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i am defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i defend with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i have [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i'm attacking [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i am attacking [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i attack [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <Feedback> Generating {Types}/{SecondaryTypes}-type defense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="TheVeryBest">
+      <Example> I wanna be the very best </Example>
+      <ListenFor> i wanna be the very best </ListenFor>
+      <ListenFor> i want to be the very best </ListenFor>
+      <Feedback> Like no one ever was... </Feedback>
+      <Navigate Target="/View/HubView.xaml"/>
+    </Command>
+
+	<PhraseList Label="Types">
+      <Item>Normal</Item>
+      <Item>Fire</Item>
+      <Item>Water</Item>
+      <Item>Electric</Item>
+      <Item>Grass</Item>
+      <Item>Ice</Item>
+      <Item>Fighting</Item>
+      <Item>Poison</Item>
+      <Item>Ground</Item>
+      <Item>Flying</Item>
+      <Item>Psychic</Item>
+      <Item>Bug</Item>
+      <Item>Rock</Item>
+      <Item>Ghost</Item>
+      <Item>Dragon</Item>
+      <Item>Dark</Item>
+      <Item>Steel</Item>
+      <Item>Fairy</Item>
+    </PhraseList>
+
+	<PhraseList Label="SecondaryTypes">
+      <Item>Normal</Item>
+      <Item>Fire</Item>
+      <Item>Water</Item>
+      <Item>Electric</Item>
+      <Item>Grass</Item>
+      <Item>Ice</Item>
+      <Item>Fighting</Item>
+      <Item>Poison</Item>
+      <Item>Ground</Item>
+      <Item>Flying</Item>
+      <Item>Psychic</Item>
+      <Item>Bug</Item>
+      <Item>Rock</Item>
+      <Item>Ghost</Item>
+      <Item>Dragon</Item>
+      <Item>Dark</Item>
+      <Item>Steel</Item>
+      <Item>Fairy</Item>
+    </PhraseList>
 
     <PhraseList Label="Pokemon">
       <Item>Abomasnow</Item>
@@ -2593,38 +2728,16 @@
       <Item>Zap Cannon</Item>
       <Item>Zen Headbutt</Item>
     </PhraseList>
-
   </CommandSet>
-
   <CommandSet xml:lang="en-in" Name="BaseVCD">
     <CommandPrefix>Smogon</CommandPrefix>
     <Example> search for Gardevoir </Example>
 
-    <Command Name="OpenPokemon">
-      <Example> open the Pokemon page  </Example>
-      <ListenFor> open [the] pokemon [page] </ListenFor>
-      <Feedback> Opening the Pokemon page... </Feedback>
-      <Navigate Target="/View/PokemonSearchView.xaml"/>
-    </Command>
-
-    <Command Name="OpenMoves">
-      <Example> open the moves page </Example>
-      <ListenFor> open [the] moves [page] </ListenFor>
-      <Feedback> Opening the Moves page... </Feedback>
-      <Navigate Target="/View/MoveSearchView.xaml"/>
-    </Command>
-
-    <Command Name="OpenAbilities">
-      <Example> open the abilities page  </Example>
-      <ListenFor> open [the] abilities [page] </ListenFor>
-      <Feedback> Opening the Abilities page... </Feedback>
-      <Navigate Target="/View/AbilitySearchView.xaml"/>
-    </Command>
-
-    <Command Name="SearchPokemon">
+	<Command Name="SearchPokemon">
       <Example> search for the pokemon Gardevoir</Example>
       <ListenFor> search [for] [the] pokemon {Pokemon} </ListenFor>
-      <ListenFor> loop up [the] pokemon {Pokemon} </ListenFor>
+      <ListenFor> look up [the] pokemon {Pokemon} </ListenFor>
+	  <ListenFor> look for [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> find [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> search [for] {Pokemon} </ListenFor>
       <Feedback> Searching for {Pokemon}... </Feedback>
@@ -2640,6 +2753,95 @@
       <Feedback> Searching for {Moves}... </Feedback>
       <Navigate Target="/View/MoveSearchView.xaml"/>
     </Command>
+
+	<Command Name="SearchOffenseTypes">
+      <Example> I'm attacking with a Fire-type move</Example>
+      <ListenFor> i'm attacking with [a] {Types} [type] move</ListenFor>
+      <ListenFor> i am attacking with [a] {Types} [type] move</ListenFor>
+      <ListenFor> [i] attack with [a] {Types} [type] move</ListenFor>
+      <ListenFor> [i] have [a] {Types} [type] move</ListenFor>
+      <ListenFor> i'm defending against [a] {Types} [type] move</ListenFor>
+      <ListenFor> i am defending against [a] {Types} [type] move</ListenFor>
+      <ListenFor> i defend against [a] {Types} [type] move</ListenFor>
+      <Feedback> Generating {Types}-type offense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="SearchDefenseTypes">
+      <Example> I'm defending with a Psychic-type Pokemon </Example>
+      <ListenFor> i'm defending with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i am defending with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i defend with [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i have [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i'm attacking [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i am attacking [a] {Types} [type] pokemon </ListenFor>
+      <ListenFor> i attack [a] {Types} [type] pokemon </ListenFor>
+      <Feedback> Generating {Types}-type defense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="SearchDualDefenseTypes">
+      <Example> I'm defending with a Psychic/Fairy-type Pokemon </Example>
+      <ListenFor> i'm defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i am defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i defend with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i have [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i'm attacking [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i am attacking [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <ListenFor> i attack [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
+      <Feedback> Generating {Types}/{SecondaryTypes}-type defense chart... </Feedback>
+      <Navigate Target="/View/TypeView.xaml"/>
+    </Command>
+
+    <Command Name="TheVeryBest">
+      <Example> I wanna be the very best </Example>
+      <ListenFor> i wanna be the very best </ListenFor>
+      <ListenFor> i want to be the very best </ListenFor>
+      <Feedback> Like no one ever was... </Feedback>
+      <Navigate Target="/View/HubView.xaml"/>
+    </Command>
+
+	<PhraseList Label="Types">
+      <Item>Normal</Item>
+      <Item>Fire</Item>
+      <Item>Water</Item>
+      <Item>Electric</Item>
+      <Item>Grass</Item>
+      <Item>Ice</Item>
+      <Item>Fighting</Item>
+      <Item>Poison</Item>
+      <Item>Ground</Item>
+      <Item>Flying</Item>
+      <Item>Psychic</Item>
+      <Item>Bug</Item>
+      <Item>Rock</Item>
+      <Item>Ghost</Item>
+      <Item>Dragon</Item>
+      <Item>Dark</Item>
+      <Item>Steel</Item>
+      <Item>Fairy</Item>
+    </PhraseList>
+
+	<PhraseList Label="SecondaryTypes">
+      <Item>Normal</Item>
+      <Item>Fire</Item>
+      <Item>Water</Item>
+      <Item>Electric</Item>
+      <Item>Grass</Item>
+      <Item>Ice</Item>
+      <Item>Fighting</Item>
+      <Item>Poison</Item>
+      <Item>Ground</Item>
+      <Item>Flying</Item>
+      <Item>Psychic</Item>
+      <Item>Bug</Item>
+      <Item>Rock</Item>
+      <Item>Ghost</Item>
+      <Item>Dragon</Item>
+      <Item>Dark</Item>
+      <Item>Steel</Item>
+      <Item>Fairy</Item>
+    </PhraseList>
 
     <PhraseList Label="Pokemon">
       <Item>Abomasnow</Item>
@@ -3890,7 +4092,5 @@
       <Item>Zap Cannon</Item>
       <Item>Zen Headbutt</Item>
     </PhraseList>
-
   </CommandSet>
-
 </VoiceCommands>
