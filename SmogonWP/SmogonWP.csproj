@@ -93,6 +93,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Analytics\GoogleAnalyticsService.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -375,8 +376,6 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="SmogonWP_2013_12_24_20_17_01.sap" />
-    <None Include="SmogonWP_2013_12_24_20_23_47.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />
@@ -461,6 +460,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\wp8\GalaSoft.MvvmLight.WP8.dll</HintPath>
     </Reference>
+    <Reference Include="Google.WebAnalytics">
+      <HintPath>..\packages\MSAF.GoogleAnalytics.1.5.4.2\lib\wp8\Google.WebAnalytics.dll</HintPath>
+    </Reference>
+    <Reference Include="MC.Phone.Analytics">
+      <HintPath>..\packages\MSAF.GoogleAnalytics.1.5.4.2\lib\wp8\MC.Phone.Analytics.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
@@ -469,6 +474,12 @@
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WebAnalytics">
+      <HintPath>..\packages\MSAF.GoogleAnalytics.1.5.4.2\lib\wp8\Microsoft.WebAnalytics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WebAnalytics.Behaviors">
+      <HintPath>..\packages\MSAF.GoogleAnalytics.1.5.4.2\lib\wp8\Microsoft.WebAnalytics.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -481,6 +492,12 @@
     <Reference Include="Nito.AsyncEx.Enlightenment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=09d695329ca273b7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Nito.AsyncEx.2.0.0\lib\wp8\Nito.AsyncEx.Enlightenment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition">
+      <HintPath>..\packages\MSAF.GoogleAnalytics.1.5.4.2\lib\wp8\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition.Initialization">
+      <HintPath>..\packages\MSAF.GoogleAnalytics.1.5.4.2\lib\wp8\System.ComponentModel.Composition.Initialization.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http, Version=1.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -495,7 +512,7 @@
       <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\sl4-windowsphone71\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Interactivity, Version=3.9.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\wp8\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\packages\MSAF.GoogleAnalytics.1.5.4.2\lib\wp8\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="WriteableBitmapExWinPhone">
       <HintPath>..\packages\WriteableBitmapEx.1.0.9.0\lib\WindowsPhone8\WriteableBitmapExWinPhone.dll</HintPath>
