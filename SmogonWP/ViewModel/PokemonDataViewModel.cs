@@ -262,7 +262,17 @@ namespace SmogonWP.ViewModel
 
     private void onTypeSelected(TypeItemViewModel tivm)
     {
-      _pokemonTypeSelectedSender.SendMessage(new PokemonTypeSelectedMessage(tivm.Type));
+      if (PDVM.Types.Count() > 1)
+      {
+        var secondType = PDVM.Types.First(t => t.Type != tivm.Type).Type;
+
+        _pokemonTypeSelectedSender.SendMessage(new PokemonTypeSelectedMessage(tivm.Type, secondType));
+      }
+      else
+      {
+        _pokemonTypeSelectedSender.SendMessage(new PokemonTypeSelectedMessage(tivm.Type));
+      }
+      
       _navigationService.Navigate(ViewModelLocator.TypePath);
     }
 

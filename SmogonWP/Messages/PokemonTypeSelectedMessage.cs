@@ -4,8 +4,16 @@ namespace SmogonWP.Messages
 {
   public class PokemonTypeSelectedMessage : ItemSelectedMessage<Type>
   {
-    public PokemonTypeSelectedMessage(Type item)
-      : base(item)
+    public Type? SecondType { get; private set; }
+
+    public PokemonTypeSelectedMessage(Type type, Type? secondaryType)
+      : base(type)
+    {
+      SecondType = secondaryType;
+    }
+
+    public PokemonTypeSelectedMessage(Type type)
+      : this(type, null)
     {
 
     }

@@ -289,11 +289,12 @@ namespace SmogonWP.ViewModel
     private void onPokemonTypeSelected(PokemonTypeSelectedMessage msg)
     {
       var type = msg.Item;
+      var secondType = msg.SecondType;
 
       PivotIndex = 1;
 
       SelectedDefenseType = (int)type;
-      SelectedSecondDefenseType = 0;
+      SelectedSecondDefenseType = secondType == null ? 0 : (int)secondType + 1;
     }
 
     private void onOffenseTypeMessage(OffenseTypeMessage msg)

@@ -19,7 +19,12 @@ namespace SmogonWP
 {
   public partial class App : Application
   {
+    // the name of the current DB in the deployment folder
+    // this should change every time the db is updated
     private const string CurrentDB = "pokemon_v2.db";
+
+    // the name of the current DB in the application local storage
+    // this should never change
     private const string IsoDB = "pokemon.db";
 
     /// <summary>
