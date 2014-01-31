@@ -22,7 +22,7 @@ namespace SmogonWP.View
       {
         var voiceCommandName = NavigationContext.QueryString["voiceCommandName"];
 
-        if (voiceCommandName.Equals("SearchMoves"))
+        if (voiceCommandName.Contains("SearchMoves"))
         {
           var moveName = NavigationContext.QueryString["Moves"];
 

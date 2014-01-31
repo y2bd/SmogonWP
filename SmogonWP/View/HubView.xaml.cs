@@ -33,7 +33,7 @@ namespace SmogonWP.View
       {
         var voiceCommandName = NavigationContext.QueryString["voiceCommandName"];
 
-        if (voiceCommandName.Equals("TheVeryBest"))
+        if (voiceCommandName.Contains("TheVeryBest"))
         {
           var id = "qyXTgqJtoGM";
 

@@ -60,7 +60,7 @@ namespace SmogonWP.View
       {
         var vcn = NavigationContext.QueryString["voiceCommandName"];
 
-        if (vcn == "SearchOffenseTypes")
+        if (vcn.Contains("SearchOffenseTypes"))
         {
           var typeName = NavigationContext.QueryString["Types"];
 
@@ -71,7 +71,7 @@ namespace SmogonWP.View
             Messenger.Default.Send(new OffenseTypeMessage(type));
           }
         }
-        else if (vcn == "SearchDefenseTypes")
+        else if (vcn.Contains("SearchDefenseTypes"))
         {
           var typeName = NavigationContext.QueryString["Types"];
 
@@ -82,7 +82,7 @@ namespace SmogonWP.View
             Messenger.Default.Send(new DefenseTypeMessage(type));
           }
         }
-        else if (vcn == "SearchDualDefenseTypes")
+        else if (vcn.Contains("SearchDualDefenseTypes"))
         {
           var typeName = NavigationContext.QueryString["Types"];
           var secondTypeName = NavigationContext.QueryString["SecondaryTypes"];

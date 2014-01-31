@@ -5,7 +5,7 @@
     <CommandPrefix>Smogon</CommandPrefix>
     <Example> search for Gardevoir </Example>
 
-	<Command Name="SearchPokemon">
+	<Command Name="00_SearchPokemon">
       <Example> search for the pokemon Gardevoir</Example>
       <ListenFor> search [for] [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> look up [the] pokemon {Pokemon} </ListenFor>
@@ -16,7 +16,7 @@
       <Navigate Target="/View/PokemonSearchView.xaml?"/>
     </Command>
 
-    <Command Name="SearchMoves">
+    <Command Name="01_SearchMoves">
       <Example> search for the move Calm Mind</Example>
       <ListenFor> search [for] [the] move {Moves} </ListenFor>
       <ListenFor> look up [the] move {Moves} </ListenFor>
@@ -26,7 +26,7 @@
       <Navigate Target="/View/MoveSearchView.xaml"/>
     </Command>
 
-	<Command Name="SearchOffenseTypes">
+	<Command Name="02_SearchOffenseTypes">
       <Example> I'm attacking with a Fire-type move</Example>
       <ListenFor> i'm attacking with [a] {Types} [type] move</ListenFor>
       <ListenFor> i am attacking with [a] {Types} [type] move</ListenFor>
@@ -39,7 +39,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="SearchDefenseTypes">
+    <Command Name="03_SearchDefenseTypes">
       <Example> I'm defending with a Psychic-type Pokemon </Example>
       <ListenFor> i'm defending with [a] {Types} [type] pokemon </ListenFor>
       <ListenFor> i am defending with [a] {Types} [type] pokemon </ListenFor>
@@ -52,7 +52,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="SearchDualDefenseTypes">
+    <Command Name="04_SearchDualDefenseTypes">
       <Example> I'm defending with a Psychic/Fairy-type Pokemon </Example>
       <ListenFor> i'm defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
       <ListenFor> i am defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
@@ -65,7 +65,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="TheVeryBest">
+    <Command Name="05_TheVeryBest">
       <Example> I wanna be the very best </Example>
       <ListenFor> i wanna be the very best </ListenFor>
       <ListenFor> i want to be the very best </ListenFor>
@@ -1369,7 +1369,7 @@
     <CommandPrefix>Smogon</CommandPrefix>
     <Example> search for Gardevoir </Example>
 
-	<Command Name="SearchPokemon">
+	<Command Name="00_SearchPokemon">
       <Example> search for the pokemon Gardevoir</Example>
       <ListenFor> search [for] [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> look up [the] pokemon {Pokemon} </ListenFor>
@@ -1380,7 +1380,7 @@
       <Navigate Target="/View/PokemonSearchView.xaml?"/>
     </Command>
 
-    <Command Name="SearchMoves">
+    <Command Name="01_SearchMoves">
       <Example> search for the move Calm Mind</Example>
       <ListenFor> search [for] [the] move {Moves} </ListenFor>
       <ListenFor> look up [the] move {Moves} </ListenFor>
@@ -1390,7 +1390,7 @@
       <Navigate Target="/View/MoveSearchView.xaml"/>
     </Command>
 
-	<Command Name="SearchOffenseTypes">
+	<Command Name="02_SearchOffenseTypes">
       <Example> I'm attacking with a Fire-type move</Example>
       <ListenFor> i'm attacking with [a] {Types} [type] move</ListenFor>
       <ListenFor> i am attacking with [a] {Types} [type] move</ListenFor>
@@ -1403,7 +1403,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="SearchDefenseTypes">
+    <Command Name="03_SearchDefenseTypes">
       <Example> I'm defending with a Psychic-type Pokemon </Example>
       <ListenFor> i'm defending with [a] {Types} [type] pokemon </ListenFor>
       <ListenFor> i am defending with [a] {Types} [type] pokemon </ListenFor>
@@ -1416,7 +1416,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="SearchDualDefenseTypes">
+    <Command Name="04_SearchDualDefenseTypes">
       <Example> I'm defending with a Psychic/Fairy-type Pokemon </Example>
       <ListenFor> i'm defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
       <ListenFor> i am defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
@@ -1429,7 +1429,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="TheVeryBest">
+    <Command Name="05_TheVeryBest">
       <Example> I wanna be the very best </Example>
       <ListenFor> i wanna be the very best </ListenFor>
       <ListenFor> i want to be the very best </ListenFor>
@@ -2733,7 +2733,7 @@
     <CommandPrefix>Smogon</CommandPrefix>
     <Example> search for Gardevoir </Example>
 
-	<Command Name="SearchPokemon">
+	<Command Name="00_SearchPokemon">
       <Example> search for the pokemon Gardevoir</Example>
       <ListenFor> search [for] [the] pokemon {Pokemon} </ListenFor>
       <ListenFor> look up [the] pokemon {Pokemon} </ListenFor>
@@ -2744,7 +2744,7 @@
       <Navigate Target="/View/PokemonSearchView.xaml?"/>
     </Command>
 
-    <Command Name="SearchMoves">
+    <Command Name="01_SearchMoves">
       <Example> search for the move Calm Mind</Example>
       <ListenFor> search [for] [the] move {Moves} </ListenFor>
       <ListenFor> look up [the] move {Moves} </ListenFor>
@@ -2754,7 +2754,7 @@
       <Navigate Target="/View/MoveSearchView.xaml"/>
     </Command>
 
-	<Command Name="SearchOffenseTypes">
+	<Command Name="02_SearchOffenseTypes">
       <Example> I'm attacking with a Fire-type move</Example>
       <ListenFor> i'm attacking with [a] {Types} [type] move</ListenFor>
       <ListenFor> i am attacking with [a] {Types} [type] move</ListenFor>
@@ -2767,7 +2767,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="SearchDefenseTypes">
+    <Command Name="03_SearchDefenseTypes">
       <Example> I'm defending with a Psychic-type Pokemon </Example>
       <ListenFor> i'm defending with [a] {Types} [type] pokemon </ListenFor>
       <ListenFor> i am defending with [a] {Types} [type] pokemon </ListenFor>
@@ -2780,7 +2780,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="SearchDualDefenseTypes">
+    <Command Name="04_SearchDualDefenseTypes">
       <Example> I'm defending with a Psychic/Fairy-type Pokemon </Example>
       <ListenFor> i'm defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
       <ListenFor> i am defending with [a] [dual] {Types} [and] [slash] {SecondaryTypes} [type] [pokemon] </ListenFor>
@@ -2793,7 +2793,7 @@
       <Navigate Target="/View/TypeView.xaml"/>
     </Command>
 
-    <Command Name="TheVeryBest">
+    <Command Name="05_TheVeryBest">
       <Example> I wanna be the very best </Example>
       <ListenFor> i wanna be the very best </ListenFor>
       <ListenFor> i want to be the very best </ListenFor>

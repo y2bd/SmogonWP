@@ -47,7 +47,7 @@ namespace SmogonWP.View
         {
           var voiceCommandName = NavigationContext.QueryString["voiceCommandName"];
 
-          if (voiceCommandName.Equals("SearchPokemon"))
+          if (voiceCommandName.Contains("SearchPokemon"))
           {
             var pokemonName = NavigationContext.QueryString["Pokemon"];
 
