@@ -198,6 +198,13 @@
                            SelectedIndex="{Binding SelectedTypeFilter, Mode=TwoWay}" 
                            SelectionChanged="FilterPicker_OnSelectionChanged"/>
 
+        <toolkit:PickerBox x:Name="SecondaryTypePicker"
+                           Header="Choose a Pokemon type..."
+                           Grid.Row="1"
+                           ItemsSource="{Binding TypeFilters}"
+                           SelectedIndex="{Binding SelectedSecondaryTypeFilter, Mode=TwoWay}"
+                           SelectionChanged="FilterPicker_OnSelectionChanged" />
+
         <toolkit:PickerBox x:Name="TierPicker"
                            Header="Choose a Smogon tier..."
                            Grid.Row="1"

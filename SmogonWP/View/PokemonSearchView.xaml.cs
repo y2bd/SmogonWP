@@ -15,6 +15,7 @@ namespace SmogonWP.View
     private readonly ApplicationBarSubmenu _filterSubmenu;
 
     private readonly ApplicationBarSubmenuItem _clear;
+    private readonly ApplicationBarSubmenuItem _bySecondType;
 
     public PokemonSearchView()
     {
@@ -22,20 +23,25 @@ namespace SmogonWP.View
 
       var byType = new ApplicationBarSubmenuItem { Header = "by type..." };
       var byTier = new ApplicationBarSubmenuItem { Header = "by tier..." };
+
+      _bySecondType = new ApplicationBarSubmenuItem { Header = "by secondary type...", IsEnabled = false };
       _clear = new ApplicationBarSubmenuItem { Header = "reset filters", IsEnabled = false };
 
       byType.Click += (sender, args) => TypePicker.Open();
       byTier.Click += (sender, args) => TierPicker.Open();
 
+      _bySecondType.Click += (sender, args) => SecondaryTypePicker.Open();
+
       _clear.Click += (sender, args) =>
       {
         TypePicker.SelectedIndex = 0;
+        SecondaryTypePicker.SelectedIndex = 0;
         TierPicker.SelectedIndex = 0;
       };
 
       _filterSubmenu = new ApplicationBarSubmenu
       {
-        Items = { byType, byTier, _clear }
+        Items = { byType, _bySecondType, byTier, _clear }
       };
     }
 
@@ -70,11 +76,24 @@ namespace SmogonWP.View
     private void FilterPicker_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       _clear.IsEnabled = TypePicker.SelectedIndex > 0 || TierPicker.SelectedIndex > 0;
+
+      if (sender == TypePicker)
+      {
+        if (TypePicker.SelectedIndex > 0)
+        {
+          _bySecondType.IsEnabled = true;
+        }
+        else
+        {
+          _bySecondType.IsEnabled = false;
+        }
+      }
     }
 
     private void SearchBox_OnGotFocus(object sender, RoutedEventArgs e)
     {
       SearchBox.SelectAll();
     }
+
   }
 }

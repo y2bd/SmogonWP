@@ -172,6 +172,25 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private int _selectedSecondaryTypeFilter;
+    public int SelectedSecondaryTypeFilter
+    {
+      get
+      {
+        return _selectedSecondaryTypeFilter;
+      }
+      set
+      {
+        if (_selectedSecondaryTypeFilter != value)
+        {
+          _selectedSecondaryTypeFilter = value;
+          RaisePropertyChanged(() => SelectedSecondaryTypeFilter);
+
+          onFilterChanged();
+        }
+      }
+    }
+
     private int _selectedTierFilter;
     public int SelectedTierFilter
     {
@@ -204,6 +223,23 @@ namespace SmogonWP.ViewModel
         {
           _selectedType = value;
           RaisePropertyChanged(() => SelectedType);
+        }
+      }
+    }
+
+    private TypeItemViewModel _selectedSecondaryType;
+    public TypeItemViewModel SelectedSecondaryType
+    {
+      get
+      {
+        return _selectedSecondaryType;
+      }
+      set
+      {
+        if (_selectedSecondaryType != value)
+        {
+          _selectedSecondaryType = value;
+          RaisePropertyChanged(() => SelectedSecondaryType);
         }
       }
     }
@@ -300,6 +336,9 @@ namespace SmogonWP.ViewModel
 
     private void onFilterChanged()
     {
+      // just in case
+      if (SelectedTypeFilter == 0) SelectedSecondaryTypeFilter = 0;
+
       filterPokemon();
     }
 
@@ -347,14 +386,17 @@ namespace SmogonWP.ViewModel
     {
       var tier = SelectedTierFilter - 1;
       var type = SelectedTypeFilter - 1;
+      var secondType = SelectedSecondaryTypeFilter - 1;
 
       FilteredPokemon = new ObservableCollection<PokemonItemViewModel>(
         _pokemon.Where(m => string.IsNullOrEmpty(Query) || m.Name.ToLower().Contains(Query.ToLower().Trim()))
                 .Where(m => tier == -1 || m.Pokemon.Tier == (Tier)tier)
                 .Where(m => type == -1 || m.Pokemon.Types.Contains((Type)type))
+                .Where(m => secondType == -1 || m.Pokemon.Types.Contains((Type)secondType))
                 .OrderBy(m => m.Name));
 
       SelectedType = type == -1 ? null : new TypeItemViewModel((Type)type);
+      SelectedSecondaryType = secondType == -1 ? null : new TypeItemViewModel((Type) secondType);
       SelectedTier = tier == -1 ? null : Enum.GetName(typeof(Tier), (Tier)tier);
     }
 
