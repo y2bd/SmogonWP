@@ -214,7 +214,7 @@ namespace SmogonWP.ViewModel
 
       Filters = new ObservableCollection<string> {"none"};
 
-      foreach (var type in Enum.GetNames(typeof (Type)).Where(s => !s.Equals("Fairy")))
+      foreach (var type in Enum.GetNames(typeof (Type)))
       {
         Filters.Add(type.ToLower());
       }

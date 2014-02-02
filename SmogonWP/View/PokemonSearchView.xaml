@@ -139,6 +139,13 @@
                        Visibility="{Binding SelectedType, Converter={StaticResource NullVisibilityConverter}}"/>
 
             <TextBlock Margin="0,0,6,0"
+                       Text="{Binding SelectedSecondaryType.Name, Converter={StaticResource UppercaseConverter}}"
+                       Style="{StaticResource PhoneTextNormalStyle}"
+                       FontFamily="{StaticResource PhoneFontFamilySemiBold}"
+                       Foreground="{Binding SelectedSecondaryType.BackgroundBrush}"
+                       Visibility="{Binding SelectedSecondaryType, Converter={StaticResource NullVisibilityConverter}}" />
+
+            <TextBlock Margin="0,0,6,0"
                        Text="{Binding SelectedTier, Converter={StaticResource UppercaseConverter}}"
                        Style="{StaticResource PhoneTextNormalStyle}"
                        FontFamily="{StaticResource PhoneFontFamilySemiBold}"

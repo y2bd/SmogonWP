@@ -313,7 +313,7 @@ namespace SmogonWP.ViewModel
     {
       TypeFilters = new List<string> { "none" };
 
-      foreach (var type in Enum.GetNames(typeof(Type)).Where(t => !t.Equals("Fairy")))
+      foreach (var type in Enum.GetNames(typeof(Type)))
       {
         TypeFilters.Add(type.ToLower());
       }
