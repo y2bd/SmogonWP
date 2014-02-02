@@ -11,6 +11,7 @@
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:bindable="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             xmlns:controls="clr-namespace:SmogonWP.Controls"
+                            xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -53,10 +54,12 @@
         <DataTemplate x:Key="RelatedItemTemplate">
             <StackPanel Margin="0,0,0,12">
                 <TextBlock Text="{Binding Name, Converter={StaticResource LowercaseConverter}}"
-                           Style="{StaticResource PhoneTextTitle3Style}" />
+                           Style="{StaticResource PhoneTextTitle3Style}"
+                           toolkit:SlideInEffect.LineIndex="0" />
                 <TextBlock Text="{Binding Description}"
                            Style="{StaticResource PhoneTextSmallStyle}"
-                           TextWrapping="Wrap" />
+                           TextWrapping="Wrap"
+                           toolkit:SlideInEffect.LineIndex="1" />
             </StackPanel>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
@@ -78,6 +81,9 @@
             <gala:EventToCommand Command="{Binding BackKeyPressCommand}"
                                  PassEventArgsToCommand="True" />
         </i:EventTrigger>
+        <ec:PropertyChangedTrigger Binding="{Binding TypeBackgroundBrush}">
+            
+        </ec:PropertyChangedTrigger>
     </i:Interaction.Triggers>
 
     <!--LayoutRoot is the root grid where all page content is placed-->

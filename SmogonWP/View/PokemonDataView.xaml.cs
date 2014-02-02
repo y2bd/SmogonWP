@@ -1,8 +1,11 @@
-﻿using System.Windows.Navigation;
+﻿using System;
+using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Phone.Controls;
 using SmogonWP.Messages;
 using SmogonWP.ViewModel;
+using GestureEventArgs = System.Windows.Input.GestureEventArgs;
 
 namespace SmogonWP.View
 {
@@ -17,6 +20,10 @@ namespace SmogonWP.View
       // this will only be set to true on creation of this page
       // revisiting this page while it is still in memory will not set it to true
       _isNewInstance = true;
+
+      Messenger.Default.Register<VmToViewMessage<string, PokemonDataView>>(this, onVmMessage);
+      
+      Unloaded += (sender, args) => Messenger.Default.Unregister(this);
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -38,6 +45,19 @@ namespace SmogonWP.View
 
         this.State.Remove("tombstoned");
         _isNewInstance = false;
+      }
+      
+      if (e.NavigationMode != NavigationMode.Back)
+      {
+        OnLoaded.Begin();
+      }
+    }
+
+    private void onVmMessage(VmToViewMessage<string, PokemonDataView> msg)
+    {
+      if (msg.Content == "loadedAnim")
+      {
+        AnimateIn.Begin();
       }
     }
   }

@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.Windows.Media.Animation;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
@@ -130,7 +131,7 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private SolidColorBrush _typeBackgroundBrush;
+    private SolidColorBrush _typeBackgroundBrush = new SolidColorBrush(Colors.Gray);
     public SolidColorBrush TypeBackgroundBrush
     {
       get
@@ -145,7 +146,9 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => TypeBackgroundBrush);
         }
       }
-    }			
+    }
+
+    private SolidColorBrush _newBrush;
 
     #endregion props
 
@@ -249,6 +252,10 @@ namespace SmogonWP.ViewModel
 
       MDVM = _mdivmStack.Pop();
       Name = MDVM.Name;
+
+      Type type;
+      if (Enum.TryParse(MDVM.Type, true, out type))
+        animateTypeBrush(type);
 
       _moveStack.Pop();
     }
@@ -371,10 +378,29 @@ namespace SmogonWP.ViewModel
       Name = MDVM.Name;
 
       _pageLocation = move.PageLocation;
-      
-      TypeBackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[moveData.Stats.Type]);
+
+      animateTypeBrush(moveData.Stats.Type);
 
       TrayService.RemoveJob("fetchdata");
+    }
+
+    private void animateTypeBrush(Type type)
+    {
+      _newBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[type]);
+
+      var ca = new ColorAnimation
+      {
+        To = _newBrush.Color,
+        Duration = new Duration(TimeSpan.FromMilliseconds(500)),
+        EasingFunction = new CircleEase()
+      };
+
+      var s = new Storyboard();
+      s.Children.Add(ca);
+      Storyboard.SetTarget(ca, TypeBackgroundBrush);
+      Storyboard.SetTargetProperty(ca, new PropertyPath(SolidColorBrush.ColorProperty));
+
+      s.Begin();
     }
     
     private void cleanup()

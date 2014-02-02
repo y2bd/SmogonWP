@@ -15,6 +15,7 @@ using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
+using SmogonWP.View;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 using System;

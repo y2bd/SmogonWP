@@ -9,6 +9,7 @@ using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
+using SmogonWP.View;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 using System;
@@ -394,11 +395,13 @@ namespace SmogonWP.ViewModel
       PDVM = new PokemonDataItemViewModel(pokemonData);
       Name = PDVM.Name;
 
-      fetchThumbnailImage(PDVM.SpritePath).ContinueWith(thumbnailFetchFaulted, TaskContinuationOptions.OnlyOnFaulted);
+      await fetchThumbnailImage(PDVM.SpritePath);
 
       _pageLocation = pokemon.PageLocation;
 
       TrayService.RemoveJob("fetchdata");
+      
+      MessengerInstance.Send(new VmToViewMessage<string, PokemonDataView>("loadedAnim"));
     }
     
     private async Task fetchThumbnailImage(string path)
@@ -418,6 +421,7 @@ namespace SmogonWP.ViewModel
         wbs.SetSource(s);
 
         Sprite = wbs.Resize(140, 140, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+        
       });
     }
 
