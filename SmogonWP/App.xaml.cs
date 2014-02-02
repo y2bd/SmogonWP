@@ -21,7 +21,10 @@ namespace SmogonWP
   {
     // the name of the current DB in the deployment folder
     // this should change every time the db is updated
-    private const string CurrentDB = "pokemon_v2.db";
+
+    // v3 - changed all pokemon, moves to gen VI forms (changed types, stats, etc), no analyses changes
+    // v2 - fixed parsing errors with certain moves, abilities
+    private const string CurrentDB = "pokemon_v3.db";
 
     // the name of the current DB in the application local storage
     // this should never change
@@ -165,9 +168,9 @@ namespace SmogonWP
         Debugger.Break();
       }
 
-      // var db = new SchmogonDBClient();
+      //var db = new SchmogonDBClient();
 
-      // await db.InitializeDatabase();
+      //await db.InitializeDatabase();
     }
 
     // Code to execute when the application is activated (brought to foreground)

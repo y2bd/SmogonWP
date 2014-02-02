@@ -369,7 +369,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GenericVCD.tt</DependentUpon>
     </Content>
-    <Content Include="pokemon_v2.db">
+    <Content Include="pokemon_v3.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\AppManifest.xml" />
