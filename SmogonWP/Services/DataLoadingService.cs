@@ -23,6 +23,8 @@ namespace SmogonWP.Services
     private readonly AsyncLock _itemLock;
 
     private readonly AsyncLock _dbInitLock; 
+
+    public ISchmogonDBClient Client { get { return _schmogonDBClient; } }
     
     public DataLoadingService(ISchmogonDBClient schmogonDBClient)
     {

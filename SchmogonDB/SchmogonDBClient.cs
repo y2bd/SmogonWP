@@ -11,9 +11,6 @@ namespace SchmogonDB
     private static readonly StorageFolder DbRootPath = ApplicationData.Current.LocalFolder;
     private const string DbName = "pokemon.db";
 
-    private const bool JustCreateTables = true;
-    private const bool DropTablesFirst = false;
-
     private readonly Database _database;
 
     private readonly Populator _populator;
@@ -34,9 +31,16 @@ namespace SchmogonDB
       await _database.OpenAsync();
       await ensureForeignKeys();
 
-      await _populator.PopulateDatabaseAsync(_database, JustCreateTables, DropTablesFirst);
+      await _populator.PopulateDatabaseAsync(_database, true, false);
 
       _isInitiatlized = true;
+    }
+
+    public async Task RecreateDatabase()
+    {
+      ensureDatabaseInitialized();
+
+      await _populator.PopulateDatabaseAsync(_database, false, true);
     }
     
     private async Task ensureForeignKeys()

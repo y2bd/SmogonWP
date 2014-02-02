@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
+using SchmogonDB;
 using SchmogonDB.Model;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
@@ -395,7 +396,31 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         {
           Text = "about + credits",
           Command = new RelayCommand(onCreditsClicked)
+        },
+#if DEBUG
+        new MenuItemViewModel
+        {
+          Text = "recreate database",
+          Command = new RelayCommand(async () =>
+          {
+            try
+            {
+              TrayService.AddJob("rec", "Recreating database...");
+
+              // this is not good code, but it is not meant to be
+              // this is for me only to use
+              var sm = (SchmogonDBClient) ((DataLoadingService) _dataService).Client;
+              await sm.RecreateDatabase();
+
+              TrayService.RemoveJob("rec");
+            }
+            catch (Exception e)
+            {
+              Debugger.Break();
+            }
+          })
         }
+#endif
       };
     }
 
