@@ -459,9 +459,15 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
       Debug.WriteLine("Finished tile");
 
+      TrayService.RemoveAllJobs();
+
       // this is really not something to crash the phone over
       try
       {
+        // this is for aesthetics more than anything
+        await Task.Delay(50);
+
+        if (!showUpdatePrompt())
         if (!_rateService.CheckForRateReminder())
         {
           TipService.ShowTipOfTheDay();
@@ -683,6 +689,36 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       };
 
       prompt.Show();
+    }
+
+    // returns true if the update prompt was shown
+    private bool showUpdatePrompt()
+    {
+      const string updateKey = "update_" + "1.1.3";
+
+      // if we already have shown it, don't do it again stupid
+      if (_settingsService.SettingRegistered(updateKey)) return false;
+
+      // if we're opening the app for the first time, don't do it either
+      if (!_settingsService.SettingRegistered("haswelcomed")) return false;
+
+      MessageBox.Show(
+        "Hey everyone! In this update you can now filter by two types on the Pokemon page. Great for when you need a Poison/Psychic Pokemon (there aren't any by the way).\n\n" +
+        "More importantly, this update is the first in many to slowly update this app to XY. No, no new Pokemon have been added yet, the Smogon folks are still writing up those analyses! " +
+        "However, many old moves and Pokemon have changed in XY, whether it be as minor as having their stats adjusted or as major as having their types changed. The app now reflects those changes; go on and look, Gardevoir's a Psychic/Fairy type now!\n\n" +
+        "There are two downsides to this though. First, I haven't changed any of the write-ups. I didn't write them in the first place, so it feels wrong to change them. " +
+        "Because of this, you may find discrepencies between the write-ups and the presented stats (for example, the analysis may say that Surf has a BP of 95 even though it was changed to 90). " +
+        "If you're ever unsure about a piece of information, I recommend checking Bulbapedia, as they always have the most up-to-date info.\n\n" +
+        "The second downside won't affect everyone, but it's still important. As I am updating the app to XY, if you're a BW/B2W2 hold-out, you'll find that much of the info in the app doesn't apply to you, or may even be wrong. " +
+        "I'm really sorry about this, but I had updating the app to XY planned from the beginning. If you really need BW information, I again recommend checking out Bulbapedia or even the Smogon website, as they both " +
+        "keep track of Pokemon changes across generations.\n\n" +
+        "Thanks for reading this entire thing, and enjoy the update! If you have anything at all you wish to ask me, just swipe up on the appbar below and you'll see an option to email me.",
+        "Update Notes (Please Read)",
+        MessageBoxButton.OK);
+
+      _settingsService.Save(updateKey, true);
+
+      return true;
     }
   }
 }
