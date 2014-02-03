@@ -385,6 +385,11 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       {
         new MenuItemViewModel
         {
+          Text = "change live tile...",
+          Command = new RelayCommand(onChangeTileClicked)
+        },
+        new MenuItemViewModel
+        {
           Text = "email developer...",
           Command = new RelayCommand(onEmailDevClicked)
         },
@@ -572,6 +577,11 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       _navigationService.Navigate(ViewModelLocator.CreditsPath);
     }
 
+    private void onChangeTileClicked()
+    {
+      _navigationService.Navigate(ViewModelLocator.LiveTilePath);
+    }
+
     private void onBackKeyPressed(CancelEventArgs e)
     {
       if (IsSearchPanelOpen)
@@ -653,11 +663,9 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private async Task updateLiveTile()
     {
-      var secretEnabled = _settingsService.Load<bool>("secret");
-
       try
       {
-        await _tileService.GenerateFlipTileAsync(secretEnabled);
+        await _tileService.GenerateFlipTileAsync();
       }
       catch (Exception)
       {
@@ -667,6 +675,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private void onLogoTap()
     {
+      /*
       var prompt = new CustomMessageBox
       {
         Caption = "You found the master ball!",
@@ -690,6 +699,12 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       };
 
       prompt.Show();
+      */
+
+      MessageBox.Show(
+        "You used to be able to change the live tile from here, but now you can do it by swiping up on the appbar below. Congrats for finding this though!",
+        "You found the master ball!",
+        MessageBoxButton.OK);
     }
 
     // returns true if the update prompt was shown

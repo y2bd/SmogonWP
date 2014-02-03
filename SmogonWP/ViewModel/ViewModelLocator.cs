@@ -28,6 +28,7 @@ namespace SmogonWP.ViewModel
     public const string MovesetPath = "/View/MovesetView.xaml";
     public const string StatsPath = "/View/StatsView.xaml";
     public const string CreditsPath = "/View/CreditsView.xaml";
+    public const string LiveTilePath = "/View/LiveTileView.xaml";
 
     /// <summary>
     /// Initializes a new instance of the ViewModelLocator class.
@@ -72,6 +73,8 @@ namespace SmogonWP.ViewModel
 
       SimpleIoc.Default.Register<NatureViewModel>();
       SimpleIoc.Default.Register<TypeViewModel>();
+
+      SimpleIoc.Default.Register<LiveTileViewModel>();
 
       SimpleIoc.Default.Register<PokemonSearchViewModel>();
       SimpleIoc.Default.Register<PokemonDataViewModel>();
@@ -188,6 +191,14 @@ namespace SmogonWP.ViewModel
       get
       {
         return ServiceLocator.Current.GetInstance<StatsViewModel>();
+      }
+    }
+
+    public LiveTileViewModel LiveTile
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<LiveTileViewModel>();
       }
     }
 

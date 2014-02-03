@@ -11,6 +11,9 @@ namespace SmogonWP.Services
 {
   public class LiveTileService
   {
+    public const string TileStyleKey = "tilestyle";
+    public const string TileImageKey = "tileimage";
+
     #region main tile
     private static readonly List<string> SecretTiles = new List<string>
     {
@@ -34,7 +37,6 @@ namespace SmogonWP.Services
       "meloetta",
       "milotic",
       "murkrow",
-      "names",
       "pancham",
       "pichu",
       "rotom",
@@ -46,13 +48,22 @@ namespace SmogonWP.Services
     };
 
     private readonly IDataLoadingService _dataService;
+    private readonly ISettingsService _settingsService;
 
-    public LiveTileService(IDataLoadingService dataService)
+    public LiveTileService(IDataLoadingService dataService, ISettingsService settingsService)
     {
       _dataService = dataService;
-    }
+      _settingsService = settingsService;
 
-    public async Task GenerateFlipTileAsync(bool withSecret=false)
+      // this will transition the old tile save format to the new one
+      if (_settingsService.Load("secret", false))
+      {
+        // if we were shuffling previously, keep on shuffling
+        _settingsService.Save(TileStyleKey, 1);
+      }
+    }
+    
+    public async Task GenerateFlipTileAsync()
     {
       string name;
       Paragraph desc;
@@ -66,9 +77,16 @@ namespace SmogonWP.Services
 
       } while (desc == null);
       
-      var tileData = createTileData(name, desc.Content, withSecret);
+      var tileData = createTileData(name, desc.Content);
 
       updateTile(tileData);
+    }
+
+    public IEnumerable<Uri> GetSecretTilePaths()
+    {
+      return SecretTiles.Select(
+        s => new Uri(Path.Combine("/Assets/Secret/", s + ".png"), 
+                     UriKind.RelativeOrAbsolute));
     }
 
     private async Task<PokemonData> getRandomPokemon()
@@ -82,17 +100,22 @@ namespace SmogonWP.Services
       return await _dataService.FetchPokemonDataAsync(chosen);
     }
     
-    private FlipTileData createTileData(string pokemonName, string description, bool withSecret)
+    private FlipTileData createTileData(string pokemonName, string description)
     {
+      var tileStyle = _settingsService.Load(TileStyleKey, 0);
+      var tileImage = _settingsService.Load(TileImageKey, 0);
+
       var wideBackgroundImage = new Uri("/Assets/Tiles/smogon_widetile.png", UriKind.RelativeOrAbsolute);
 
-      if (withSecret)
+      if (tileStyle > 0)
       {
-        var rnd = new Random();
+        // if we have a chosen tile, use it
+        // otherwise pick a random one
+        var index = tileStyle == 2 ? tileImage : (new Random()).Next(SecretTiles.Count);
 
-        var rndSecret = SecretTiles[rnd.Next(SecretTiles.Count)];
+        var imagePath = SecretTiles[index];
 
-        wideBackgroundImage = constructSecretTilePath(rndSecret);
+        wideBackgroundImage = constructSecretTilePath(imagePath);
       }
 
       return new FlipTileData
@@ -100,6 +123,7 @@ namespace SmogonWP.Services
         WideBackgroundImage = wideBackgroundImage,
         WideBackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
         WideBackContent = description,
+        BackgroundImage = new Uri(string.Empty, UriKind.Relative),
         BackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
         BackContent = description,
         BackTitle = pokemonName,

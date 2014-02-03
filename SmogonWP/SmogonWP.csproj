@@ -180,6 +180,7 @@
     <Compile Include="ViewModel\Items\PokemonItemViewModel.cs" />
     <Compile Include="ViewModel\Items\TypeItemViewModel.cs" />
     <Compile Include="ViewModel\ItemSearchViewModel.cs" />
+    <Compile Include="ViewModel\LiveTileViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MoveDataViewModel.cs" />
     <Compile Include="ViewModel\MoveSearchViewModel.cs" />
@@ -210,6 +211,9 @@
     </Compile>
     <Compile Include="View\ItemSearchView.xaml.cs">
       <DependentUpon>ItemSearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LiveTileView.xaml.cs">
+      <DependentUpon>LiveTileView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MoveDataView.xaml.cs">
       <DependentUpon>MoveDataView.xaml</DependentUpon>
@@ -282,6 +286,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ItemSearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\LiveTileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
