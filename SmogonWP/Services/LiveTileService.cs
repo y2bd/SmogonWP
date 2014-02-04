@@ -78,6 +78,9 @@ namespace SmogonWP.Services
       {
         // if we were shuffling previously, keep on shuffling
         _settingsService.Save(TileStyleKey, 1);
+
+        // we don't need secret anymore
+        _settingsService.UnregisterSetting("secret");
       }
     }
     
