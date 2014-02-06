@@ -101,6 +101,9 @@
     <Compile Include="Controls\DataTemplateSelector.cs" />
     <Compile Include="Controls\SetupChoiceTemplateSelector.cs" />
     <Compile Include="Controls\TextElementTemplateSelector.cs" />
+    <Compile Include="Controls\Tiles\FlipTileNormal.xaml.cs">
+      <DependentUpon>FlipTileNormal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Tiles\FlipTileWide.xaml.cs">
       <DependentUpon>FlipTileWide.xaml</DependentUpon>
     </Compile>
@@ -245,6 +248,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\Tiles\FlipTileNormal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Tiles\FlipTileWide.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

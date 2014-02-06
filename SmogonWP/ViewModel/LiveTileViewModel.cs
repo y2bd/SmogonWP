@@ -30,6 +30,23 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => TileStyles);
         }
       }
+    }
+
+    private TrayService _trayService;
+    public TrayService TrayService
+    {
+      get
+      {
+        return _trayService;
+      }
+      set
+      {
+        if (_trayService != value)
+        {
+          _trayService = value;
+          RaisePropertyChanged(() => TrayService);
+        }
+      }
     }			
 
     private int _selectedTileStyle;
@@ -104,10 +121,11 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    public LiveTileViewModel(LiveTileService tileService, ISettingsService settingsService)
+    public LiveTileViewModel(LiveTileService tileService, ISettingsService settingsService, TrayService trayService)
     {
       _tileService = tileService;
       _settingsService = settingsService;
+      _trayService = trayService;
 
       TileStyles = new ObservableCollection<string>
       {
@@ -133,21 +151,29 @@ namespace SmogonWP.ViewModel
 
     private async void onSelectedStyleChanged(int value)
     {
+      TrayService.AddJob("tilemake", "Generating tile...");
+      
       _settingsService.Save(LiveTileService.TileStyleKey, value);
+
+      TileListEnabled = value == 2;
 
       // for aesthetic reasons
       await Task.Delay(250);
 
-      TileListEnabled = value == 2;
+      await _tileService.GenerateFlipTileAsync();
 
-      await Task.Run(new Func<Task>(_tileService.GenerateFlipTileAsync));
+      TrayService.RemoveJob("tilemake");
     }
 
     private async void onSelectedImageChanged(int value)
     {
+      TrayService.AddJob("tilemake", "Generating tile...");
+
       _settingsService.Save(LiveTileService.TileImageKey, value);
 
-      await Task.Run(new Func<Task>(_tileService.GenerateFlipTileAsync));
+      await _tileService.GenerateFlipTileAsync();
+
+      TrayService.RemoveJob("tilemake");
     }
   }
 }

@@ -1,4 +1,9 @@
-﻿using Microsoft.Phone.Shell;
+﻿using System.IO.IsolatedStorage;
+using System.Windows;
+using System.Windows.Media.Imaging;
+using Windows.Storage;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
 using SchmogonDB.Model.Pokemon;
 using SchmogonDB.Model.Text;
 using System;
@@ -6,11 +11,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using SmogonWP.Controls.Tiles;
 
 namespace SmogonWP.Services
 {
   public class LiveTileService
   {
+    private const string NormalTilePath = "LiveTileNormal.jpg";
+
     public const string TileStyleKey = "tilestyle";
     public const string TileImageKey = "tileimage";
 
@@ -127,6 +135,8 @@ namespace SmogonWP.Services
       var tileImage = _settingsService.Load(TileImageKey, 0);
 
       var wideBackgroundImage = new Uri("/Assets/Tiles/smogon_widetile.png", UriKind.RelativeOrAbsolute);
+      var normalBackgroundImage = new Uri("/Assets/Tiles/smogon_medtile.png", UriKind.RelativeOrAbsolute);
+      var smallBackgroundImage = new Uri("/Assets/Tiles/smogon_smalltile.png", UriKind.RelativeOrAbsolute);
 
       if (tileStyle > 0)
       {
@@ -137,6 +147,8 @@ namespace SmogonWP.Services
         var imagePath = SecretTiles[index];
 
         wideBackgroundImage = constructSecretTilePath(imagePath);
+        normalBackgroundImage = createRegularTileImage(renderRegularTile(wideBackgroundImage));
+        smallBackgroundImage = normalBackgroundImage;
       }
 
       return new FlipTileData
@@ -144,7 +156,8 @@ namespace SmogonWP.Services
         WideBackgroundImage = wideBackgroundImage,
         WideBackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
         WideBackContent = description,
-        BackgroundImage = new Uri(string.Empty, UriKind.Relative),
+        BackgroundImage = normalBackgroundImage,
+        SmallBackgroundImage = smallBackgroundImage,
         BackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
         BackContent = description,
         BackTitle = pokemonName,
@@ -167,6 +180,45 @@ namespace SmogonWP.Services
       var path = Path.Combine("/Assets/Secret/", name + ".png");
 
       return new Uri(path, UriKind.RelativeOrAbsolute);
+    }
+
+    private Uri createRegularTileImage(WriteableBitmap wbp)
+    {
+      string path;
+
+      using (var isf = IsolatedStorageFile.GetUserStoreForApplication())
+      {
+        if (!isf.DirectoryExists("/Shared")) isf.CreateDirectory("/shared");
+        if (!isf.DirectoryExists("/Shared/ShellContent")) isf.CreateDirectory("/Shared/ShellContent");
+
+        path = Path.Combine("/Shared/ShellContent", NormalTilePath);
+
+        using (var stream = isf.OpenFile(path, FileMode.OpenOrCreate))
+        {
+          wbp.SaveJpeg(stream, 336, 336, 0, 100);
+        }
+      }
+
+      return new Uri("isostore:" + path, UriKind.Absolute);
+    }
+
+    private WriteableBitmap renderRegularTile(Uri wideTilePath)
+    {
+      var regularTile = new FlipTileNormal();
+      regularTile.Measure(new Size(336, 336));
+      regularTile.Arrange(new Rect(0, 0, 336, 336));
+
+      var bmi = new BitmapImage(wideTilePath);
+      regularTile.TileImage.Source = bmi;
+
+      regularTile.Measure(new Size(336, 336));
+      regularTile.Arrange(new Rect(0, 0, 336, 336));
+
+      var wbp = new WriteableBitmap(336, 336);
+      wbp.Render(regularTile, null);
+      wbp.Invalidate();
+
+      return wbp;
     }
 
     #endregion main tiles
