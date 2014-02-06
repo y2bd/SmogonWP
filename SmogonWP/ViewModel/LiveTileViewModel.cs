@@ -136,7 +136,7 @@ namespace SmogonWP.ViewModel
 
       TileImages = new ObservableCollection<ImageSource>(loadTileImages());
 
-      _selectedTileStyle = _settingsService.Load(LiveTileService.TileStyleKey, 0);
+      _selectedTileStyle = _settingsService.Load(LiveTileService.TileStyleKey, 1);
       _selectedTileImage = _settingsService.Load(LiveTileService.TileImageKey, 0);
 
       TileListEnabled = _selectedTileStyle == 2;

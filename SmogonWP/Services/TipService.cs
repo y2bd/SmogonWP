@@ -9,7 +9,7 @@ namespace SmogonWP.Services
     private static readonly string[] Tips = {
       "This app has an awesome forum (via Reddit) that you can visit by swiping up on the appbar below!",
       "This app has a live tile! Pin it to your start page to see!",
-      "Although this app doesn't have X and Y data, you can still see how the Fairy type fares on the Type page!",
+      "Although this app doesn't much X and Y data, you can still see how the Fairy type fares on the Type page!",
       "After choosing any of a Pokemon's movesets, you can click the stats button to jump straight to the stats calculator with values filled in!",
       "Many things are tappable! Try tapping on something and see what happens!",
       "Studies have shown that rating applications makes you at least twenty percent more awesome!",
@@ -29,7 +29,7 @@ namespace SmogonWP.Services
       "If you have any suggestions for the app, you should email the developer!",
       "This app has voice commands! Try holding down your home button and saying 'Smogon, search for Gardevoir'!",
       "You can pin any of the menu items below to your start screen. Just press and hold!",
-      "There's a master ball hidden underneath this message! No, seriously!"
+      "Need a change of scenery? Set a new live tile by swiping up on the appbar below!"
     };
 
     public static void ShowTipOfTheDay()

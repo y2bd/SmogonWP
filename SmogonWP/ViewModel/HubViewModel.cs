@@ -2,10 +2,8 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
-using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
-using SchmogonDB;
 using SchmogonDB.Model;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
@@ -15,7 +13,6 @@ using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
-using SmogonWP.View;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 using System;
@@ -34,6 +31,8 @@ namespace SmogonWP.ViewModel
 {
   public class HubViewModel : ViewModelBase
   {
+    public const string UpdateKey = "update_" + "1.1.4";
+
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
     private readonly LiveTileService _tileService;
@@ -710,29 +709,24 @@ If you have any questions, sliding up the appbar at the bottom will give you the
     // returns true if the update prompt was shown
     private bool showUpdatePrompt()
     {
-      const string updateKey = "update_" + "1.1.3";
-
       // if we already have shown it, don't do it again stupid
-      if (_settingsService.SettingRegistered(updateKey)) return false;
+      if (_settingsService.SettingRegistered(UpdateKey)) return false;
 
       // if we're opening the app for the first time, don't do it either
       if (!_settingsService.SettingRegistered("haswelcomed")) return false;
 
       MessageBox.Show(
-        "Hey everyone! In this update you can now filter by two types on the Pokemon page. Great for when you need a Poison/Psychic Pokemon (there aren't any by the way).\n\n" +
-        "More importantly, this update is the first in many to slowly update this app to XY. No, no new Pokemon have been added yet, the Smogon folks are still writing up those analyses! " +
-        "However, many old moves and Pokemon have changed in XY, whether it be as minor as having their stats adjusted or as major as having their types changed. The app now reflects those changes; go on and look, Gardevoir's a Psychic/Fairy type now!\n\n" +
-        "There are two downsides to this though. First, I haven't changed any of the write-ups. I didn't write them in the first place, so it feels wrong to change them. " +
-        "Because of this, you may find discrepencies between the write-ups and the presented stats (for example, the analysis may say that Surf has a BP of 95 even though it was changed to 90). " +
-        "If you're ever unsure about a piece of information, I recommend checking Bulbapedia, as they always have the most up-to-date info.\n\n" +
-        "The second downside won't affect everyone, but it's still important. As I am updating the app to XY, if you're a BW/B2W2 hold-out, you'll find that much of the info in the app doesn't apply to you, or may even be wrong. " +
-        "I'm really sorry about this, but I had updating the app to XY planned from the beginning. If you really need BW information, I again recommend checking out Bulbapedia or even the Smogon website, as they both " +
-        "keep track of Pokemon changes across generations.\n\n" +
-        "Thanks for reading this entire thing, and enjoy the update! If you have anything at all you wish to ask me, just swipe up on the appbar below and you'll see an option to email me.",
+        "Hey everyone! This update is a mostly full of minor fixes and tweaks. One of the cool things you can take advantage of however are the new live tiles!\n\n" +
+        "If you swipe up on the appbar below (after you dismiss this message) you'll see a new option to change the live tile. There you'll be able to choose between " +
+        "a ton of cool Pokemon art to set as your live tile and make your start screen that much more awesome.\n\n" +
+        "You can even set it to automatically shuffle between them each time you reopen the app—in fact I've gone " +
+        "and turned that option on for you! Feel free to change it if you want, there's even an option to turn it back into the SmogonWP logo if you like.\n\n" +
+        "If there are any Pokemon that you'd like to make your tile that you don't see there, don't be afraid to email me a request! Until next time, happy battling!\n\n" +
+        "PS: If you really like the tiles, be sure to check out the credits page for information on how to find more of them, or even make them your computer wallpaper.",
         "Update Notes (Please Read)",
         MessageBoxButton.OK);
 
-      _settingsService.Save(updateKey, true);
+      _settingsService.Save(UpdateKey, true);
 
       return true;
     }

@@ -81,17 +81,13 @@ namespace SmogonWP.Services
       _dataService = dataService;
       _settingsService = settingsService;
 
-      // this will transition the old tile save format to the new one
-      if (_settingsService.Load("secret", false))
+      if (_settingsService.SettingRegistered("secret"))
       {
-        // if we were shuffling previously, keep on shuffling
-        _settingsService.Save(TileStyleKey, 1);
-
         // we don't need secret anymore
         _settingsService.UnregisterSetting("secret");
       }
     }
-    
+
     public async Task GenerateFlipTileAsync()
     {
       string name;
@@ -105,7 +101,7 @@ namespace SmogonWP.Services
         desc = pokemon.Overview.FirstOrDefault(e => e is Paragraph) as Paragraph;
 
       } while (desc == null);
-      
+
       var tileData = createTileData(name, desc.Content);
 
       updateTile(tileData);
@@ -114,7 +110,7 @@ namespace SmogonWP.Services
     public IEnumerable<Uri> GetSecretTilePaths()
     {
       return SecretTiles.Select(
-        s => new Uri(Path.Combine("/Assets/Secret/", s + ".png"), 
+        s => new Uri(Path.Combine("/Assets/Secret/", s + ".png"),
                      UriKind.RelativeOrAbsolute));
     }
 
@@ -128,10 +124,10 @@ namespace SmogonWP.Services
 
       return await _dataService.FetchPokemonDataAsync(chosen);
     }
-    
+
     private FlipTileData createTileData(string pokemonName, string description)
     {
-      var tileStyle = _settingsService.Load(TileStyleKey, 0);
+      var tileStyle = _settingsService.Load(TileStyleKey, 1);
       var tileImage = _settingsService.Load(TileImageKey, 0);
 
       var wideBackgroundImage = new Uri("/Assets/Tiles/smogon_widetile.png", UriKind.RelativeOrAbsolute);
