@@ -144,7 +144,7 @@ namespace SmogonWP.ViewModel.Items
           Description = "Check out how natures affect your Pokemon's stats",
           NavigationPath = ViewModelLocator.NaturePath,
           BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Psychic]),
-          IconPath = "/Assets/Icons/smile.png"
+          IconPath = "/Assets/Icons/emotion.png"
         },
         new NavigationItemViewModel
         {

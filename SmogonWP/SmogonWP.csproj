@@ -337,6 +337,9 @@
     </None>
     <None Include="packages.config" />
     <Content Include="Assets\AppBar\appbar.marketplace.png" />
+    <Content Include="Assets\Icons\emotion.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Secret\arcanine.png" />
     <Content Include="Assets\Secret\beedrill.png" />
     <Content Include="Assets\Secret\braixen.png" />
@@ -385,6 +388,7 @@
     <Content Include="Assets\Secret\zweilous.png" />
     <Content Include="Assets\Tiles\Secondary\calc.png" />
     <Content Include="Assets\Tiles\Secondary\conflict.png" />
+    <Content Include="Assets\Tiles\Secondary\emotion.png" />
     <Content Include="Assets\Tiles\Secondary\fire.png" />
     <Content Include="Assets\Tiles\Secondary\idea.png" />
     <Content Include="Assets\Tiles\Secondary\pill.png" />
