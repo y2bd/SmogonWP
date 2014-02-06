@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -119,6 +120,8 @@ namespace SmogonWP.ViewModel
 
       _selectedTileStyle = _settingsService.Load(LiveTileService.TileStyleKey, 0);
       _selectedTileImage = _settingsService.Load(LiveTileService.TileImageKey, 0);
+
+      TileListEnabled = _selectedTileStyle == 2;
     }
 
     private IEnumerable<ImageSource> loadTileImages()
@@ -130,21 +133,21 @@ namespace SmogonWP.ViewModel
 
     private async void onSelectedStyleChanged(int value)
     {
-      TileListEnabled = value != 2;
-
       _settingsService.Save(LiveTileService.TileStyleKey, value);
 
       // for aesthetic reasons
-      await Task.Delay(100);
+      await Task.Delay(250);
 
-      await _tileService.GenerateFlipTileAsync();
+      TileListEnabled = value == 2;
+
+      await Task.Run(new Func<Task>(_tileService.GenerateFlipTileAsync));
     }
 
     private async void onSelectedImageChanged(int value)
     {
       _settingsService.Save(LiveTileService.TileImageKey, value);
 
-      await _tileService.GenerateFlipTileAsync();
+      await Task.Run(new Func<Task>(_tileService.GenerateFlipTileAsync));
     }
   }
 }
