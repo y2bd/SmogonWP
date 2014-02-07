@@ -9,9 +9,11 @@ namespace SchmogonDB.Model.Teams
 {
   public class TeamMember
   {
+    internal int ID { get; set; }
+
     public Pokemon.Pokemon Pokemon { get; set; }
 
-    public IEnumerable<Move> Moves { get; set; } 
+    public List<Move> Moves { get; set; } 
 
     public Ability Ability { get; set; }
 
@@ -23,7 +25,7 @@ namespace SchmogonDB.Model.Teams
 
     public int Level { get; set; }
 
-    public TeamMember(Pokemon.Pokemon pokemon, IEnumerable<Move> moves, Ability ability, Nature nature, Item item, BaseStat evSpread, int level)
+    public TeamMember(Pokemon.Pokemon pokemon, List<Move> moves, Ability ability, Nature nature, Item item, BaseStat evSpread, int level)
     {
       Pokemon = pokemon;
       Moves = moves;

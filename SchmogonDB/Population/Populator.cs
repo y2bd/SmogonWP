@@ -58,6 +58,8 @@ namespace SchmogonDB.Population
     private async Task createLevel4Tables(Database database)
     {
       await database.ExecuteStatementAsync(CreateMoveToMoveCollectionTableQuery);
+      await database.ExecuteStatementAsync(CreateTeamTableQuery);
+      await database.ExecuteStatementAsync(CreateTeamMemberTableQuery);
     }
 
     private async Task createIndices(Database database)

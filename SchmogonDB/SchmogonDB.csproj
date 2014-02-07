@@ -108,6 +108,9 @@
     <Compile Include="Model\Pokemon\Tier.cs" />
     <Compile Include="Model\Stats\BaseStat.cs" />
     <Compile Include="Model\Stats\StatType.cs" />
+    <Compile Include="Model\Teams\Team.cs" />
+    <Compile Include="Model\Teams\TeamMember.cs" />
+    <Compile Include="Model\Teams\TeamType.cs" />
     <Compile Include="Model\Text\ITextElement.cs" />
     <Compile Include="Model\Text\Paragraph.cs" />
     <Compile Include="Model\Text\UnorderedList.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Population\TextElementPopulator.cs" />
     <Compile Include="SchmogonDBClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TeamClient.cs" />
     <Compile Include="TextElementClient.cs" />
     <Compile Include="Tools\NatureTool.cs" />
     <Compile Include="Tools\TypeTool.cs" />

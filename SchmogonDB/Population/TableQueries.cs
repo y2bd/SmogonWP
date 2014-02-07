@@ -152,6 +152,34 @@
         id_MoveCollection INTEGER NOT NULL  REFERENCES MoveCollection (id)
         );";
 
+    private const string CreateTeamTableQuery =
+      @"CREATE TABLE IF NOT EXISTS Team (
+        id INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
+        Type INTEGER,
+        Name TEXT 
+        );";
+
+    private const string CreateTeamMemberTableQuery =
+      @"CREATE TABLE IF NOT EXISTS TeamMember (
+        id INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
+        id_Team INTEGER NOT NULL  REFERENCES Team (id),
+        id_Pokemon TEXT NOT NULL  REFERENCES Pokemon (Name),
+        id_Move1 TEXT NOT NULL  REFERENCES Move (Name),
+        id_Move2 TEXT NOT NULL  REFERENCES Move (Name),
+        id_Move3 TEXT NOT NULL  REFERENCES Move (Name),
+        id_Move4 TEXT NOT NULL  REFERENCES Move (Name),
+        id_Ability TEXT NOT NULL  REFERENCES Ability (Name),
+        id_Item TEXT NOT NULL  REFERENCES Item (Name),
+        Nature INTEGER,
+        Level INTEGER,
+        EV_HP INTEGER,
+        EV_Attack INTEGER,
+        EV_Defense INTEGER,
+        EV_SpecialAttack INTEGER,
+        EV_SpecialDefense INTEGER,
+        EV_Speed INTEGER 
+        );";
+
     #endregion level 4
 
     private const string CreateIndicesQuery =
