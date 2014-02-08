@@ -130,60 +130,66 @@
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="SearchPanelVisible">
                 <VisualStateGroup.Transitions>
-                    <VisualTransition From="Collapsed"
-                                      GeneratedDuration="0"
-                                      To="Visible"
-                                      x:Name="ToVisibleTransition">
-                        <Storyboard>
-                            <DoubleAnimation Duration="0:0:0.6"
-                                             To="0"
-                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
-                                             Storyboard.TargetName="QuickSearchPanel">
-                                <DoubleAnimation.EasingFunction>
-                                    <QuarticEase EasingMode="EaseOut" />
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </VisualTransition>
-                    <VisualTransition From="Visible"
-                                      GeneratedDuration="0"
-                                      To="Collapsed">
-                        <Storyboard>
-                            <DoubleAnimation Duration="0:0:0.5"
-                                             To="800"
-                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
-                                             Storyboard.TargetName="QuickSearchPanel">
-                                <DoubleAnimation.EasingFunction>
-                                    <QuarticEase EasingMode="EaseIn" />
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                            <DoubleAnimation Duration="0:0:0.5"
-                                             From="1"
-                                             To="1"
-                                             Storyboard.TargetProperty="Opacity"
-                                             Storyboard.TargetName="QuickSearchPanel">
-                                <DoubleAnimation.EasingFunction>
-                                    <QuarticEase EasingMode="EaseOut" />
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
+                    <VisualTransition GeneratedDuration="0:0:0.7">
+                        <VisualTransition.GeneratedEasingFunction>
+                            <QuarticEase EasingMode="EaseInOut" />
+                        </VisualTransition.GeneratedEasingFunction>
                     </VisualTransition>
                 </VisualStateGroup.Transitions>
                 <VisualState x:Name="Collapsed">
                     <Storyboard>
                         <DoubleAnimation Duration="0"
-                                         To="0"
+                                         To="1"
                                          Storyboard.TargetProperty="Opacity"
                                          Storyboard.TargetName="QuickSearchPanel"
                                          d:IsOptimized="True" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="QuickSearchPanel">
+                        	<DiscreteObjectKeyFrame KeyTime="0">
+                        		<DiscreteObjectKeyFrame.Value>
+                        			<Visibility>Collapsed</Visibility>
+                        		</DiscreteObjectKeyFrame.Value>
+                        	</DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Visible">
-                    <Storyboard>
+                    <Storyboard Completed="Visible_OnCompleted">
                         <DoubleAnimation Duration="0"
                                          To="0"
                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
                                          Storyboard.TargetName="QuickSearchPanel"
+                                         d:IsOptimized="True" />
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="QuickSearchResults">
+                <VisualStateGroup.Transitions>
+                    <VisualTransition GeneratedDuration="0:0:0.2">
+                        <VisualTransition.GeneratedEasingFunction>
+                            <CubicEase EasingMode="EaseInOut" />
+                        </VisualTransition.GeneratedEasingFunction>
+                    </VisualTransition>
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="Results">
+                    <Storyboard>
+                        <DoubleAnimation Duration="0"
+                                         To="0"
+                                         Storyboard.TargetProperty="(UIElement.Opacity)"
+                                         Storyboard.TargetName="NoItemsFoundText"
+                                         d:IsOptimized="True" />
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="NoResults">
+                    <Storyboard>
+                        <DoubleAnimation Duration="0"
+                                         To="0"
+                                         Storyboard.TargetProperty="(UIElement.Opacity)"
+                                         Storyboard.TargetName="QuickSearchList"
+                                         d:IsOptimized="True" />
+                        <DoubleAnimation Duration="0"
+                                         To="1"
+                                         Storyboard.TargetProperty="(UIElement.Opacity)"
+                                         Storyboard.TargetName="NoItemsFoundText"
                                          d:IsOptimized="True" />
                     </Storyboard>
                 </VisualState>
@@ -229,21 +235,23 @@
             </phone:PanoramaItem>
         </phone:Panorama>
 
-        <StackPanel x:Name="stackPanel" Margin="0,36,0,0"
+        <StackPanel x:Name="stackPanel"
+                    Margin="0,36,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Background="#FF896FA0"
                     Orientation="Horizontal"
-                    toolkit:TurnstileFeatherEffect.FeatheringIndex="0" RenderTransformOrigin="0.5,0.5">
-        	<StackPanel.RenderTransform>
-        		<CompositeTransform/>
-        	</StackPanel.RenderTransform>
+                    toolkit:TurnstileFeatherEffect.FeatheringIndex="0"
+                    RenderTransformOrigin="0.5,0.5">
+            <StackPanel.RenderTransform>
+                <CompositeTransform />
+            </StackPanel.RenderTransform>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Tap">
                     <i:InvokeCommandAction Command="{Binding LogoTapCommand}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            
+
             <Image Source="/Assets/Icons/smogon.png"
                    Height="64"
                    Margin="12,0,-12,0" />
@@ -259,6 +267,18 @@
         <Grid x:Name="QuickSearchPanel"
               Background="{StaticResource PhoneChromeBrush}"
               RenderTransformOrigin="0.5,0.5">
+            <i:Interaction.Triggers>
+                <ec:DataTrigger Binding="{Binding ItemsFound}"
+                                Value="false">
+                    <ec:GoToStateAction x:Name="ShowNoFoundText"
+                                        StateName="NoResults" />
+                </ec:DataTrigger>
+                <ec:DataTrigger Binding="{Binding ItemsFound}"
+                                Value="true">
+                    <ec:GoToStateAction x:Name="HideNoFoundText"
+                                        StateName="Results" />
+                </ec:DataTrigger>
+            </i:Interaction.Triggers>
             <Grid.RenderTransform>
                 <CompositeTransform TranslateY="800" />
             </Grid.RenderTransform>
@@ -289,7 +309,18 @@
                         <util:UpdateTextBindingOnPropertyChanged />
                     </i:Interaction.Behaviors>
                 </toolkit:PhoneTextBox>
+
             </StackPanel>
+            <TextBlock x:Name="NoItemsFoundText"
+                       Grid.Row="2"
+                       Style="{StaticResource EmptyListHeaderStyle}"
+                       Visibility="Visible"
+                       Margin="24,0"
+                       TextWrapping="Wrap"
+                       Opacity="0">
+                    I couldn't find a match. Please try another query.
+            </TextBlock>
+
             <controls:BindableLongListSelector x:Name="QuickSearchList"
                                                Grid.Row="2"
                                                Margin="12,0,12,0"

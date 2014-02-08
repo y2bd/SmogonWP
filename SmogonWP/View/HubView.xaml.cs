@@ -15,13 +15,7 @@ namespace SmogonWP.View
     public HubView()
     {
       InitializeComponent();
-
-      ToVisibleTransition.Storyboard.Completed += (sender, args) =>
-      {
-        QuickSearchBox.Focus();
-        QuickSearchBox.SelectAll();
-      };
-
+      
     }
 
     private void Searchbox_OnKeyUp(object sender, KeyEventArgs e)
@@ -48,5 +42,10 @@ namespace SmogonWP.View
       }
     }
 
+    private void Visible_OnCompleted(object sender, EventArgs e)
+    {
+      QuickSearchBox.Focus();
+      QuickSearchBox.SelectAll();
+    }
   }
 }

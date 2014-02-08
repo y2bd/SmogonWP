@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Tasks;
 using Nito.AsyncEx;
+using SchmogonDB;
 using SchmogonDB.Model;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
@@ -236,6 +237,14 @@ namespace SmogonWP.ViewModel
           _filteredSearchItems = value;
           RaisePropertyChanged(() => FilteredSearchItems);
         }
+      }
+    }
+
+    public bool ItemsFound
+    {
+      get
+      {
+        return _filteredSearchItems != null && _filteredSearchItems.Count > 0;
       }
     }
 
@@ -608,6 +617,8 @@ If you have any questions, sliding up the appbar at the bottom will give you the
           m => m.Name.ToLower().Contains(Filter.ToLower().Trim())
         ).OrderBy(m => m.Name)
       );
+
+      RaisePropertyChanged(() => ItemsFound);
     }
 
     private void onSearchItemSelected(ISearchItem item)
