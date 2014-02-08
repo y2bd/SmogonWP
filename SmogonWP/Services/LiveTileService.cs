@@ -60,6 +60,8 @@ namespace SmogonWP.Services
       "rotom",
       "salamence",
       "scizor",
+      "scrafty",
+      "scraggy",
       "seaking",
       "slowpoke",
       "solosis",

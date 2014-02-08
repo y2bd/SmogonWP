@@ -382,6 +382,8 @@
     <Content Include="Assets\Secret\rotom.png" />
     <Content Include="Assets\Secret\salamence.png" />
     <Content Include="Assets\Secret\scizor.png" />
+    <Content Include="Assets\Secret\scrafty.png" />
+    <Content Include="Assets\Secret\scraggy.png" />
     <Content Include="Assets\Secret\seaking.png" />
     <Content Include="Assets\Secret\slowpoke.png" />
     <Content Include="Assets\Secret\solosis.png" />
