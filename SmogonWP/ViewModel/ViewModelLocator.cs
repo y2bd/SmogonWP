@@ -48,6 +48,7 @@ namespace SmogonWP.ViewModel
         RegisterIfUnregistered<IDataLoadingService, DataLoadingService>();
         RegisterIfUnregistered<ISchmogonDBClient, SchmogonDBClient>();
         RegisterIfUnregistered<ISettingsService, SettingsService>();
+        RegisterIfUnregistered<ITeamBuilderClient, SchmogonDBClient>();
       }
 
       RegisterIfUnregistered<SchmogonToolset>();

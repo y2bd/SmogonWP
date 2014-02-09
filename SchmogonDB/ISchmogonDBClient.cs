@@ -4,6 +4,7 @@ using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
 using SchmogonDB.Model.Moves;
 using SchmogonDB.Model.Pokemon;
+using SchmogonDB.Model.Teams;
 using SchmogonDB.Model.Text;
 using SchmogonDB.Population;
 
@@ -28,7 +29,19 @@ namespace SchmogonDB
     Task<AbilityData> FetchAbilityDataAsync(Ability ability);
 
     Task<IEnumerable<ITextElement>> FetchTextElementsAsync(string ownerId, OwnerType ownerType, ElementType elementType);
-
+    
     Task InitializeDatabase();
+  }
+
+  public interface ITeamBuilderClient
+  {
+    Task<IEnumerable<Team>> FetchAllTeamsAsync();
+    Task<Team> CreateNewTeamAsync(string teamName, TeamType teamType);
+    Task UpdateTeamAsync(Team team);
+    Task DeleteTeamAsync(Team team);
+    Task AddMemberToTeamAsync(Team team, TeamMember member);
+    Task UpdateTeamMember(TeamMember member);
+    Task MoveTeamMember(TeamMember member, Team to);
+    Task DeleteTeamMember(TeamMember member);
   }
 }

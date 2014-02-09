@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SchmogonDB
 {
-  public partial class SchmogonDBClient : ISchmogonDBClient
+  public partial class SchmogonDBClient
   {
     private const string FetchItemSearchDataQuery =
       @"SELECT * FROM Item";

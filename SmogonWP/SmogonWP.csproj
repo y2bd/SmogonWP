@@ -143,6 +143,7 @@
     <Compile Include="Services\DataLoadingService.cs" />
     <Compile Include="Services\IDataLoadingService.cs" />
     <Compile Include="Services\IsolatedStorageService.cs" />
+    <Compile Include="Services\ITeamBuilderService.cs" />
     <Compile Include="Services\LiveTileService.cs" />
     <Compile Include="Services\Messaging\InitMessageBase.cs" />
     <Compile Include="Services\Messaging\MessageReceiver.cs" />
