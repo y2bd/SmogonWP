@@ -27,6 +27,7 @@ namespace SmogonWP.Services
     {
       "arcanine",
       "beedrill",
+      "bellossom",
       "braixen",
       "charizard",
       "duskull",
@@ -54,6 +55,7 @@ namespace SmogonWP.Services
       "milotic",
       "mismagius",
       "murkrow",
+      "oddish",
       "pancham",
       "pichu",
       "ralts",

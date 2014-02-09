@@ -349,6 +349,7 @@
     </Content>
     <Content Include="Assets\Secret\arcanine.png" />
     <Content Include="Assets\Secret\beedrill.png" />
+    <Content Include="Assets\Secret\bellossom.png" />
     <Content Include="Assets\Secret\braixen.png" />
     <Content Include="Assets\Secret\charizard.png" />
     <Content Include="Assets\Secret\duskull.png" />
@@ -376,6 +377,7 @@
     <Content Include="Assets\Secret\m_ampharos.png" />
     <Content Include="Assets\Secret\m_blaziken.png" />
     <Content Include="Assets\Secret\m_mawile.png" />
+    <Content Include="Assets\Secret\oddish.png" />
     <Content Include="Assets\Secret\pancham.png" />
     <Content Include="Assets\Secret\pichu.png" />
     <Content Include="Assets\Secret\ralts.png" />
