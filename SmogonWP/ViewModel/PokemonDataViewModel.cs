@@ -11,6 +11,7 @@ using SchmogonDB.Model.Pokemon;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
+using SmogonWP.Utilities;
 using SmogonWP.View;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
@@ -402,8 +403,6 @@ namespace SmogonWP.ViewModel
       _pageLocation = pokemon.PageLocation;
 
       TrayService.RemoveJob("fetchdata");
-      
-      MessengerInstance.Send(new VmToViewMessage<string, PokemonDataView>("loadedAnim"));
 
       WebAnalyticsService.Current.Log(new AnalyticsEvent
       {
@@ -412,10 +411,14 @@ namespace SmogonWP.ViewModel
         HitType = HitType.Event,
         ObjectType = this.GetType().Name,
       });
+      
+      MessengerInstance.Send(new VmToViewMessage<string, PokemonDataView>("loadedAnim"));
     }
     
     private async Task fetchThumbnailImage(string path)
     {
+      if (!NetUtilities.IsNetwork()) return;
+
       Stream s;
 
       using (var client = new HttpClient())
