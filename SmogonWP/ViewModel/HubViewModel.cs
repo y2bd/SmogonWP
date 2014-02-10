@@ -34,7 +34,7 @@ namespace SmogonWP.ViewModel
 {
   public class HubViewModel : ViewModelBase
   {
-    public const string UpdateKey = "update_" + "1.1.4";
+    public const string UpdateKey = "update_" + "1.1.4.1";
 
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
@@ -770,13 +770,11 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       if (!_settingsService.SettingRegistered("haswelcomed")) return false;
 
       MessageBox.Show(
-        "Hey everyone! This update is a mostly full of minor fixes and tweaks. One of the cool things you can take advantage of however are the new live tiles!\n\n" +
-        "If you swipe up on the appbar below (after you dismiss this message) you'll see a new option to change the live tile. There you'll be able to choose between " +
-        "a ton of cool Pokemon art to set as your live tile and make your start screen that much more awesome.\n\n" +
-        "You can even set it to automatically shuffle between them each time you reopen the app—in fact I've gone " +
-        "and turned that option on for you! Feel free to change it if you want, there's even an option to turn it back into the SmogonWP logo if you like.\n\n" +
-        "If there are any Pokemon that you'd like to make your tile that you don't see there, don't be afraid to email me a request! Until next time, happy battling!\n\n" +
-        "PS: If you really like the tiles, be sure to check out the credits page for information on how to find more of them, or even make them your computer wallpaper.",
+        "Hey everyone! I'm in the middle of working on the team builder for the next big update, but I thought that I might as well throw out another small one.\n\n" +
+        "This update adds some new live tiles (at the request of you guys!) as well as some other minor tweaks. " +
+        "One thing you should know is that due to the way I implemented the live tiles, if your option is 'choose a live tile', your tile choice might be changed " +
+        "every time I add new tiles. Because of this, I recommend that you go to the live tile settings screen and make your choice again.\n\n" +
+        "I apologize for the inconvenience, and I'll make sure to tell you guys whenever this might happen. Until next time, remember that you can always send me an email if you have any questions whatsoever.",
         "Update Notes (Please Read)",
         MessageBoxButton.OK);
 
