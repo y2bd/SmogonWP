@@ -120,6 +120,7 @@
     <Compile Include="Design\DesignDataLoadingService.cs" />
     <Compile Include="Design\DesignSchmogonDBClient.cs" />
     <Compile Include="Design\DesignSettingsService.cs" />
+    <Compile Include="Design\DesignTeamBuilderClient.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -143,7 +144,6 @@
     <Compile Include="Services\DataLoadingService.cs" />
     <Compile Include="Services\IDataLoadingService.cs" />
     <Compile Include="Services\IsolatedStorageService.cs" />
-    <Compile Include="Services\ITeamBuilderService.cs" />
     <Compile Include="Services\LiveTileService.cs" />
     <Compile Include="Services\Messaging\InitMessageBase.cs" />
     <Compile Include="Services\Messaging\MessageReceiver.cs" />
@@ -182,6 +182,7 @@
     <Compile Include="ViewModel\Items\NavigationItemViewModel.cs" />
     <Compile Include="ViewModel\Items\PokemonDataItemViewModel.cs" />
     <Compile Include="ViewModel\Items\PokemonItemViewModel.cs" />
+    <Compile Include="ViewModel\Items\TeamItemViewModel.cs" />
     <Compile Include="ViewModel\Items\TypeItemViewModel.cs" />
     <Compile Include="ViewModel\ItemSearchViewModel.cs" />
     <Compile Include="ViewModel\LiveTileViewModel.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="ViewModel\PokemonDataViewModel.cs" />
     <Compile Include="ViewModel\PokemonSearchViewModel.cs" />
     <Compile Include="ViewModel\StatsViewModel.cs" />
+    <Compile Include="ViewModel\TeamBuilderViewModel.cs" />
     <Compile Include="ViewModel\TypeViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AbilityDataView.xaml.cs">
@@ -239,6 +241,9 @@
     </Compile>
     <Compile Include="View\StatsView.xaml.cs">
       <DependentUpon>StatsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TeamBuilderView.xaml.cs">
+      <DependentUpon>TeamBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TypeView.xaml.cs">
       <DependentUpon>TypeView.xaml</DependentUpon>
@@ -329,6 +334,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\TeamBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\TypeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -344,7 +353,9 @@
       <LastGenOutput>GenericVCD.xml</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <Content Include="Assets\AppBar\add.png" />
     <Content Include="Assets\AppBar\appbar.marketplace.png" />
+    <Content Include="Assets\AppBar\check.png" />
     <Content Include="Assets\Icons\emotion.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

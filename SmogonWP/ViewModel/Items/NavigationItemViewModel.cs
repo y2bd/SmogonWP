@@ -161,6 +161,14 @@ namespace SmogonWP.ViewModel.Items
           NavigationPath = ViewModelLocator.StatsPath,
           BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Dragon]),
           IconPath = "/Assets/Icons/calc.png"
+        },
+        new NavigationItemViewModel
+        {
+          Title = "Team Builder",
+          Description = "Organize your favorite configurations into teams",
+          NavigationPath = ViewModelLocator.TeamBuilderPath,
+          BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Steel]),
+          IconPath = "/Assets/Icons/calc.png"
         }
       };
     }

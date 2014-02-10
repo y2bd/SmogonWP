@@ -18,10 +18,10 @@ namespace SmogonWP.Design
     {
       return new List<Team>
       {
-        await CreateNewTeamAsync("hello", TeamType.Singles),
-        await CreateNewTeamAsync("goodday", TeamType.Doubles),
-        await CreateNewTeamAsync("woopwoop", TeamType.Triples),
-        await CreateNewTeamAsync("muchies", TeamType.Rotation),
+        await CreateNewTeamAsync("the burninators", TeamType.Singles),
+        await CreateNewTeamAsync("substall", TeamType.Doubles),
+        await CreateNewTeamAsync("rush and mush", TeamType.Triples),
+        await CreateNewTeamAsync("dubs", TeamType.Rotation),
       };
     }
 
@@ -29,7 +29,7 @@ namespace SmogonWP.Design
     {
       await Task.Delay(0);
 
-      return new Team("John", TeamType.Singles, new List<TeamMember>
+      return new Team(teamName, teamType, new List<TeamMember>
       {
         new TeamMember
         {
@@ -46,7 +46,7 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Fire}, Tier.OU,
+            new Pokemon("jackson", new List<Type> {Type.Ice}, Tier.OU,
               new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
         },
         new TeamMember
@@ -64,7 +64,7 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Fire}, Tier.OU,
+            new Pokemon("jackson", new List<Type> {Type.Water}, Tier.OU,
               new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
         },
         new TeamMember
@@ -82,7 +82,7 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Fire}, Tier.OU,
+            new Pokemon("jackson", new List<Type> {Type.Electric}, Tier.OU,
               new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
         },
         new TeamMember
@@ -100,9 +100,45 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Fire}, Tier.OU,
+            new Pokemon("jackson", new List<Type> {Type.Psychic}, Tier.OU,
               new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
-        }
+        },
+        new TeamMember
+        {
+          Ability = new Ability("kung pao", "", ""),
+          EVSpread = new BaseStat(0, 0, 0, 252, 6, 252),
+          Item = new Item("meat", "", ""),
+          Level = 100,
+          Moves = new List<Move>
+          {
+            new Move("fiddlesticks", "", "", Type.Fire),
+            new Move("tenderizer", "", "", Type.Fighting),
+            new Move("blowdoom", "", "", Type.Dark),
+            new Move("shootgun", "", "", Type.Steel),
+          },
+          Nature = Nature.Timid,
+          Pokemon =
+            new Pokemon("jackson", new List<Type> {Type.Steel}, Tier.OU,
+              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
+        },
+        new TeamMember
+        {
+          Ability = new Ability("kung pao", "", ""),
+          EVSpread = new BaseStat(0, 0, 0, 252, 6, 252),
+          Item = new Item("meat", "", ""),
+          Level = 100,
+          Moves = new List<Move>
+          {
+            new Move("fiddlesticks", "", "", Type.Fire),
+            new Move("tenderizer", "", "", Type.Fighting),
+            new Move("blowdoom", "", "", Type.Dark),
+            new Move("shootgun", "", "", Type.Steel),
+          },
+          Nature = Nature.Timid,
+          Pokemon =
+            new Pokemon("jackson", new List<Type> {Type.Grass}, Tier.OU,
+              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
+        },
       });
     }
 

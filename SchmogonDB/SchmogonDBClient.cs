@@ -6,7 +6,7 @@ using Windows.Storage;
 
 namespace SchmogonDB
 {
-  public partial class SchmogonDBClient : ISchmogonDBClient, ITeamBuilderClient
+  public partial class SchmogonDBClient : ISchmogonDBClient
   {
     private static readonly StorageFolder DbRootPath = ApplicationData.Current.LocalFolder;
     private const string DbName = "pokemon.db";

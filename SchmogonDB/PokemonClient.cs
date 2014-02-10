@@ -111,10 +111,10 @@ namespace SchmogonDB
         );
 
         var typeString = statement.GetTextAt(8);
-        var types = typeString.Split(',').Select(t => (Type)(int.Parse(t)));
+        var types = typeString.Split(',').Select(t => (Type)(Int32.Parse(t)));
 
         var abilityString = statement.GetTextAt(9);
-        var abilities = abilityString.Split(',').Select(a => new Ability(a, string.Empty, Utilities.ConstructSmogonLink(a, Utilities.AbilityBasePath)));
+        var abilities = abilityString.Split(',').Select(a => new Ability(a, String.Empty, Utilities.ConstructSmogonLink(a, Utilities.AbilityBasePath)));
 
         var pageLocation = Utilities.ConstructSmogonLink(name, Utilities.PokemonBasePath);
 
@@ -183,27 +183,27 @@ namespace SchmogonDB
 
         var abilties = statement.GetTextAt(7)
                                 .Split(',')
-                                .Where(s => !string.IsNullOrWhiteSpace(s))
-                                .Select(s => new Ability(s, string.Empty, Utilities.ConstructSmogonLink(s, Utilities.AbilityBasePath)))
+                                .Where(s => !String.IsNullOrWhiteSpace(s))
+                                .Select(s => new Ability(s, String.Empty, Utilities.ConstructSmogonLink(s, Utilities.AbilityBasePath)))
                                 .ToList();
 
         var natures = statement.GetTextAt(8)
                                 .Split(',')
-                                .Where(s => !string.IsNullOrWhiteSpace(s))
-                                .Select(s => (Nature)int.Parse(s))
+                                .Where(s => !String.IsNullOrWhiteSpace(s))
+                                .Select(s => (Nature)Int32.Parse(s))
                                 .ToList();
 
         var items = statement.GetTextAt(9)
                              .Split(',')
-                             .Where(s => !string.IsNullOrWhiteSpace(s))
-                             .Select(s => new Item(s, string.Empty, Utilities.ConstructSmogonLink(s, Utilities.ItemBasePath)))
+                             .Where(s => !String.IsNullOrWhiteSpace(s))
+                             .Select(s => new Item(s, String.Empty, Utilities.ConstructSmogonLink(s, Utilities.ItemBasePath)))
                              .ToList();
 
         var moveCollections = statement.GetTextAt(10)
           .Split('|')
           .Select(
             s => s.Split(',')
-                  .Select(ss => new Move(ss, string.Empty, Utilities.ConstructSmogonLink(ss, Utilities.MoveBasePath), Type.Normal))
+                  .Select(ss => new Move(ss, String.Empty, Utilities.ConstructSmogonLink(ss, Utilities.MoveBasePath), Type.Normal))
                   .ToList()
           ).ToList();
 

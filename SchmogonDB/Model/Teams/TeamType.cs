@@ -1,4 +1,6 @@
-﻿namespace SchmogonDB.Model.Teams
+﻿using System.Collections;
+
+namespace SchmogonDB.Model.Teams
 {
   public enum TeamType
   {

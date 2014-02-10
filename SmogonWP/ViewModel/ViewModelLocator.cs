@@ -29,6 +29,7 @@ namespace SmogonWP.ViewModel
     public const string StatsPath = "/View/StatsView.xaml";
     public const string CreditsPath = "/View/CreditsView.xaml";
     public const string LiveTilePath = "/View/LiveTileView.xaml";
+    public const string TeamBuilderPath = "/View/TeamBuilderView.xaml";
 
     /// <summary>
     /// Initializes a new instance of the ViewModelLocator class.
@@ -48,7 +49,6 @@ namespace SmogonWP.ViewModel
         RegisterIfUnregistered<IDataLoadingService, DataLoadingService>();
         RegisterIfUnregistered<ISchmogonDBClient, SchmogonDBClient>();
         RegisterIfUnregistered<ISettingsService, SettingsService>();
-        RegisterIfUnregistered<ITeamBuilderClient, SchmogonDBClient>();
       }
 
       RegisterIfUnregistered<SchmogonToolset>();
@@ -81,6 +81,8 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<PokemonDataViewModel>();
       SimpleIoc.Default.Register<MovesetViewModel>();
       SimpleIoc.Default.Register<StatsViewModel>();
+
+      SimpleIoc.Default.Register<TeamBuilderViewModel>();
     }
 
     public HomeViewModel Home
@@ -200,6 +202,14 @@ namespace SmogonWP.ViewModel
       get
       {
         return ServiceLocator.Current.GetInstance<LiveTileViewModel>();
+      }
+    }
+
+    public TeamBuilderViewModel TeamBuilder
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<TeamBuilderViewModel>();
       }
     }
 
