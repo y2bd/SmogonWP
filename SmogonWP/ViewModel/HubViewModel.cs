@@ -3,6 +3,8 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Tasks;
+using Microsoft.WebAnalytics;
+using Microsoft.WebAnalytics.Data;
 using Nito.AsyncEx;
 using SchmogonDB;
 using SchmogonDB.Model;
@@ -563,6 +565,14 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       var mrt = new MarketplaceReviewTask();
 
       mrt.Show();
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = "Via Store Button",
+        Category = "Rating",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
     }
 
     private void onEmailDevClicked()
@@ -578,6 +588,14 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       };
 
       wbt.Show();
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = "Visit Reddit",
+        Category = "Feature Usage",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
     }
 
     private void onCreditsClicked()
@@ -646,6 +664,14 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
       IsSearchPanelOpen = false;
       IsAppBarOpen = true;
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = "Quick Search",
+        Category = "Feature Usage",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
     }
 
     private void onPinToStart(NavigationItemViewModel nivm)
@@ -669,6 +695,15 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
         already.Show();
       }
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = "Secondary Tiles",
+        Category = "Feature Usage",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+        ObjectName = name
+      });
     }
 
     private async Task updateLiveTile()
@@ -715,6 +750,14 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         "You used to be able to change the live tile from here, but now you can do it by swiping up on the appbar below. Congrats for finding this though!",
         "You found the master ball!",
         MessageBoxButton.OK);
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = "Logo Tap",
+        Category = "Feature Usage",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
     }
 
     // returns true if the update prompt was shown
@@ -738,6 +781,14 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         MessageBoxButton.OK);
 
       _settingsService.Save(UpdateKey, true);
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = RateService.GetAppVersion(),
+        Category = "Update",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
 
       return true;
     }

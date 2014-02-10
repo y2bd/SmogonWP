@@ -2,6 +2,8 @@
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Practices.ServiceLocation;
+using Microsoft.WebAnalytics;
+using Microsoft.WebAnalytics.Data;
 using SchmogonDB;
 using SmogonWP.Resources;
 using SmogonWP.Services;

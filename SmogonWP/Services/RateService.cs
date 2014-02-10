@@ -3,6 +3,8 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Info;
 using Microsoft.Phone.Tasks;
 using System.Reflection;
+using Microsoft.WebAnalytics;
+using Microsoft.WebAnalytics.Data;
 
 namespace SmogonWP.Services
 {
@@ -105,6 +107,14 @@ namespace SmogonWP.Services
       var mrt = new MarketplaceReviewTask();
 
       mrt.Show();
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = "Via Rating Prompt",
+        Category = "Rating",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
     }
 
     private void openEmailPrompt()

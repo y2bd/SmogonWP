@@ -356,7 +356,7 @@ namespace SmogonWP.ViewModel
     private void onPokemonSelected(PokemonItemViewModel pivm)
     {
       _pokemonSearchSender.SendMessage(new ItemSearchedMessage<Pokemon>(pivm.Pokemon));
-      _navigationService.Navigate(ViewModelLocator.PokemonDataPath + "?pokemon=" + Uri.EscapeDataString(pivm.Name));
+      _navigationService.Navigate(ViewModelLocator.PokemonDataPath);
     }
 
     private void onViewMessage(ViewToVmMessage<string, PokemonSearchViewModel> msg)

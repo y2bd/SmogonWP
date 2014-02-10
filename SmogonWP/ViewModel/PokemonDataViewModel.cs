@@ -2,6 +2,8 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Tasks;
+using Microsoft.WebAnalytics;
+using Microsoft.WebAnalytics.Data;
 using Nito.AsyncEx;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Moves;
@@ -402,6 +404,14 @@ namespace SmogonWP.ViewModel
       TrayService.RemoveJob("fetchdata");
       
       MessengerInstance.Send(new VmToViewMessage<string, PokemonDataView>("loadedAnim"));
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = PDVM.Data.Name,
+        Category = "Pokemon Search",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
     }
     
     private async Task fetchThumbnailImage(string path)

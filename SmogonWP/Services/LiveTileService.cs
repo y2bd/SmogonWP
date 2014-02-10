@@ -4,6 +4,8 @@ using System.Windows.Media.Imaging;
 using Windows.Storage;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Microsoft.WebAnalytics;
+using Microsoft.WebAnalytics.Data;
 using SchmogonDB.Model.Pokemon;
 using SchmogonDB.Model.Text;
 using System;
@@ -91,6 +93,11 @@ namespace SmogonWP.Services
         // we don't need secret anymore
         _settingsService.UnregisterSetting("secret");
       }
+    }
+
+    public static string GetTileName(int index)
+    {
+      return SecretTiles.ElementAtOrDefault(index);
     }
 
     public async Task GenerateFlipTileAsync()
@@ -239,7 +246,7 @@ namespace SmogonWP.Services
       var tileData = createSecondaryTileData(title, iconUri);
 
       ShellTile.Create(navUri, tileData);
-
+      
       return true;
     }
 

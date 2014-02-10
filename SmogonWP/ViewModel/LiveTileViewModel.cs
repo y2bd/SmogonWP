@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
+using Microsoft.WebAnalytics;
+using Microsoft.WebAnalytics.Behaviors;
+using Microsoft.WebAnalytics.Data;
 using SmogonWP.Services;
 
 namespace SmogonWP.ViewModel
@@ -172,8 +175,16 @@ namespace SmogonWP.ViewModel
       _settingsService.Save(LiveTileService.TileImageKey, value);
 
       await _tileService.GenerateFlipTileAsync();
-
+      
       TrayService.RemoveJob("tilemake");
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = LiveTileService.GetTileName(value),
+        Category = "Live Tile Choice",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
     }
   }
 }

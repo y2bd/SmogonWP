@@ -9,6 +9,8 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
+using Microsoft.WebAnalytics;
+using Microsoft.WebAnalytics.Data;
 using Nito.AsyncEx;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
@@ -254,6 +256,14 @@ namespace SmogonWP.ViewModel
       _pageLocation = item.PageLocation;
 
       TrayService.RemoveJob("fetchdata");
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = IDVM.ItemData.Name,
+        Category = "Item Search",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
     }
     
     private void cleanup()
