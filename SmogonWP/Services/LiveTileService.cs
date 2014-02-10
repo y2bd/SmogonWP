@@ -47,6 +47,7 @@ namespace SmogonWP.Services
       "lopunny",
       "ludicolo",
       "lumineon",
+      "m_absol",
       "m_ampharos",
       "m_blaziken",
       "m_mawile",
