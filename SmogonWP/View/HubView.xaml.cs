@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using Windows.System;
-using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Tasks;
-using SmogonWP.Messages;
 
 namespace SmogonWP.View
 {
@@ -15,7 +11,6 @@ namespace SmogonWP.View
     public HubView()
     {
       InitializeComponent();
-      
     }
 
     private void Searchbox_OnKeyUp(object sender, KeyEventArgs e)

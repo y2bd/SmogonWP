@@ -150,26 +150,38 @@ namespace SmogonWP.Services
 
     private static string composeDeviceIDBody(string priority)
     {
-      var model = DeviceStatus.DeviceName;
-      var manuf = DeviceStatus.DeviceManufacturer;
+      var resolved = GetDeviceModel();
 
-      var resolved = PhoneNameResolver.Resolve(manuf, model);
-
-      var version = getAppVersion();
+      var version = GetAppVersion();
 
       return string.Format(
 @"~~~~~~~~~~
 Device: {0}
 Version: {1}
 Status: {2}
-~~~~~~~~~~", resolved.FullCanonicalName, version, priority);
+~~~~~~~~~~", resolved, version, priority);
     }
 
-    private static string getAppVersion()
+    public static string GetAppVersion()
     {
       var asm = Assembly.GetExecutingAssembly();
       var parts = asm.FullName.Split(',');
       return parts[1].Split('=')[1];
+    }
+
+    public static string GetDeviceName()
+    {
+      return DeviceStatus.DeviceName;
+    }
+
+    public static string GetDeviceManufacturer()
+    {
+      return DeviceStatus.DeviceManufacturer;
+    }
+
+    public static string GetDeviceModel()
+    {
+      return PhoneNameResolver.Resolve(GetDeviceManufacturer(), GetDeviceName()).FullCanonicalName;
     }
   }
 }

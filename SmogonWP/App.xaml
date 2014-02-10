@@ -34,8 +34,10 @@
                                        Activated="Application_Activated"
                                        Deactivated="Application_Deactivated" />
 
-        <analytics:GoogleAnalyticsService xmlns:analytics="clr-namespace:SmogonWP.Analytics" />
-        <mwa:WebAnalyticsService xmlns:mwa="clr-namespace:Microsoft.WebAnalytics;assembly=Microsoft.WebAnalytics">
+        <analytics:GoogleAnalyticsService xmlns:analytics="clr-namespace:SmogonWP.Analytics" 
+                                          x:Name="GoogleAnalyticsService"/>
+        <mwa:WebAnalyticsService xmlns:mwa="clr-namespace:Microsoft.WebAnalytics;assembly=Microsoft.WebAnalytics"
+                                 x:Name="WebAnalyticsService">
             <mwa:WebAnalyticsService.Services>
                 <ga:GoogleAnalytics xmlns:ga="clr-namespace:Google.WebAnalytics;assembly=Google.WebAnalytics"
                                     WebPropertyId="UA-47697703-1"

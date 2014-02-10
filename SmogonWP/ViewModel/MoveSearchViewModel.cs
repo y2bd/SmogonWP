@@ -257,7 +257,7 @@ namespace SmogonWP.ViewModel
     private void onMoveSelected(MoveItemViewModel mivm)
     {
       _moveSearchSender.SendMessage(new ItemSearchedMessage<Move>(mivm.Move));
-      _navigationService.Navigate(ViewModelLocator.MoveDataPath);
+      _navigationService.Navigate(ViewModelLocator.MoveDataPath + "?move=" + Uri.EscapeDataString(mivm.Name));
     }
 
     private void onReloadPressed()

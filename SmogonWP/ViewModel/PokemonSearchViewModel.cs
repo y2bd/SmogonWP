@@ -9,8 +9,11 @@ using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Google.WebAnalytics;
+using Microsoft.WebAnalytics;
 using Nito.AsyncEx;
 using SchmogonDB.Model.Pokemon;
+using SmogonWP.Analytics;
 using SmogonWP.Messages;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
@@ -45,6 +48,7 @@ namespace SmogonWP.ViewModel
         {
           _trayService = value;
           RaisePropertyChanged(() => TrayService);
+
         }
       }
     }
@@ -352,7 +356,7 @@ namespace SmogonWP.ViewModel
     private void onPokemonSelected(PokemonItemViewModel pivm)
     {
       _pokemonSearchSender.SendMessage(new ItemSearchedMessage<Pokemon>(pivm.Pokemon));
-      _navigationService.Navigate(ViewModelLocator.PokemonDataPath);
+      _navigationService.Navigate(ViewModelLocator.PokemonDataPath + "?pokemon=" + Uri.EscapeDataString(pivm.Name));
     }
 
     private void onViewMessage(ViewToVmMessage<string, PokemonSearchViewModel> msg)
