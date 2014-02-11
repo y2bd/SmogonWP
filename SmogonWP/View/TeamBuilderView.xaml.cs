@@ -30,5 +30,10 @@ namespace SmogonWP.View
         TeamTypePicker.Focus();
       }
     }
+
+    private void AddCollapsed_Completed(object sender, EventArgs e)
+    {
+      TeamSelector.Focus();
+    }
   }
 }

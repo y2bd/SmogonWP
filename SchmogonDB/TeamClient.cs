@@ -42,7 +42,7 @@ namespace SchmogonDB
                tm.EV_SpecialDefense,
                tm.EV_Speed
         FROM Team t
-        INNER JOIN TeamMember tm ON tm.id_Team = t.id";
+        LEFT JOIN TeamMember tm ON tm.id_Team = t.id";
 
     private const string UpdateTeamQuery =
       @"UPDATE OR IGNORE Team
@@ -129,9 +129,17 @@ namespace SchmogonDB
 
         var memberId = statement.GetIntAt(3);
 
+        var pokemonName = statement.GetTextAt(4);
+
+        if (string.IsNullOrEmpty(pokemonName))
+        {
+          // there's no pokemon here
+          continue;
+        }
+
         // do not be afraid! all of the following fetches are cached after the first load
         // and if they're not cached by now, then you deserve the penalty
-        var pokemon = (await FetchPokemonSearchDataAsync()).First(p => p.Name == statement.GetTextAt(4));
+        var pokemon = (await FetchPokemonSearchDataAsync()).First(p => p.Name == pokemonName);
         var move1 = (await FetchMoveSearchDataAsync()).First(m => m.Name == statement.GetTextAt(5));
         var move2 = (await FetchMoveSearchDataAsync()).First(m => m.Name == statement.GetTextAt(6));
         var move3 = (await FetchMoveSearchDataAsync()).First(m => m.Name == statement.GetTextAt(7));
@@ -163,6 +171,12 @@ namespace SchmogonDB
           Level = level,
           EVSpread = ev
         });
+      }
+
+      if (currentTeam != null)
+      {
+        // add the last one
+        teams.Add(currentTeam);
       }
 
       return teams;

@@ -51,7 +51,7 @@ namespace SmogonWP.ViewModel.Items
         return name != null ? name.ToLower() : string.Empty;
       }
     }
-
+    
     private List<TypeItemViewModel> _types;
     public List<TypeItemViewModel> Types
     {

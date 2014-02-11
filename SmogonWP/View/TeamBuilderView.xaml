@@ -12,91 +12,67 @@
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                             xmlns:controls="clr-namespace:SmogonWP.Controls"
                             xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+                            xmlns:utilities="clr-namespace:SmogonWP.Utilities"
                             x:Class="SmogonWP.View.TeamBuilderView"
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             mc:Ignorable="d"
                             shell:SystemTray.IsVisible="True"
-                            shell:SystemTray.Opacity="0">
+                            shell:SystemTray.Opacity="0"
+                            DataContext="{Binding TeamBuilder, Source={StaticResource Locator}}">
+
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideDownFadeIn" />
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeIn" />
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideDownFadeOut" />
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
+
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="TeamItemTemplate">
             <Grid x:Name="TeamItemContainerGrid"
                   Margin="0,12">
-                <Grid.Resources>
-                    <Storyboard x:Name="OnLoadedAnimation">
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
-                                                       Storyboard.TargetName="textBlock">
-                            <EasingDoubleKeyFrame KeyTime="0"
-                                                  Value="0" />
-                            <EasingDoubleKeyFrame KeyTime="0:0:0.3"
-                                                  Value="1">
-                                <EasingDoubleKeyFrame.EasingFunction>
-                                    <CubicEase EasingMode="EaseInOut" />
-                                </EasingDoubleKeyFrame.EasingFunction>
-                            </EasingDoubleKeyFrame>
-                        </DoubleAnimationUsingKeyFrames>
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
-                                                       Storyboard.TargetName="textBlock1">
-                            <EasingDoubleKeyFrame KeyTime="0"
-                                                  Value="0" />
-                            <EasingDoubleKeyFrame KeyTime="0:0:0.05"
-                                                  Value="0" />
-                            <EasingDoubleKeyFrame KeyTime="0:0:0.35"
-                                                  Value="1">
-                                <EasingDoubleKeyFrame.EasingFunction>
-                                    <CubicEase EasingMode="EaseInOut" />
-                                </EasingDoubleKeyFrame.EasingFunction>
-                            </EasingDoubleKeyFrame>
-                        </DoubleAnimationUsingKeyFrames>
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
-                                                       Storyboard.TargetName="listBox">
-                            <EasingDoubleKeyFrame KeyTime="0"
-                                                  Value="0" />
-                            <EasingDoubleKeyFrame KeyTime="0:0:0.1"
-                                                  Value="0" />
-                            <EasingDoubleKeyFrame KeyTime="0:0:0.4"
-                                                  Value="1">
-                                <EasingDoubleKeyFrame.EasingFunction>
-                                    <CubicEase EasingMode="EaseInOut" />
-                                </EasingDoubleKeyFrame.EasingFunction>
-                            </EasingDoubleKeyFrame>
-                        </DoubleAnimationUsingKeyFrames>
-                    </Storyboard>
-                </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Loaded"
-                                    SourceName="TeamItemContainerGrid">
-                        <eim:ControlStoryboardAction x:Name="AnimateInTeamItem"
-                                                     Storyboard="{StaticResource OnLoadedAnimation}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-
                 <StackPanel Orientation="Horizontal"
                             Margin="0,0,0,3">
 
-                    <TextBlock x:Name="textBlock"
+                    <TextBlock x:Name="TeamName"
                                Text="{Binding Name}"
                                Style="{StaticResource PhoneTextTitle2Style}"
                                Margin="12,0" />
 
-                    <TextBlock x:Name="textBlock1"
+                    <TextBlock x:Name="TeamType"
                                Text="{Binding TeamType}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
                                VerticalAlignment="Bottom"
-                               Margin="-6,0,0,4" />
+                               Margin="-6,0,0,2" />
 
                 </StackPanel>
 
-                <ListBox x:Name="listBox"
+                <ListBox x:Name="TeamColorList"
                          Grid.Row="1"
                          ItemsSource="{Binding Types}"
-                         Margin="12,0"
-                         FontFamily="Portable User Interface">
+                         Margin="12,0">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel Orientation="Horizontal" />
@@ -111,23 +87,24 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+
+                <TextBlock Style="{StaticResource PhoneTextSmallStyle}"
+                           Grid.Row="1"
+                           Margin="12,-3,0,0"
+                           Visibility="{Binding Types, Converter={StaticResource EmptinessVisibilityConverter}}">
+        			<Run Text="there are no pokemon in this team!" />
+                </TextBlock>
+
+                <toolkit:ContextMenuService.ContextMenu>
+                    <toolkit:ContextMenu>
+                        <toolkit:MenuItem Header="delete team"
+                                          Command="{Binding TeamBuilder.DeleteTeamCommand, Source={StaticResource Locator}}" 
+                                          CommandParameter="{Binding}"/>
+                    </toolkit:ContextMenu>
+                </toolkit:ContextMenuService.ContextMenu>
             </Grid>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
-
-    <phone:PhoneApplicationPage.FontFamily>
-        <StaticResource ResourceKey="PhoneFontFamilyNormal" />
-    </phone:PhoneApplicationPage.FontFamily>
-    <phone:PhoneApplicationPage.FontSize>
-        <StaticResource ResourceKey="PhoneFontSizeNormal" />
-    </phone:PhoneApplicationPage.FontSize>
-    <phone:PhoneApplicationPage.Foreground>
-        <StaticResource ResourceKey="PhoneForegroundBrush" />
-    </phone:PhoneApplicationPage.Foreground>
-    <phone:PhoneApplicationPage.DataContext>
-        <Binding Path="TeamBuilder"
-                 Source="{StaticResource Locator}" />
-    </phone:PhoneApplicationPage.DataContext>
 
     <bab:Bindable.ApplicationBar>
         <bab:BindableApplicationBar ButtonsSource="{Binding MenuButtons}"
@@ -154,10 +131,11 @@
             <VisualStateGroup x:Name="AddTeamControl">
                 <VisualStateGroup.Transitions>
                     <VisualTransition GeneratedDuration="0:0:0.5">
-                		<VisualTransition.GeneratedEasingFunction>
-                			<BackEase EasingMode="EaseInOut" Amplitude="0.5"/>
-                		</VisualTransition.GeneratedEasingFunction>
-                	</VisualTransition>
+                        <VisualTransition.GeneratedEasingFunction>
+                            <BackEase EasingMode="EaseInOut"
+                                      Amplitude="0.5" />
+                        </VisualTransition.GeneratedEasingFunction>
+                    </VisualTransition>
                 </VisualStateGroup.Transitions>
                 <VisualState x:Name="Visible">
                     <Storyboard Completed="AddVisible_Completed">
@@ -176,31 +154,38 @@
                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
                                          Storyboard.TargetName="ContentPanel"
                                          d:IsOptimized="True" />
-                        <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="AddPanel" d:IsOptimized="True"/>
+                        <DoubleAnimation Duration="0"
+                                         To="0"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                                         Storyboard.TargetName="AddPanel"
+                                         d:IsOptimized="True" />
+                        <DoubleAnimation Duration="0"
+                                         To="0"
+                                         Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)"
+                                         Storyboard.TargetName="AddPanel"
+                                         d:IsOptimized="True" />
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Collapsed">
-                    <Storyboard>
+                    <Storyboard Completed="AddCollapsed_Completed">
                         <DoubleAnimation Duration="0"
                                          To="0"
                                          Storyboard.TargetProperty="(UIElement.Opacity)"
                                          Storyboard.TargetName="TeamListShade"
                                          d:IsOptimized="True" />
-                    	<DoubleAnimation Duration="0"
-                    		To="0"
-                    		Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
-                    		Storyboard.TargetName="AddPanel"
-                    		d:IsOptimized="True" />
-                        <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="AddPanel" d:IsOptimized="True"/>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="AddPanel">
-                        	<DiscreteObjectKeyFrame KeyTime="0">
-                        		<DiscreteObjectKeyFrame.Value>
-                        			<Visibility>Collapsed</Visibility>
-                        		</DiscreteObjectKeyFrame.Value>
-                        	</DiscreteObjectKeyFrame>
+                        <DoubleAnimation Duration="0"
+                                         To="0"
+                                         Storyboard.TargetProperty="(UIElement.Opacity)"
+                                         Storyboard.TargetName="AddPanel"
+                                         d:IsOptimized="True" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                       Storyboard.TargetName="AddPanel">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <Visibility>Collapsed</Visibility>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
                         </ObjectAnimationUsingKeyFrames>
-                        <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="AddPanel" d:IsOptimized="True"/>
-                        <DoubleAnimation Duration="0" To="-140" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)" Storyboard.TargetName="AddPanel" d:IsOptimized="True"/>
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>
@@ -230,8 +215,6 @@
         <Border Background="#22CCCCCC"
                 Grid.RowSpan="3" />
 
-        <!-- this is so the addpanel has something to slide out under from -->
-
         <StackPanel Grid.Row="1"
                     Margin="12,6,0,12">
             <TextBlock x:Name="PageTitle"
@@ -258,15 +241,18 @@
 
             <controls:BindableLongListSelector x:Name="TeamSelector"
                                                ItemsSource="{Binding Teams}"
-                                               ItemTemplate="{StaticResource TeamItemTemplate}" />
+                                               ItemTemplate="{StaticResource TeamItemTemplate}"
+                                               toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource LLSFloatingScrollbarStyle}" />
 
             <Border x:Name="TeamListShade"
                     BorderBrush="Black"
                     BorderThickness="1"
                     Background="{StaticResource PhoneBackgroundBrush}"
+                    IsHitTestVisible="False"
                     Margin="-12,0"
                     Opacity="0" />
         </Grid>
+
         <Grid x:Name="AddPanel"
               Grid.Row="2"
               CacheMode="BitmapCache"
@@ -274,37 +260,36 @@
               RenderTransformOrigin="0.5,0.5"
               Background="{StaticResource PhoneBackgroundBrush}"
               VerticalAlignment="Top">
-        	<Grid.Projection>
-        		<PlaneProjection/>
-        	</Grid.Projection>
+            <Grid.Projection>
+                <PlaneProjection RotationX="-140" />
+            </Grid.Projection>
             <Grid.RenderTransform>
-                <CompositeTransform TranslateY="-210" />
+                <CompositeTransform />
             </Grid.RenderTransform>
 
-        	<Border Background="#22CCCCCC" />
+            <Border Background="#22CCCCCC" />
 
-        	<StackPanel Margin="12,12,12,0">
-        		<TextBlock Text="Name your new team"
-        			Style="{StaticResource PhoneTextNormalStyle}"
-        			Foreground="{StaticResource PhoneSubtleBrush}"
-        			Margin="12,0,12,-6" />
-        		<TextBox x:Name="TeamNameInput"
-        			Margin="0,0,0,12"
-        			InputScope="Text"
-        			KeyUp="TeamNameInput_OnKeyUp" />
+            <StackPanel Margin="12,12,12,0">
+                <TextBlock Text="Name your new team"
+                           Style="{StaticResource PhoneTextNormalStyle}"
+                           Foreground="{StaticResource PhoneSubtleBrush}"
+                           Margin="12,0,12,-6" />
+                <TextBox x:Name="TeamNameInput"
+                         Margin="0,0,0,12"
+                         InputScope="Text"
+                         KeyUp="TeamNameInput_OnKeyUp"
+                         Text="{Binding EnteredTeamName, Mode=TwoWay}">
+                    <i:Interaction.Behaviors>
+                        <utilities:UpdateTextBindingOnPropertyChanged />
+                    </i:Interaction.Behaviors>
+                </TextBox>
 
-        		<toolkit:PickerBox x:Name="TeamTypePicker"
-        			Margin="0,0,0,12"
-        			Header="Choose a format"
-        			FontFamily="Portable User Interface"
-        			SelectedIndex="0">
-        			<sys:String>singles</sys:String>
-        			<sys:String>doubles</sys:String>
-        			<sys:String>triples</sys:String>
-        			<sys:String>rotation</sys:String>
-        		</toolkit:PickerBox>
-
-        	</StackPanel>
+                <toolkit:PickerBox x:Name="TeamTypePicker"
+                                   Margin="0,0,0,12"
+                                   Header="Choose a format"
+                                   ItemsSource="{Binding TeamTypes}"
+                                   SelectedIndex="{Binding SelectedTeamType, Mode=TwoWay}" />
+            </StackPanel>
         </Grid>
     </Grid>
 

@@ -164,7 +164,7 @@ namespace SmogonWP.ViewModel.Items
         },
         new NavigationItemViewModel
         {
-          Title = "Team Builder",
+          Title = "Team Manager",
           Description = "Organize your favorite configurations into teams",
           NavigationPath = ViewModelLocator.TeamBuilderPath,
           BackgroundBrush = new SolidColorBrush(TypeItemViewModel.TypeColors[Type.Steel]),

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,8 +8,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Phone.Controls;
 using Nito.AsyncEx;
 using SchmogonDB;
+using SchmogonDB.Model.Teams;
 using SmogonWP.Services;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
@@ -35,7 +38,61 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => Teams);
         }
       }
-    }			
+    }
+
+    private IEnumerable<string> _teamTypes;
+    public IEnumerable<string> TeamTypes
+    {
+      get
+      {
+        return _teamTypes ?? (_teamTypes = Enum.GetNames(typeof (TeamType)).Select(s => s.ToLower()));
+      }
+    }
+
+    private string _enteredTeamName;
+    public string EnteredTeamName
+    {
+      get
+      {
+        return _enteredTeamName;
+      }
+      set
+      {
+        if (_enteredTeamName != value)
+        {
+          _enteredTeamName = value;
+          RaisePropertyChanged(() => EnteredTeamName);
+        }
+      }
+    }
+
+    private int _selectedTeamType;
+    public int SelectedTeamType
+    {
+      get
+      {
+        return _selectedTeamType;
+      }
+      set
+      {
+        if (_selectedTeamType != value)
+        {
+          _selectedTeamType = value;
+          RaisePropertyChanged(() => SelectedTeamType);
+        }
+      }
+    }
+
+    private RelayCommand<TeamItemViewModel> _deleteTeamCommand;
+    public RelayCommand<TeamItemViewModel> DeleteTeamCommand
+    {
+      get
+      {
+        return _deleteTeamCommand ?? (_deleteTeamCommand = new RelayCommand<TeamItemViewModel>(deleteTeam));
+      }
+    }
+
+    #region ui props
 
     private MenuButtonViewModel _createTeamButton;
     private MenuButtonViewModel _confirmCreationButton;
@@ -88,7 +145,7 @@ namespace SmogonWP.ViewModel
           _teamAddState = value;
           RaisePropertyChanged(() => TeamAddState);
 
-          viewStateChanged();
+          addStateChanged();
         }
       }
     }
@@ -102,8 +159,8 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    public INotifyTaskCompletion FetchTeamsNotifier { get; private set; }
-
+    #endregion ui props
+    
     public TeamBuilderViewModel(SimpleNavigationService navigationService, ISchmogonDBClient schmogonDBClient, TrayService trayService)
     {
       _navigationService = navigationService;
@@ -111,14 +168,14 @@ namespace SmogonWP.ViewModel
       _trayService = trayService;
 
       setupNavigation();
-      scheduleTeamFetch();
+      fetchTeams();
     }
 
     private void setupNavigation()
     {
       _createTeamButton = new MenuButtonViewModel
       {
-        Command = new RelayCommand(createNewTeam),
+        Command = new RelayCommand(openCreateTeamPanel),
         IconUri = new Uri("/Assets/AppBar/add.png", UriKind.RelativeOrAbsolute),
         Text = "create team"
       };
@@ -132,26 +189,15 @@ namespace SmogonWP.ViewModel
 
       _menuButtons = new ObservableCollection<MenuButtonViewModel> {_createTeamButton};
     }
-
-    private void scheduleTeamFetch()
-    {
-      FetchTeamsNotifier = NotifyTaskCompletion.Create(fetchTeams());
-
-      FetchTeamsNotifier.PropertyChanged += (sender, args) =>
-      {
-        if (FetchTeamsNotifier == null) return;
-
-        if (FetchTeamsNotifier.IsFaulted) throw FetchTeamsNotifier.InnerException;
-      };
-    }
-
-    private async Task fetchTeams()
+    
+    private async void fetchTeams()
     {
       Teams = null;
 
       try
       {
-        Teams = new ObservableCollection<TeamItemViewModel>((await _schmogonDBClient.FetchAllTeamsAsync()).Select(t => new TeamItemViewModel(t)));
+        var fetched = await _schmogonDBClient.FetchAllTeamsAsync();
+        Teams = new ObservableCollection<TeamItemViewModel>(fetched.Reverse().Select(t => new TeamItemViewModel(t)));
       }
       catch (Exception)
       {
@@ -164,15 +210,46 @@ namespace SmogonWP.ViewModel
         cleanup();
       }
     }
-    
-    private void createNewTeam()
+
+    private async void createTeam(string name, TeamType type)
     {
+      var team = await _schmogonDBClient.CreateNewTeamAsync(name, type);
+
+      Teams.Insert(0, new TeamItemViewModel(team));
+    }
+
+    private async void deleteTeam(TeamItemViewModel tivm)
+    {
+      var cmb = new CustomMessageBox
+      {
+        Caption = "Delete this team?",
+        Message = "Are you sure you want to delete this team? You can't bring it back after deleting it.",
+        LeftButtonContent = "delete",
+        RightButtonContent = "cancel",
+      };
+      
+      if (await cmb.ShowAsync() != CustomMessageBoxResult.LeftButton) return;
+
+      var could = Teams.Remove(tivm);
+
+      if (could) await _schmogonDBClient.DeleteTeamAsync(tivm.Team);
+    }
+    
+    #region ui
+
+    private void openCreateTeamPanel()
+    {
+      EnteredTeamName = string.Empty;
+      SelectedTeamType = 0;
+
       TeamAddState = TeamAddState.Adding;
     }
 
     private void confirmTeamCreation()
     {
       TeamAddState = TeamAddState.NotAdding;
+
+      createTeam(EnteredTeamName, (TeamType) SelectedTeamType);
     }
 
     private void onBackKeyPressed(CancelEventArgs args)
@@ -184,7 +261,7 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private void viewStateChanged()
+    private void addStateChanged()
     {
       if (TeamAddState == TeamAddState.Adding)
       {
@@ -202,10 +279,11 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    #endregion ui
+
     private void cleanup()
     {
       Teams = null;
-      FetchTeamsNotifier = null;
       TrayService.RemoveAllJobs();
     }
   }
