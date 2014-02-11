@@ -37,6 +37,7 @@ namespace SmogonWP.Services
       "furret",
       "gardevoir",
       "gastly",
+      "giratina_o",
       "glaceon",
       "growlithe",
       "gyarados",
@@ -52,6 +53,7 @@ namespace SmogonWP.Services
       "m_absol",
       "m_ampharos",
       "m_blaziken",
+      "m_lucario",
       "m_mawile",
       "meloetta",
       "metagross",
@@ -68,6 +70,7 @@ namespace SmogonWP.Services
       "scrafty",
       "scraggy",
       "seaking",
+      "shedinja",
       "slowpoke",
       "solosis",
       "squirtle",
@@ -77,7 +80,10 @@ namespace SmogonWP.Services
       "tyranitar",
       "vaporeon",
       "wynaut",
-      "zweilous"
+      "xerneas",
+      "yveltal",
+      "zoroark",
+      "zweilous",
     };
 
     private readonly IDataLoadingService _dataService;

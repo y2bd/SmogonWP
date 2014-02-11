@@ -357,6 +357,7 @@
     <Content Include="Assets\Secret\furret.png" />
     <Content Include="Assets\Secret\gardevoir.png" />
     <Content Include="Assets\Secret\gastly.png" />
+    <Content Include="Assets\Secret\giratina_o.png" />
     <Content Include="Assets\Secret\glaceon.png" />
     <Content Include="Assets\Secret\growlithe.png" />
     <Content Include="Assets\Secret\gyarados.png" />
@@ -377,6 +378,7 @@
     <Content Include="Assets\Secret\m_absol.png" />
     <Content Include="Assets\Secret\m_ampharos.png" />
     <Content Include="Assets\Secret\m_blaziken.png" />
+    <Content Include="Assets\Secret\m_lucario.png" />
     <Content Include="Assets\Secret\m_mawile.png" />
     <Content Include="Assets\Secret\oddish.png" />
     <Content Include="Assets\Secret\pancham.png" />
@@ -388,6 +390,7 @@
     <Content Include="Assets\Secret\scrafty.png" />
     <Content Include="Assets\Secret\scraggy.png" />
     <Content Include="Assets\Secret\seaking.png" />
+    <Content Include="Assets\Secret\shedinja.png" />
     <Content Include="Assets\Secret\slowpoke.png" />
     <Content Include="Assets\Secret\solosis.png" />
     <Content Include="Assets\Secret\squirtle.png" />
@@ -397,6 +400,9 @@
     <Content Include="Assets\Secret\tyranitar.png" />
     <Content Include="Assets\Secret\vaporeon.png" />
     <Content Include="Assets\Secret\wynaut.png" />
+    <Content Include="Assets\Secret\xerneas.png" />
+    <Content Include="Assets\Secret\yveltal.png" />
+    <Content Include="Assets\Secret\zoroark.png" />
     <Content Include="Assets\Secret\zweilous.png" />
     <Content Include="Assets\Tiles\Secondary\calc.png" />
     <Content Include="Assets\Tiles\Secondary\conflict.png" />
