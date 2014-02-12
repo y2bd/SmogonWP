@@ -185,7 +185,7 @@ namespace SmogonWP
 
     // Code to execute when the application is deactivated (sent to background)
     // This code will not execute when the application is closing
-    private async void Application_Deactivated(object sender, DeactivatedEventArgs e)
+    private void Application_Deactivated(object sender, DeactivatedEventArgs e)
     {
     }
 

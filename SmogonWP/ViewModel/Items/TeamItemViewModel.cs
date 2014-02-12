@@ -67,5 +67,14 @@ namespace SmogonWP.ViewModel.Items
     {
       Team = team;
     }
+
+    public void Update(string name, TeamType type)
+    {
+      Team.Name = name;
+      Team.TeamType = type;
+
+      RaisePropertyChanged(() => Name);
+      RaisePropertyChanged(() => TeamType);
+    }
   }
 }

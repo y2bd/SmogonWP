@@ -4,12 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Controls;
-using Nito.AsyncEx;
 using SchmogonDB;
 using SchmogonDB.Model.Teams;
 using SmogonWP.Services;
@@ -22,6 +20,8 @@ namespace SmogonWP.ViewModel
   {
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonDBClient _schmogonDBClient;
+
+    private TeamItemViewModel _editing;
 
     private ObservableCollection<TeamItemViewModel> _teams;
     public ObservableCollection<TeamItemViewModel> Teams
@@ -89,6 +89,15 @@ namespace SmogonWP.ViewModel
       get
       {
         return _deleteTeamCommand ?? (_deleteTeamCommand = new RelayCommand<TeamItemViewModel>(deleteTeam));
+      }
+    }
+
+    private RelayCommand<TeamItemViewModel> _editTeamCommand;
+    public RelayCommand<TeamItemViewModel> EditTeamCommand
+    {
+      get
+      {
+        return _editTeamCommand ?? (_editTeamCommand = new RelayCommand<TeamItemViewModel>(editTeam));
       }
     }
 
@@ -218,6 +227,22 @@ namespace SmogonWP.ViewModel
       Teams.Insert(0, new TeamItemViewModel(team));
     }
 
+    private void editTeam(TeamItemViewModel tivm)
+    {
+      _editing = tivm;
+
+      openCreateTeamPanel(tivm.Team.Name, (int)tivm.Team.TeamType);
+    }
+
+    private async void updateTeam()
+    {
+      _editing.Update(EnteredTeamName, (TeamType)SelectedTeamType);
+
+      await _schmogonDBClient.UpdateTeamAsync(_editing.Team);
+
+      _editing = null;
+    }
+
     private async void deleteTeam(TeamItemViewModel tivm)
     {
       var cmb = new CustomMessageBox
@@ -237,19 +262,25 @@ namespace SmogonWP.ViewModel
     
     #region ui
 
-    private void openCreateTeamPanel()
+    private void openCreateTeamPanel(string name, int teamType)
     {
-      EnteredTeamName = string.Empty;
-      SelectedTeamType = 0;
+      EnteredTeamName = name;
+      SelectedTeamType = teamType;
 
       TeamAddState = TeamAddState.Adding;
+    }
+
+    private void openCreateTeamPanel()
+    {
+      openCreateTeamPanel(string.Empty, 0);
     }
 
     private void confirmTeamCreation()
     {
       TeamAddState = TeamAddState.NotAdding;
 
-      createTeam(EnteredTeamName, (TeamType) SelectedTeamType);
+      if (_editing == null) createTeam(EnteredTeamName, (TeamType) SelectedTeamType);
+      else updateTeam();
     }
 
     private void onBackKeyPressed(CancelEventArgs args)

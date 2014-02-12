@@ -211,6 +211,7 @@ namespace SchmogonDB
       var statement = await _database.PrepareStatementAsync(UpdateTeamQuery);
       statement.BindTextParameterWithName("@name", team.Name);
       statement.BindIntParameterWithName("@type", (int)team.TeamType);
+      statement.BindIntParameterWithName("@id", team.ID);
 
       statement.StepSync();
     }

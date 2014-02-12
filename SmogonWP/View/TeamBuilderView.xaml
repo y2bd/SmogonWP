@@ -7,12 +7,11 @@
                             xmlns:bab="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
                             xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:sys="clr-namespace:System;assembly=mscorlib"
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                             xmlns:controls="clr-namespace:SmogonWP.Controls"
-                            xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
                             xmlns:utilities="clr-namespace:SmogonWP.Utilities"
+                            xmlns:system="clr-namespace:System;assembly=mscorlib"
                             x:Class="SmogonWP.View.TeamBuilderView"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -96,8 +95,11 @@
                 </TextBlock>
 
                 <toolkit:ContextMenuService.ContextMenu>
-                    <toolkit:ContextMenu>
-                        <toolkit:MenuItem Header="delete team"
+                    <toolkit:ContextMenu>                        
+						<toolkit:MenuItem Header="edit team"
+                                          Command="{Binding TeamBuilder.EditTeamCommand, Source={StaticResource Locator}}" 
+                                          CommandParameter="{Binding}"/>
+						<toolkit:MenuItem Header="delete team"
                                           Command="{Binding TeamBuilder.DeleteTeamCommand, Source={StaticResource Locator}}" 
                                           CommandParameter="{Binding}"/>
                     </toolkit:ContextMenu>
@@ -164,6 +166,13 @@
                                          Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)"
                                          Storyboard.TargetName="AddPanel"
                                          d:IsOptimized="True" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.IsHitTestVisible)" Storyboard.TargetName="AddPanel">
+                        	<DiscreteObjectKeyFrame KeyTime="0">
+                        		<DiscreteObjectKeyFrame.Value>
+                        			<system:Boolean>True</system:Boolean>
+                        		</DiscreteObjectKeyFrame.Value>
+                        	</DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Collapsed">
@@ -178,14 +187,6 @@
                                          Storyboard.TargetProperty="(UIElement.Opacity)"
                                          Storyboard.TargetName="AddPanel"
                                          d:IsOptimized="True" />
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                                       Storyboard.TargetName="AddPanel">
-                            <DiscreteObjectKeyFrame KeyTime="0">
-                                <DiscreteObjectKeyFrame.Value>
-                                    <Visibility>Collapsed</Visibility>
-                                </DiscreteObjectKeyFrame.Value>
-                            </DiscreteObjectKeyFrame>
-                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>
@@ -259,7 +260,8 @@
               Opacity="0"
               RenderTransformOrigin="0.5,0.5"
               Background="{StaticResource PhoneBackgroundBrush}"
-              VerticalAlignment="Top">
+              VerticalAlignment="Top"
+              IsHitTestVisible="False">
             <Grid.Projection>
                 <PlaneProjection RotationX="-140" />
             </Grid.Projection>
