@@ -10,7 +10,9 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Controls;
 using SchmogonDB;
 using SchmogonDB.Model.Teams;
+using SmogonWP.Messages;
 using SmogonWP.Services;
+using SmogonWP.Services.Messaging;
 using SmogonWP.ViewModel.AppBar;
 using SmogonWP.ViewModel.Items;
 
@@ -20,6 +22,8 @@ namespace SmogonWP.ViewModel
   {
     private readonly SimpleNavigationService _navigationService;
     private readonly ISchmogonDBClient _schmogonDBClient;
+
+    private readonly MessageSender<ItemSelectedMessage<TeamItemViewModel>> _teamSelectedSender;
 
     private TeamItemViewModel _editing;
 
@@ -39,6 +43,25 @@ namespace SmogonWP.ViewModel
         }
       }
     }
+
+    private TeamItemViewModel _selectedTeam;
+    public TeamItemViewModel SelectedTeam
+    {
+      get
+      {
+        return _selectedTeam;
+      }
+      set
+      {
+        if (_selectedTeam != value)
+        {
+          _selectedTeam = null;
+          RaisePropertyChanged(() => SelectedTeam);
+
+          onTeamSelected(value);
+        }
+      }
+    }			
 
     private IEnumerable<string> _teamTypes;
     public IEnumerable<string> TeamTypes
@@ -176,6 +199,8 @@ namespace SmogonWP.ViewModel
       _schmogonDBClient = schmogonDBClient;
       _trayService = trayService;
 
+      _teamSelectedSender = new MessageSender<ItemSelectedMessage<TeamItemViewModel>>();
+
       setupNavigation();
       fetchTeams();
     }
@@ -281,6 +306,12 @@ namespace SmogonWP.ViewModel
 
       if (_editing == null) createTeam(EnteredTeamName, (TeamType) SelectedTeamType);
       else updateTeam();
+    }
+
+    private void onTeamSelected(TeamItemViewModel tivm)
+    {
+      _teamSelectedSender.SendMessage(new ItemSelectedMessage<TeamItemViewModel>(tivm));
+      _navigationService.Navigate(ViewModelLocator.TeamPreviewPath);
     }
 
     private void onBackKeyPressed(CancelEventArgs args)

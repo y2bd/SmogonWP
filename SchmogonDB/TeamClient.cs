@@ -18,8 +18,8 @@ namespace SchmogonDB
         VALUES (@type, @name);";
 
     private const string InsertTeamMemberQuery =
-      @"INSERT INTO TeamMember (id_Team, id_Pokemon, id_Move1, id_Move2, id_Move3, id_Move4, id_Ability, id_Item, Nature, Level, EV_HP, EV_Attack, EV_Defense, EV_SpecialAttack, EV_SpecialDefense, EV_Speed)
-        VALUES (@teamid, @pokemon, @move1, @move2, @move3, @move4, @ability, @item, @nature, @level, @hp, @atk, @def, @spa, @spd, @spe);";
+      @"INSERT INTO TeamMember (id_Team, id_Pokemon, id_Move1, id_Move2, id_Move3, id_Move4, id_Ability, id_Item, Nature, Level, EV_HP, EV_Attack, EV_Defense, EV_SpecialAttack, EV_SpecialDefense, EV_Speed, IV_HP, IV_Attack, IV_Defense, IV_SpecialAttack, IV_SpecialDefense, IV_Speed)
+        VALUES (@teamid, @pokemon, @move1, @move2, @move3, @move4, @ability, @item, @nature, @level, @ehp, @eatk, @edef, @espa, @espd, @espe, @ihp, @iatk, @idef, @ispa, @ispd, @ispe);";
 
     private const string FetchAllTeamsQuery =
       @"SELECT t.id as TeamId,
@@ -40,7 +40,13 @@ namespace SchmogonDB
                tm.EV_Defense,
                tm.EV_SpecialAttack,
                tm.EV_SpecialDefense,
-               tm.EV_Speed
+               tm.EV_Speed,
+               tm.IV_HP,
+               tm.IV_Attack,
+               tm.IV_Defense,
+               tm.IV_SpecialAttack,
+               tm.IV_SpecialDefense,
+               tm.IV_Speed
         FROM Team t
         LEFT JOIN TeamMember tm ON tm.id_Team = t.id";
 
@@ -82,12 +88,18 @@ namespace SchmogonDB
             id_Item=@item,
             Nature=@nature,
             Level=@level,
-            EV_HP=@hp,
-            EV_Attack=@atk,
-            EV_Defense=@def,
-            EV_SpecialAttack=@spa,
-            EV_SpecialDefense=@spd,
-            EV_Speed=@spe
+            EV_HP=@ehp,
+            EV_Attack=@eatk,
+            EV_Defense=@edef,
+            EV_SpecialAttack=@espa,
+            EV_SpecialDefense=@espd,
+            EV_Speed=@espe,
+            IV_HP=@ihp,
+            IV_Attack=@iatk,
+            IV_Defense=@idef,
+            IV_SpecialAttack=@ispa,
+            IV_SpecialDefense=@ispd,
+            IV_Speed=@ispe
         WHERE id=@id;";
 
     #endregion queries
@@ -158,6 +170,16 @@ namespace SchmogonDB
           SpecialAttack = statement.GetIntAt(16),
           SpecialDefense = statement.GetIntAt(17),
           Speed = statement.GetIntAt(18),
+        };
+
+        var iv = new BaseStat
+        {
+          HP = statement.GetIntAt(19),
+          Attack = statement.GetIntAt(20),
+          Defense = statement.GetIntAt(21),
+          SpecialAttack = statement.GetIntAt(22),
+          SpecialDefense = statement.GetIntAt(23),
+          Speed = statement.GetIntAt(24),
         };
 
         currentTeam.TeamMembers.Add(new TeamMember
@@ -244,12 +266,18 @@ namespace SchmogonDB
       statement.BindTextParameterWithName("@item", member.Item.Name);
       statement.BindIntParameterWithName("@nature", (int)member.Nature);
       statement.BindIntParameterWithName("@level", member.Level);
-      statement.BindIntParameterWithName("@hp", member.EVSpread.HP);
-      statement.BindIntParameterWithName("@atk", member.EVSpread.Attack);
-      statement.BindIntParameterWithName("@def", member.EVSpread.Defense);
-      statement.BindIntParameterWithName("@spa", member.EVSpread.SpecialAttack);
-      statement.BindIntParameterWithName("@spd", member.EVSpread.SpecialDefense);
-      statement.BindIntParameterWithName("@spe", member.EVSpread.Speed);
+      statement.BindIntParameterWithName("@ehp", member.EVSpread.HP);
+      statement.BindIntParameterWithName("@eatk", member.EVSpread.Attack);
+      statement.BindIntParameterWithName("@edef", member.EVSpread.Defense);
+      statement.BindIntParameterWithName("@espa", member.EVSpread.SpecialAttack);
+      statement.BindIntParameterWithName("@espd", member.EVSpread.SpecialDefense);
+      statement.BindIntParameterWithName("@espe", member.EVSpread.Speed);
+      statement.BindIntParameterWithName("@ihp", member.IVSpread.HP);
+      statement.BindIntParameterWithName("@iatk", member.IVSpread.Attack);
+      statement.BindIntParameterWithName("@idef", member.IVSpread.Defense);
+      statement.BindIntParameterWithName("@ispa", member.IVSpread.SpecialAttack);
+      statement.BindIntParameterWithName("@ispd", member.IVSpread.SpecialDefense);
+      statement.BindIntParameterWithName("@ispe", member.IVSpread.Speed);
       statement.StepSync();
     }
 
@@ -268,12 +296,18 @@ namespace SchmogonDB
       statement.BindTextParameterWithName("@item", member.Item.Name);
       statement.BindIntParameterWithName("@nature", (int)member.Nature);
       statement.BindIntParameterWithName("@level", member.Level);
-      statement.BindIntParameterWithName("@hp", member.EVSpread.HP);
-      statement.BindIntParameterWithName("@atk", member.EVSpread.Attack);
-      statement.BindIntParameterWithName("@def", member.EVSpread.Defense);
-      statement.BindIntParameterWithName("@spa", member.EVSpread.SpecialAttack);
-      statement.BindIntParameterWithName("@spd", member.EVSpread.SpecialDefense);
-      statement.BindIntParameterWithName("@spe", member.EVSpread.Speed);
+      statement.BindIntParameterWithName("@ehp", member.EVSpread.HP);
+      statement.BindIntParameterWithName("@eatk", member.EVSpread.Attack);
+      statement.BindIntParameterWithName("@edef", member.EVSpread.Defense);
+      statement.BindIntParameterWithName("@espa", member.EVSpread.SpecialAttack);
+      statement.BindIntParameterWithName("@espd", member.EVSpread.SpecialDefense);
+      statement.BindIntParameterWithName("@espe", member.EVSpread.Speed);
+      statement.BindIntParameterWithName("@ihp", member.IVSpread.HP);
+      statement.BindIntParameterWithName("@iatk", member.IVSpread.Attack);
+      statement.BindIntParameterWithName("@idef", member.IVSpread.Defense);
+      statement.BindIntParameterWithName("@ispa", member.IVSpread.SpecialAttack);
+      statement.BindIntParameterWithName("@ispd", member.IVSpread.SpecialDefense);
+      statement.BindIntParameterWithName("@ispe", member.IVSpread.Speed);
       statement.StepSync();
     }
 

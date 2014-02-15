@@ -237,11 +237,12 @@
                        TextWrapping="Wrap"
                        Margin="12,6,12,0"
                        Opacity="0">
-				<Run Text="You haven't created any teams yet! Press the plus below to make one." />
+				<Run Text="You don't have any teams! Press the plus below to make one." />
             </TextBlock>
 
             <controls:BindableLongListSelector x:Name="TeamSelector"
                                                ItemsSource="{Binding Teams}"
+                                               SelectedItem="{Binding SelectedTeam, Mode=TwoWay}"
                                                ItemTemplate="{StaticResource TeamItemTemplate}"
                                                toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource LLSFloatingScrollbarStyle}" />
 

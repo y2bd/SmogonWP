@@ -35,5 +35,19 @@ namespace SchmogonDB.Tools
       return NatureEffect.NatureEffects.Where(n => n.Decreased == decreased &&
                                               !n.IsNeutral);
     }
+
+    public bool NatureBoostsStat(Nature nature, StatType statType)
+    {
+      var nfx = GetNatureEffect(nature);
+
+      return !nfx.IsNeutral && nfx.Increased == statType;
+    }
+
+    public bool NatureLowersStat(Nature nature, StatType statType)
+    {
+      var nfx = GetNatureEffect(nature);
+
+      return !nfx.IsNeutral && nfx.Decreased == statType;
+    }
   }
 }

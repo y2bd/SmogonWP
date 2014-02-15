@@ -23,9 +23,11 @@ namespace SchmogonDB.Model.Teams
 
     public BaseStat EVSpread { get; set; }
 
+    public BaseStat IVSpread { get; set; }
+
     public int Level { get; set; }
 
-    public TeamMember(Pokemon.Pokemon pokemon, List<Move> moves, Ability ability, Nature nature, Item item, BaseStat evSpread, int level)
+    public TeamMember(Pokemon.Pokemon pokemon, List<Move> moves, Ability ability, Nature nature, Item item, BaseStat evSpread, BaseStat ivSpread, int level)
     {
       Pokemon = pokemon;
       Moves = moves;
@@ -33,6 +35,7 @@ namespace SchmogonDB.Model.Teams
       Nature = nature;
       Item = item;
       EVSpread = evSpread;
+      IVSpread = ivSpread;
       Level = level;
     }
 

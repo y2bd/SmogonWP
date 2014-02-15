@@ -126,7 +126,7 @@ namespace SchmogonDB
 
     public async Task<PokemonData> FetchPokemonDataAsync(Pokemon pokemon)
     {
-      var spritePath = await fetchPokemonSpritePath(pokemon);
+      var spritePath = await FetchPokemonSpritePathAsync(pokemon);
 
       var movepool = await fetchPokemonMoves(pokemon);
       var overview = await FetchTextElementsAsync(pokemon.Name, OwnerType.Pokemon, ElementType.Description);
@@ -150,7 +150,7 @@ namespace SchmogonDB
         movepool); // movepool
     }
 
-    private async Task<string> fetchPokemonSpritePath(Pokemon pokemon)
+    public async Task<string> FetchPokemonSpritePathAsync(Pokemon pokemon)
     {
       var statement = await _database.PrepareStatementAsync(FetchPokemonSpritePathQuery);
       statement.BindTextParameterWithName("@name", pokemon.Name);

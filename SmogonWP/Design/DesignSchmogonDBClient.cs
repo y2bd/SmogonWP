@@ -1,4 +1,5 @@
-﻿using SchmogonDB;
+﻿using System;
+using SchmogonDB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SchmogonDB.Model.Abilities;
@@ -279,6 +280,28 @@ namespace SmogonWP.Design
       await Task.Delay(0);
     }
 
+    public async Task<string> FetchPokemonSpritePathAsync(Pokemon pokemon)
+    {
+      var spritePaths = new string[]
+      {
+        "http://www.smogon.com/download/sprites/bw/144.png",
+        "http://www.smogon.com/download/sprites/bw/411.png",
+        "http://www.smogon.com/download/sprites/bw/196.png",
+        "http://www.smogon.com/download/sprites/bw/282.png",
+        "http://www.smogon.com/download/sprites/bw/367.png",
+        "http://www.smogon.com/download/sprites/bw/270.png",
+        "http://www.smogon.com/download/sprites/bw/602.png",
+        "http://www.smogon.com/download/sprites/bw/479.png",
+        "http://www.smogon.com/download/sprites/bw/525.png",
+        "http://www.smogon.com/download/sprites/bw/575.png",
+        "http://www.smogon.com/download/sprites/bw/601.png",
+      };
+
+      await Task.Delay(0);
+
+      return spritePaths[(new Random()).Next(spritePaths.Length)];
+    }
+
     public async Task<IEnumerable<ITextElement>> FetchTextElementsAsync(string ownerId, SchmogonDB.Population.OwnerType ownerType, SchmogonDB.Population.ElementType elementType)
     {
       await Task.Delay(0);
@@ -308,7 +331,7 @@ namespace SmogonWP.Design
           Ability = new Ability("kung pao", "", ""),
           EVSpread = new BaseStat(0, 0, 0, 252, 6, 252),
           Item = new Item("meat", "", ""),
-          Level = 100,
+          Level = 50,
           Moves = new List<Move>
           {
             new Move("fiddlesticks", "", "", Type.Fire),
@@ -318,15 +341,15 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Ice}, Tier.OU,
-              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
+            new Pokemon("relicanth", new List<Type> {Type.Ice, Type.Fairy}, Tier.OU,
+              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(100, 100, 100, 100, 100, 100), ""),
         },
         new TeamMember
         {
           Ability = new Ability("kung pao", "", ""),
           EVSpread = new BaseStat(0, 0, 0, 252, 6, 252),
           Item = new Item("meat", "", ""),
-          Level = 100,
+          Level = 50,
           Moves = new List<Move>
           {
             new Move("fiddlesticks", "", "", Type.Fire),
@@ -336,15 +359,15 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Water}, Tier.OU,
-              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
+            new Pokemon("gardevoir", new List<Type> {Type.Water, Type.Rock}, Tier.OU,
+              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(100, 100, 100, 100, 100, 100), ""),
         },
         new TeamMember
         {
           Ability = new Ability("kung pao", "", ""),
           EVSpread = new BaseStat(0, 0, 0, 252, 6, 252),
           Item = new Item("meat", "", ""),
-          Level = 100,
+          Level = 50,
           Moves = new List<Move>
           {
             new Move("fiddlesticks", "", "", Type.Fire),
@@ -354,15 +377,15 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Electric}, Tier.OU,
-              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
+            new Pokemon("hypherior", new List<Type> {Type.Electric}, Tier.OU,
+              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(100, 100, 100, 100, 100, 100), ""),
         },
         new TeamMember
         {
           Ability = new Ability("kung pao", "", ""),
           EVSpread = new BaseStat(0, 0, 0, 252, 6, 252),
           Item = new Item("meat", "", ""),
-          Level = 100,
+          Level = 50,
           Moves = new List<Move>
           {
             new Move("fiddlesticks", "", "", Type.Fire),
@@ -372,15 +395,15 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Psychic}, Tier.OU,
-              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
+            new Pokemon("rotom-w", new List<Type> {Type.Psychic, Type.Dark}, Tier.OU,
+              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(100, 100, 100, 100, 100, 100), ""),
         },
         new TeamMember
         {
           Ability = new Ability("kung pao", "", ""),
           EVSpread = new BaseStat(0, 0, 0, 252, 6, 252),
           Item = new Item("meat", "", ""),
-          Level = 100,
+          Level = 50,
           Moves = new List<Move>
           {
             new Move("fiddlesticks", "", "", Type.Fire),
@@ -390,15 +413,15 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Steel}, Tier.OU,
-              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
+            new Pokemon("lilligant", new List<Type> {Type.Steel}, Tier.OU,
+              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(100, 100, 100, 100, 100, 100), ""),
         },
         new TeamMember
         {
           Ability = new Ability("kung pao", "", ""),
           EVSpread = new BaseStat(0, 0, 0, 252, 6, 252),
           Item = new Item("meat", "", ""),
-          Level = 100,
+          Level = 50,
           Moves = new List<Move>
           {
             new Move("fiddlesticks", "", "", Type.Fire),
@@ -408,8 +431,8 @@ namespace SmogonWP.Design
           },
           Nature = Nature.Timid,
           Pokemon =
-            new Pokemon("jackson", new List<Type> {Type.Grass}, Tier.OU,
-              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(0, 0, 0, 252, 6, 252), ""),
+            new Pokemon("fletchinder", new List<Type> {Type.Grass}, Tier.OU,
+              new List<Ability> {new Ability("kung pao", "", "")}, new BaseStat(100, 100, 100, 100, 100, 100), ""),
         },
       });
     }

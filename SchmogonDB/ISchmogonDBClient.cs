@@ -40,6 +40,8 @@ namespace SchmogonDB
     Task DeleteTeamMember(TeamMember member);
 
     Task InitializeDatabase();
+
+    Task<string> FetchPokemonSpritePathAsync(Pokemon pokemon);
   }
 
   public interface ITeamBuilderClient

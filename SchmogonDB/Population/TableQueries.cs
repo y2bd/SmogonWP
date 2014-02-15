@@ -177,7 +177,13 @@
         EV_Defense INTEGER,
         EV_SpecialAttack INTEGER,
         EV_SpecialDefense INTEGER,
-        EV_Speed INTEGER 
+        EV_Speed INTEGER,
+        IV_HP INTEGER,
+        IV_Attack INTEGER,
+        IV_Defense INTEGER,
+        IV_SpecialAttack INTEGER,
+        IV_SpecialDefense INTEGER,
+        IV_Speed INTEGER
         );";
 
     #endregion level 4

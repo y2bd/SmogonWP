@@ -30,6 +30,7 @@ namespace SmogonWP.ViewModel
     public const string CreditsPath = "/View/CreditsView.xaml";
     public const string LiveTilePath = "/View/LiveTileView.xaml";
     public const string TeamBuilderPath = "/View/TeamBuilderView.xaml";
+    public const string TeamPreviewPath = "/View/TeamPreviewView.xaml";
 
     /// <summary>
     /// Initializes a new instance of the ViewModelLocator class.
@@ -47,7 +48,7 @@ namespace SmogonWP.ViewModel
       else
       {
         RegisterIfUnregistered<IDataLoadingService, DataLoadingService>();
-        RegisterIfUnregistered<ISchmogonDBClient, SchmogonDBClient>();
+        RegisterIfUnregistered<ISchmogonDBClient, Design.DesignSchmogonDBClient>();
         RegisterIfUnregistered<ISettingsService, SettingsService>();
       }
 
@@ -83,6 +84,7 @@ namespace SmogonWP.ViewModel
       SimpleIoc.Default.Register<StatsViewModel>();
 
       SimpleIoc.Default.Register<TeamBuilderViewModel>();
+      SimpleIoc.Default.Register<TeamPreviewViewModel>();
     }
 
     public HomeViewModel Home
@@ -210,6 +212,14 @@ namespace SmogonWP.ViewModel
       get
       {
         return ServiceLocator.Current.GetInstance<TeamBuilderViewModel>();
+      }
+    }
+
+    public TeamPreviewViewModel TeamPreview
+    {
+      get
+      {
+        return ServiceLocator.Current.GetInstance<TeamPreviewViewModel>();
       }
     }
 
