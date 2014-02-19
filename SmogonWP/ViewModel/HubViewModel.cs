@@ -6,7 +6,6 @@ using Microsoft.Phone.Tasks;
 using Microsoft.WebAnalytics;
 using Microsoft.WebAnalytics.Data;
 using Nito.AsyncEx;
-using SchmogonDB;
 using SchmogonDB.Model;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
@@ -34,7 +33,7 @@ namespace SmogonWP.ViewModel
 {
   public class HubViewModel : ViewModelBase
   {
-    public const string UpdateKey = "update_" + "1.1.4.1";
+    public const string UpdateKey = "update_" + "1.1.5";
 
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
@@ -354,7 +353,7 @@ namespace SmogonWP.ViewModel
 
 First of all, this app is not and will never be a standard Pokedex app. This app will not tell you what routes you can catch Ralts on or at what level she'll evolve into a Gardevoir. That is not its purpose.
 
-Second, as Pokemon X and Y have come out very recently, websites are still in the process of compiling information. Because of this, XY data will be slowly trickling into this app over the next several weeks. Stay tuned!
+Second, as Pokemon X and Y have come out very recently, websites are still in the process of compiling information. I've currently updated all BW Pokemon to their XY forms, and am starting to trickle in XY Pokemon. Stay tuned!
 
 If you have any questions, sliding up the appbar at the bottom will give you the option to email me, the developer. Happy battling!";
 
@@ -560,11 +559,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private void onRateButtonClicked()
     {
-      _rateService.StopRatingPrompts();
-
-      var mrt = new MarketplaceReviewTask();
-
-      mrt.Show();
+      _rateService.CheckForRateReminder();
 
       WebAnalyticsService.Current.Log(new AnalyticsEvent
       {
@@ -746,10 +741,13 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       prompt.Show();
       */
 
-      MessageBox.Show(
-        "You used to be able to change the live tile from here, but now you can do it by swiping up on the appbar below. Congrats for finding this though!",
+      if (MessageBox.Show(
+        "This used to be the main way of changing the live tile, but now you can get there via the appbar below. Do you want to change your live tile?",
         "You found the master ball!",
-        MessageBoxButton.OK);
+        MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+      {
+        _navigationService.Navigate(ViewModelLocator.LiveTilePath);
+      };
 
       WebAnalyticsService.Current.Log(new AnalyticsEvent
       {
@@ -770,11 +768,12 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       if (!_settingsService.SettingRegistered("haswelcomed")) return false;
 
       MessageBox.Show(
-        "Hey everyone! I'm in the middle of working on the team builder for the next big update, but I thought that I might as well throw out another small one.\n\n" +
-        "This update adds some new live tiles (at the request of you guys!) as well as some other minor tweaks. " +
-        "One thing you should know is that due to the way I implemented the live tiles, if your option is 'choose a live tile', your tile choice might be changed " +
-        "every time I add new tiles. Because of this, I recommend that you go to the live tile settings screen and make your choice again.\n\n" +
-        "I apologize for the inconvenience, and I'll make sure to tell you guys whenever this might happen. Until next time, remember that you can always send me an email if you have any questions whatsoever.",
+        "Hey everyone! Just another little update.\n\n" +
+        "There are some more new live tiles! Remember to go check them out and reset your chosen tile if it changed (sorry about that). " +
+        "There's also an option to disable the tile from flipping if you don't like that (this was requested by a couple of you, thanks for the suggestion!).\n\n" +
+        "I also fixed some small but embarrassing bugs. If you noticed the app crashing a bit when closing or reopening it (especially if you have a low-memory device) " +
+        "that shouldn't happen any more.\n\n" +
+        "As always, if you need anything (like even more live tiles!) feel free to email me. Happy battling!",
         "Update Notes (Please Read)",
         MessageBoxButton.OK);
 

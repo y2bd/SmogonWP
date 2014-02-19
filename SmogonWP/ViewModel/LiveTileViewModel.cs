@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +6,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using Microsoft.WebAnalytics;
-using Microsoft.WebAnalytics.Behaviors;
 using Microsoft.WebAnalytics.Data;
 using SmogonWP.Services;
 
@@ -70,7 +68,7 @@ namespace SmogonWP.ViewModel
         }
       }
     }
-
+    
     private bool _tileListEnabled;
     public bool TileListEnabled
     {
@@ -124,6 +122,25 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private bool _flipTile;
+    public bool FlipTile
+    {
+      get
+      {
+        return _flipTile;
+      }
+      set
+      {
+        if (_flipTile != value)
+        {
+          _flipTile = value;
+          RaisePropertyChanged(() => FlipTile);
+
+          onFlipTileChanged(value);
+        }
+      }
+    }			
+
     public LiveTileViewModel(LiveTileService tileService, ISettingsService settingsService, TrayService trayService)
     {
       _tileService = tileService;
@@ -142,6 +159,8 @@ namespace SmogonWP.ViewModel
       _selectedTileStyle = _settingsService.Load(LiveTileService.TileStyleKey, 1);
       _selectedTileImage = _settingsService.Load(LiveTileService.TileImageKey, 0);
 
+      _flipTile = _settingsService.Load(LiveTileService.FlipTileKey, true);
+
       TileListEnabled = _selectedTileStyle == 2;
     }
 
@@ -154,29 +173,18 @@ namespace SmogonWP.ViewModel
 
     private async void onSelectedStyleChanged(int value)
     {
-      TrayService.AddJob("tilemake", "Generating tile...");
-      
       _settingsService.Save(LiveTileService.TileStyleKey, value);
 
       TileListEnabled = value == 2;
 
-      // for aesthetic reasons
-      await Task.Delay(250);
-
-      await _tileService.GenerateFlipTileAsync();
-
-      TrayService.RemoveJob("tilemake");
+      await updateTile();
     }
 
     private async void onSelectedImageChanged(int value)
     {
-      TrayService.AddJob("tilemake", "Generating tile...");
-
       _settingsService.Save(LiveTileService.TileImageKey, value);
 
-      await _tileService.GenerateFlipTileAsync();
-      
-      TrayService.RemoveJob("tilemake");
+      await updateTile();
 
       WebAnalyticsService.Current.Log(new AnalyticsEvent
       {
@@ -185,6 +193,33 @@ namespace SmogonWP.ViewModel
         HitType = HitType.Event,
         ObjectType = this.GetType().Name,
       });
+    }
+
+    private async void onFlipTileChanged(bool value)
+    {
+      _settingsService.Save(LiveTileService.FlipTileKey, value);
+
+      await updateTile();
+
+      WebAnalyticsService.Current.Log(new AnalyticsEvent
+      {
+        Name = value.ToString(),
+        Category = "Flip Tile Choice",
+        HitType = HitType.Event,
+        ObjectType = this.GetType().Name,
+      });
+    }
+
+    private async Task updateTile()
+    {
+      TrayService.AddJob("tilemake", "Generating tile...");
+      
+      // for aesthetic reasons
+      await Task.Delay(250);
+
+      await _tileService.GenerateFlipTileAsync();
+
+      TrayService.RemoveJob("tilemake");
     }
   }
 }

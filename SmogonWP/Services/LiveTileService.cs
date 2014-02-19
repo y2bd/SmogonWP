@@ -1,11 +1,9 @@
 ﻿using System.IO.IsolatedStorage;
+using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Windows.Storage;
-using Microsoft.Phone.Controls;
+using Coding4Fun.Toolkit.Controls;
 using Microsoft.Phone.Shell;
-using Microsoft.WebAnalytics;
-using Microsoft.WebAnalytics.Data;
 using SchmogonDB.Model.Pokemon;
 using SchmogonDB.Model.Text;
 using System;
@@ -23,6 +21,7 @@ namespace SmogonWP.Services
 
     public const string TileStyleKey = "tilestyle";
     public const string TileImageKey = "tileimage";
+    public const string FlipTileKey = "fliptile";
 
     #region main tile
     private static readonly List<string> SecretTiles = new List<string>
@@ -71,6 +70,7 @@ namespace SmogonWP.Services
       "scraggy",
       "seaking",
       "shedinja",
+      "shuckle",
       "slowpoke",
       "solosis",
       "squirtle",
@@ -147,6 +147,7 @@ namespace SmogonWP.Services
     {
       var tileStyle = _settingsService.Load(TileStyleKey, 1);
       var tileImage = _settingsService.Load(TileImageKey, 0);
+      var flipTile = _settingsService.Load(FlipTileKey, true);
 
       var wideBackgroundImage = new Uri("/Assets/Tiles/smogon_widetile.png", UriKind.RelativeOrAbsolute);
       var normalBackgroundImage = new Uri("/Assets/Tiles/smogon_medtile.png", UriKind.RelativeOrAbsolute);
@@ -165,18 +166,24 @@ namespace SmogonWP.Services
         smallBackgroundImage = normalBackgroundImage;
       }
 
-      return new FlipTileData
+      var flipTileData = new FlipTileData(getClearBackTileXml())
       {
         WideBackgroundImage = wideBackgroundImage,
-        WideBackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
-        WideBackContent = description,
         BackgroundImage = normalBackgroundImage,
         SmallBackgroundImage = smallBackgroundImage,
-        BackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
-        BackContent = description,
-        BackTitle = pokemonName,
         Title = "SmogonWP"
       };
+
+      if (flipTile)
+      {
+        flipTileData.WideBackBackgroundImage = new Uri(string.Empty, UriKind.Relative);
+        flipTileData.WideBackContent = description;
+        flipTileData.BackBackgroundImage = new Uri(string.Empty, UriKind.Relative);
+        flipTileData.BackContent = description;
+        flipTileData.BackTitle = pokemonName;
+      }
+
+      return flipTileData;
     }
 
     private void updateTile(FlipTileData tileData)
@@ -233,6 +240,24 @@ namespace SmogonWP.Services
       wbp.Invalidate();
 
       return wbp;
+    }
+
+    private static string getClearBackTileXml()
+    {
+      var clearTileBackXml = new StringBuilder();
+
+      clearTileBackXml.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+      clearTileBackXml.Append("<wp:notification xmlns:wp=\"WPNotification\" version=\"2.0\">");
+      clearTileBackXml.Append("<wp:tile template=\"FlipTile\">");
+      clearTileBackXml.Append("<wp:WideBackBackgroundImage action=\"Clear\"></wp:WideBackBackgroundImage>");
+      clearTileBackXml.Append("<wp:WideBackContent action=\"Clear\"></wp:WideBackContent>");
+      clearTileBackXml.Append("<wp:BackBackgroundImage action=\"Clear\"></wp:BackBackgroundImage>");
+      clearTileBackXml.Append("<wp:BackContent action=\"Clear\"></wp:BackContent>");
+      clearTileBackXml.Append("<wp:BackTitle action=\"Clear\"></wp:BackTitle>");
+      clearTileBackXml.Append("</wp:tile>");
+      clearTileBackXml.Append("</wp:notification>");
+
+      return clearTileBackXml.ToString();
     }
 
     #endregion main tiles
