@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Nito.AsyncEx;
@@ -93,6 +94,9 @@ namespace SmogonWP.Services
       var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects};
 
       var cereal = await JsonConvert.SerializeObjectAsync(_store, Formatting.None, settings);
+
+      Debug.WriteLine("WE FINSHED CEREAL");
+      Debug.WriteLine(cereal);
 
       await _storageService.WriteStringToFileAsync(Filename, cereal);
     }

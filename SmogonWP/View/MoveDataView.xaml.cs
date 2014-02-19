@@ -24,7 +24,7 @@ namespace SmogonWP.View
       if (e.NavigationMode != NavigationMode.Back)
       {
         this.State["tombstoned"] = true;
-        Messenger.Default.Send(new TombstoneMessage<MoveDataViewModel>());
+        // Messenger.Default.Send(new TombstoneMessage<MoveDataViewModel>());
       }
     }
 
@@ -36,6 +36,10 @@ namespace SmogonWP.View
 
         this.State.Remove("tombstoned");
         _isNewInstance = false;
+      }
+      else if (e.NavigationMode != NavigationMode.Back)
+      {
+        Messenger.Default.Send(new TombstoneMessage<MoveDataViewModel>());
       }
     }
   }

@@ -752,6 +752,8 @@ namespace SmogonWP.ViewModel
 
       if (string.IsNullOrWhiteSpace(_searchedPokemon)) return;
 
+      if (AllPokemon == null) return;
+
       var pokemon = AllPokemon.FirstOrDefault(p => p.Name == SearchedPokemon);
 
       if (pokemon == null) return;
@@ -837,6 +839,8 @@ namespace SmogonWP.ViewModel
         .ToList();
 
         AllPokemon = new ObservableCollection<PokemonItemViewModel>(pivms);
+
+        recalculateStats();
       }
       catch (Exception)
       {

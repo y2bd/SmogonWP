@@ -33,7 +33,7 @@ namespace SmogonWP.View
       if (e.NavigationMode != NavigationMode.Back)
       {
         this.State["tombstoned"] = true;
-        Messenger.Default.Send(new TombstoneMessage<PokemonDataViewModel>());
+        // Messenger.Default.Send(new TombstoneMessage<PokemonDataViewModel>());
       }
     }
 
@@ -45,6 +45,13 @@ namespace SmogonWP.View
 
         this.State.Remove("tombstoned");
         _isNewInstance = false;
+      }
+      else if (e.NavigationMode != NavigationMode.Back)
+      {
+        // only do this if we haven't restored but it's not a new back navigation
+        // tombstone ahead of time why not
+        // this.State["tombstoned"] = true;
+        Messenger.Default.Send(new TombstoneMessage<PokemonDataViewModel>());
       }
       
       if (e.NavigationMode != NavigationMode.Back)

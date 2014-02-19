@@ -54,6 +54,10 @@ namespace SmogonWP.View
         this.State.Remove("tombstoned");
         _isNewInstance = false;
       }
+      else if (e.NavigationMode != NavigationMode.Back)
+      {
+        Messenger.Default.Send(new TombstoneMessage<TypeViewModel>());
+      }
 
       if (e.NavigationMode == NavigationMode.New &&
           NavigationContext.QueryString.ContainsKey("voiceCommandName"))
