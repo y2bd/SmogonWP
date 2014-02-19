@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,11 +8,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
+using Microsoft.Phone.Shell;
 using SchmogonDB;
 using SchmogonDB.Model.Natures;
 using SchmogonDB.Model.Stats;
 using SchmogonDB.Tools;
 using SmogonWP.Messages;
+using SmogonWP.Model;
 using SmogonWP.Services;
 using SmogonWP.Services.Messaging;
 using SmogonWP.Utilities;
@@ -61,7 +67,7 @@ namespace SmogonWP.ViewModel
       }
     }
 
-    private bool _isCalculationToggleChecked;
+    private bool _isCalculationToggleChecked = true;
     public bool IsCalculationToggleChecked
     {
       get
@@ -218,11 +224,92 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => Level);
         }
       }
+    }
+
+    private ObservableCollection<TypeCoverageGroup> _typeCoverage;
+    public ObservableCollection<TypeCoverageGroup> TypeCoverage
+    {
+      get
+      {
+        return _typeCoverage;
+      }
+      set
+      {
+        if (_typeCoverage != value)
+        {
+          _typeCoverage = value;
+          RaisePropertyChanged(() => TypeCoverage);
+        }
+      }
+    }
+
+    private CreatedTeamMemberItemViewModel _createdMember;
+    public CreatedTeamMemberItemViewModel CreatedMember
+    {
+      get
+      {
+        return _createdMember;
+      }
+      set
+      {
+        if (_createdMember != value)
+        {
+          _createdMember = value;
+          RaisePropertyChanged(() => CreatedMember);
+        }
+      }
     }			
+
+    private RelayCommand<CancelEventArgs> _backKeyCommand;
+    public RelayCommand<CancelEventArgs> BackKeyCommand
+    {
+      get
+      {
+        return _backKeyCommand ??
+               (_backKeyCommand = new RelayCommand<CancelEventArgs>(onBackKeyPressed));
+      }
+    }
 
     #region ui props
 
     private MenuButtonViewModel _addMemberButton;
+    private MenuButtonViewModel _coverageHelpButton;
+
+    private ApplicationBarMode _appBarMode = ApplicationBarMode.Default;
+    public ApplicationBarMode AppBarMode
+    {
+      get
+      {
+        return _appBarMode;
+      }
+      set
+      {
+        if (_appBarMode != value)
+        {
+          _appBarMode = value;
+          RaisePropertyChanged(() => AppBarMode);
+        }
+      }
+    }
+
+    private int _pivotTab;
+    public int PivotTab
+    {
+      get
+      {
+        return _pivotTab;
+      }
+      set
+      {
+        if (_pivotTab != value)
+        {
+          _pivotTab = value;
+          RaisePropertyChanged(() => PivotTab);
+
+          onPivotTabChanged();
+        }
+      }
+    }			
 
     private TrayService _trayService;
     public TrayService TrayService
@@ -258,6 +345,23 @@ namespace SmogonWP.ViewModel
       }
     }
 
+    private bool _coverageHelpOpen;
+    public bool CoverageHelpOpen
+    {
+      get
+      {
+        return _coverageHelpOpen;
+      }
+      set
+      {
+        if (_coverageHelpOpen != value)
+        {
+          _coverageHelpOpen = value;
+          RaisePropertyChanged(() => CoverageHelpOpen);
+        }
+      }
+    }			
+
     public string CalculationToggleText
     {
       get
@@ -276,7 +380,7 @@ namespace SmogonWP.ViewModel
 
     #endregion ui props
 
-    public TeamPreviewViewModel(SimpleNavigationService navigationService, ISchmogonDBClient schmogonDBClient, SchmogonToolset toolset, TrayService trayService)
+    public TeamPreviewViewModel(SimpleNavigationService navigationService, ISchmogonDBClient schmogonDBClient, IDataLoadingService dataService, SchmogonToolset toolset, TrayService trayService)
     {
       _navigationService = navigationService;
       _schmogonDBClient = schmogonDBClient;
@@ -285,11 +389,57 @@ namespace SmogonWP.ViewModel
 
       createStatBars();
 
+      CreatedMember = new CreatedTeamMemberItemViewModel(dataService, toolset);
+
       _teamSelectedReceiver = new MessageReceiver<ItemSelectedMessage<TeamItemViewModel>>(onTeamReceived, true);
 
       if (IsInDesignMode)
       {
         fetchDesignTeam();
+      }
+
+      setupAppBar();
+    }
+
+    private void setupAppBar()
+    {
+      _addMemberButton = new MenuButtonViewModel
+      {
+        Text = "add",
+        IconUri = new Uri("/Assets/AppBar/add.png", UriKind.RelativeOrAbsolute),
+        Command = new RelayCommand(createTeamMember)
+      };
+
+      _coverageHelpButton = new MenuButtonViewModel
+      {
+        Text = "help",
+        IconUri = new Uri("/Assets/AppBar/questionmark.png", UriKind.RelativeOrAbsolute),
+        Command = new RelayCommand(openCoverageHelp)
+      };
+
+      MenuButtons = new ObservableCollection<MenuButtonViewModel>();
+
+      onPivotTabChanged();
+    }
+
+    private void onPivotTabChanged()
+    {
+      MenuButtons.Remove(_addMemberButton);
+      MenuButtons.Remove(_coverageHelpButton);
+
+      switch (PivotTab)
+      {
+        case 0:
+          MenuButtons.Add(_addMemberButton);
+          AppBarMode = ApplicationBarMode.Default;
+          break;
+        case 2:
+          MenuButtons.Add(_coverageHelpButton);
+          AppBarMode = ApplicationBarMode.Default;
+          break;
+        default:
+          AppBarMode = ApplicationBarMode.Minimized;
+          break;
       }
     }
 
@@ -328,6 +478,7 @@ namespace SmogonWP.ViewModel
       Members = new ObservableCollection<TeamMemberItemViewModel>(TIVM.Team.TeamMembers.Select(m => new TeamMemberItemViewModel(m)));
 
       recalculateStats();
+      recalculateTypeCoverage();
 
       TrayService.AddJob("fetchsprites", "Downloading sprites...");
 
@@ -344,6 +495,7 @@ namespace SmogonWP.ViewModel
         TrayService.RemoveJob("fetchsprites");
       }
 
+      // we don't await it because we want it to happen on its own
       Task.WhenAll(Members.Select(fetchSprite));
 
       TrayService.RemoveJob("fetchsprites");
@@ -357,7 +509,7 @@ namespace SmogonWP.ViewModel
       {
         await downloadSprite(member, spritePath);
       }
-      catch (HttpRequestException)
+      catch (Exception)
       {
         Debugger.Break();
       }
@@ -365,7 +517,7 @@ namespace SmogonWP.ViewModel
 
     private async Task downloadSprite(TeamMemberItemViewModel tmivm, string spritePath)
     {
-      Debug.WriteLine("GOING TO DO IT NOW");
+      if (!NetUtilities.IsNetwork()) return;
       
       Stream s;
 
@@ -461,11 +613,45 @@ namespace SmogonWP.ViewModel
       Level.MaxValue = 100;
     }
 
+    private void recalculateTypeCoverage()
+    {
+      var offense = _toolset.GetTeamOffenseWeaknesses(TIVM.Team);
+      var defense = _toolset.GetTeamDefenseWeaknesses(TIVM.Team);
+
+      TypeCoverage = new ObservableCollection<TypeCoverageGroup>
+      {
+        new TypeCoverageGroup(offense.Select(o => new TypeItemViewModel(o)), CoverageType.OffenseCoverage),
+        new TypeCoverageGroup(defense.Select(o => new TypeItemViewModel(o)), CoverageType.DefenseCoverage),
+      };
+    }
+
     private double getNatureMultiplier(Nature nature, StatType statType)
     {
       return _toolset.NatureBoostsStat(nature, statType)
         ? 1.1
         : (_toolset.NatureLowersStat(nature, statType) ? 0.9 : 1.0);
+    }
+
+    private async void createTeamMember()
+    {
+      
+    }
+
+    private void openCoverageHelp()
+    {
+      CoverageHelpOpen = true;
+      AppBarMode = ApplicationBarMode.Minimized;
+    }
+
+    private void onBackKeyPressed(CancelEventArgs e)
+    {
+      if (CoverageHelpOpen)
+      {
+        CoverageHelpOpen = false;
+        AppBarMode = ApplicationBarMode.Default;
+
+        e.Cancel = true;
+      }
     }
 
     private void cleanup()

@@ -12,6 +12,7 @@
                             xmlns:controls="clr-namespace:SmogonWP.Controls"
                             xmlns:utilities="clr-namespace:SmogonWP.Utilities"
                             xmlns:system="clr-namespace:System;assembly=mscorlib"
+                            xmlns:user="clr-namespace:SmogonWP.View.UserControl"
                             x:Class="SmogonWP.View.TeamBuilderView"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -95,13 +96,13 @@
                 </TextBlock>
 
                 <toolkit:ContextMenuService.ContextMenu>
-                    <toolkit:ContextMenu>                        
-						<toolkit:MenuItem Header="edit team"
-                                          Command="{Binding TeamBuilder.EditTeamCommand, Source={StaticResource Locator}}" 
-                                          CommandParameter="{Binding}"/>
-						<toolkit:MenuItem Header="delete team"
-                                          Command="{Binding TeamBuilder.DeleteTeamCommand, Source={StaticResource Locator}}" 
-                                          CommandParameter="{Binding}"/>
+                    <toolkit:ContextMenu>
+                        <toolkit:MenuItem Header="edit team"
+                                          Command="{Binding TeamBuilder.EditTeamCommand, Source={StaticResource Locator}}"
+                                          CommandParameter="{Binding}" />
+                        <toolkit:MenuItem Header="delete team"
+                                          Command="{Binding TeamBuilder.DeleteTeamCommand, Source={StaticResource Locator}}"
+                                          CommandParameter="{Binding}" />
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
             </Grid>
@@ -129,83 +130,6 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="AddTeamControl">
-                <VisualStateGroup.Transitions>
-                    <VisualTransition GeneratedDuration="0:0:0.5">
-                        <VisualTransition.GeneratedEasingFunction>
-                            <BackEase EasingMode="EaseInOut"
-                                      Amplitude="0.5" />
-                        </VisualTransition.GeneratedEasingFunction>
-                    </VisualTransition>
-                </VisualStateGroup.Transitions>
-                <VisualState x:Name="Visible">
-                    <Storyboard Completed="AddVisible_Completed">
-                        <DoubleAnimation Duration="0"
-                                         To="0.595"
-                                         Storyboard.TargetProperty="(UIElement.Opacity)"
-                                         Storyboard.TargetName="TeamListShade"
-                                         d:IsOptimized="True" />
-                        <DoubleAnimation Duration="0"
-                                         To="1"
-                                         Storyboard.TargetProperty="(UIElement.Opacity)"
-                                         Storyboard.TargetName="AddPanel"
-                                         d:IsOptimized="True" />
-                        <DoubleAnimation Duration="0"
-                                         To="0"
-                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
-                                         Storyboard.TargetName="ContentPanel"
-                                         d:IsOptimized="True" />
-                        <DoubleAnimation Duration="0"
-                                         To="0"
-                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
-                                         Storyboard.TargetName="AddPanel"
-                                         d:IsOptimized="True" />
-                        <DoubleAnimation Duration="0"
-                                         To="0"
-                                         Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)"
-                                         Storyboard.TargetName="AddPanel"
-                                         d:IsOptimized="True" />
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.IsHitTestVisible)" Storyboard.TargetName="AddPanel">
-                        	<DiscreteObjectKeyFrame KeyTime="0">
-                        		<DiscreteObjectKeyFrame.Value>
-                        			<system:Boolean>True</system:Boolean>
-                        		</DiscreteObjectKeyFrame.Value>
-                        	</DiscreteObjectKeyFrame>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Collapsed">
-                    <Storyboard Completed="AddCollapsed_Completed">
-                        <DoubleAnimation Duration="0"
-                                         To="0"
-                                         Storyboard.TargetProperty="(UIElement.Opacity)"
-                                         Storyboard.TargetName="TeamListShade"
-                                         d:IsOptimized="True" />
-                        <DoubleAnimation Duration="0"
-                                         To="0"
-                                         Storyboard.TargetProperty="(UIElement.Opacity)"
-                                         Storyboard.TargetName="AddPanel"
-                                         d:IsOptimized="True" />
-                    </Storyboard>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-
-        <i:Interaction.Triggers>
-            <ec:DataTrigger Binding="{Binding TeamAddState}"
-                            Comparison="Equal"
-                            Value="1">
-                <ec:GoToStateAction x:Name="ShowAddPanel"
-                                    StateName="Visible" />
-            </ec:DataTrigger>
-            <ec:DataTrigger Binding="{Binding TeamAddState}"
-                            Comparison="Equal"
-                            Value="0">
-                <ec:GoToStateAction x:Name="HideAddPanel"
-                                    StateName="Collapsed" />
-            </ec:DataTrigger>
-        </i:Interaction.Triggers>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
@@ -226,12 +150,7 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel"
               Grid.Row="2"
-              Margin="12,0,12,0"
-              CacheMode="BitmapCache"
-              RenderTransformOrigin="0.5,0.5">
-            <Grid.RenderTransform>
-                <CompositeTransform />
-            </Grid.RenderTransform>
+              Margin="12,0,12,0">
             <TextBlock x:Name="NoTeamsText"
                        Style="{StaticResource EmptyListHeaderStyle}"
                        TextWrapping="Wrap"
@@ -244,56 +163,13 @@
                                                ItemsSource="{Binding Teams}"
                                                SelectedItem="{Binding SelectedTeam, Mode=TwoWay}"
                                                ItemTemplate="{StaticResource TeamItemTemplate}"
-                                               toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource LLSFloatingScrollbarStyle}" />
-
-            <Border x:Name="TeamListShade"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    Background="{StaticResource PhoneBackgroundBrush}"
-                    IsHitTestVisible="False"
-                    Margin="-12,0"
-                    Opacity="0" />
+                                               toolkit:TiltEffect.IsTiltEnabled="True"
+                                               Style="{StaticResource LLSFloatingScrollbarStyle}" />
         </Grid>
 
-        <Grid x:Name="AddPanel"
-              Grid.Row="2"
-              CacheMode="BitmapCache"
-              Opacity="0"
-              RenderTransformOrigin="0.5,0.5"
-              Background="{StaticResource PhoneBackgroundBrush}"
-              VerticalAlignment="Top"
-              IsHitTestVisible="False">
-            <Grid.Projection>
-                <PlaneProjection RotationX="-140" />
-            </Grid.Projection>
-            <Grid.RenderTransform>
-                <CompositeTransform />
-            </Grid.RenderTransform>
-
-            <Border Background="#22CCCCCC" />
-
-            <StackPanel Margin="12,12,12,0">
-                <TextBlock Text="Name your new team"
-                           Style="{StaticResource PhoneTextNormalStyle}"
-                           Foreground="{StaticResource PhoneSubtleBrush}"
-                           Margin="12,0,12,-6" />
-                <TextBox x:Name="TeamNameInput"
-                         Margin="0,0,0,12"
-                         InputScope="Text"
-                         KeyUp="TeamNameInput_OnKeyUp"
-                         Text="{Binding EnteredTeamName, Mode=TwoWay}">
-                    <i:Interaction.Behaviors>
-                        <utilities:UpdateTextBindingOnPropertyChanged />
-                    </i:Interaction.Behaviors>
-                </TextBox>
-
-                <toolkit:PickerBox x:Name="TeamTypePicker"
-                                   Margin="0,0,0,12"
-                                   Header="Choose a format"
-                                   ItemsSource="{Binding TeamTypes}"
-                                   SelectedIndex="{Binding SelectedTeamType, Mode=TwoWay}" />
-            </StackPanel>
-        </Grid>
+        <user:AddPanel Grid.Row="2"
+                       x:Name="AddPanel" 
+                       PanelClosed="PanelClosed_Completed" />
     </Grid>
 
 </phone:PhoneApplicationPage>

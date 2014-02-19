@@ -164,7 +164,7 @@ namespace SmogonWP
       {
         await writeDBToIsolatedStorage();
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         Debug.WriteLine("Failed to create/overwrite database.");
         Debugger.Break();

@@ -9,12 +9,19 @@
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                             xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+                            xmlns:gala="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP8"
+                            xmlns:bab="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
+                            xmlns:user="clr-namespace:SmogonWP.View.UserControl"
                             x:Class="SmogonWP.View.TeamPreviewView"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             mc:Ignorable="d"
                             shell:SystemTray.IsVisible="True"
-                            shell:SystemTray.Opacity="0">
+                            shell:SystemTray.Opacity="0"
+                            DataContext="{Binding TeamPreview, Source={StaticResource Locator}}">
 
     <toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
@@ -37,6 +44,13 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
 
+    <bab:Bindable.ApplicationBar>
+        <bab:BindableApplicationBar x:Name="AppBar"
+                                    ButtonsSource="{Binding MenuButtons}"
+                                    Mode="{Binding AppBarMode}"
+                                    BindableOpacity="0.5" />
+    </bab:Bindable.ApplicationBar>
+
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
             <Grid>
@@ -45,6 +59,7 @@
                            Style="{StaticResource PhoneTextTitle3Style}" />
             </Grid>
         </DataTemplate>
+        
         <DataTemplate x:Key="TeamMemberItemTemplate">
             <Grid Margin="12,0,0,12"
                   x:Name="TeamMemberGrid"
@@ -125,23 +140,39 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="TeamMemberFooterTemplate">
-            <Grid Margin="0,0,0,12" />
+            <Grid Margin="0,0,0,84" />
         </DataTemplate>
+
+        <DataTemplate x:Key="TypeItemTemplate">
+            <Grid Background="{Binding BackgroundBrush}"
+                  Margin="12,0"
+                  Height="50">
+                <TextBlock Text="{Binding Name}"
+                           Style="{StaticResource PhoneTextTitle2Style}"
+                           Foreground="White"
+                           Margin="12,-3,12,0"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="TypeGroupHeaderTemplate">
+            <Grid Margin="0,0,0,6">
+                <TextBlock Text="{Binding DisplayName}"
+                           Style="{StaticResource PhoneTextTitle3Style}" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="TypeGroupFooterTemplate">
+            <Grid Margin="0,0,0,24" />
+        </DataTemplate>
+
     </phone:PhoneApplicationPage.Resources>
 
-    <phone:PhoneApplicationPage.FontFamily>
-        <StaticResource ResourceKey="PhoneFontFamilyNormal" />
-    </phone:PhoneApplicationPage.FontFamily>
-    <phone:PhoneApplicationPage.FontSize>
-        <StaticResource ResourceKey="PhoneFontSizeNormal" />
-    </phone:PhoneApplicationPage.FontSize>
-    <phone:PhoneApplicationPage.Foreground>
-        <StaticResource ResourceKey="PhoneForegroundBrush" />
-    </phone:PhoneApplicationPage.Foreground>
-    <phone:PhoneApplicationPage.DataContext>
-        <Binding Path="TeamPreview"
-                 Source="{StaticResource Locator}" />
-    </phone:PhoneApplicationPage.DataContext>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="BackKeyPress">
+            <gala:EventToCommand Command="{Binding BackKeyCommand}"
+                                 PassEventArgsToCommand="True" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
@@ -172,7 +203,8 @@
             <!--TitlePanel contains the name of the application and page title-->
             <phone:Pivot x:Name="DescriptionPivot"
                          Margin="0,-12,0,0"
-                         HeaderTemplate="{StaticResource DescriptionPivotHeaderTemplate}">
+                         HeaderTemplate="{StaticResource DescriptionPivotHeaderTemplate}"
+                         SelectedIndex="{Binding PivotTab, Mode=TwoWay}">
                 <phone:PivotItem x:Name="Members"
                                  Header="MEMBERS"
                                  Margin="12,12,12,0">
@@ -392,6 +424,7 @@
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Left" />
                         </Grid>
+                        
                         <toolkit:ToggleSwitch Header="Should we average the stats?"
                                               Content="{Binding CalculationToggleText, FallbackValue=Average, Mode=TwoWay}"
                                               IsChecked="{Binding IsCalculationToggleChecked, Mode=TwoWay}"
@@ -403,10 +436,27 @@
                                               Margin="-12,0" />
                     </StackPanel>
                 </phone:PivotItem>
-                <phone:PivotItem Header="COVERAGE"
-                                 Margin="12,12,12,0" />
+                <phone:PivotItem x:Name="Coverage"
+                                 Header="COVERAGE"
+                                 Margin="12,12,12,0">
+                    <phone:LongListSelector x:Name="TypeCoverageList"
+                                            IsGroupingEnabled="True"
+                                            Style="{StaticResource LLSFloatingScrollbarStyle}"
+                                            ItemsSource="{Binding TypeCoverage}"
+                                            ItemTemplate="{StaticResource TypeItemTemplate}"
+                                            GroupHeaderTemplate="{StaticResource TypeGroupHeaderTemplate}"
+                                            GroupFooterTemplate="{StaticResource TypeGroupFooterTemplate}"
+                                            HideEmptyGroups="True" />
+                </phone:PivotItem>
             </phone:Pivot>
         </Grid>
+
+        <user:CoveragePanel Grid.Row="0"
+                            Grid.RowSpan="3" 
+                            IsHitTestVisible="True" />
+        
+        <user:TeamMemberCreator Grid.Row="1"
+                                Grid.RowSpan="2" />
     </Grid>
 
 </phone:PhoneApplicationPage>

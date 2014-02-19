@@ -1,0 +1,320 @@
+﻿<UserControl x:Class="SmogonWP.View.UserControl.TeamMemberCreator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:keyboardHelper="clr-namespace:SmogonWP.Utilities.KeyboardHelper"
+             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+             mc:Ignorable="d"
+             FontFamily="{StaticResource PhoneFontFamilyNormal}"
+             FontSize="{StaticResource PhoneFontSizeNormal}"
+             Foreground="{StaticResource PhoneForegroundBrush}"
+             d:DesignHeight="800"
+             d:DesignWidth="480"
+             DataContext="{Binding TeamPreview, Source={StaticResource Locator}}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
+            <Grid>
+                <TextBlock Text="{Binding}"
+                           Margin="2,0,0,0"
+                           Style="{StaticResource PhoneTextTitle3Style}" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot"
+          Background="{StaticResource PhoneChromeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <i:Interaction.Behaviors>
+            <keyboardHelper:KeyboardTabHelperBehavior />
+        </i:Interaction.Behaviors>
+
+        <StackPanel Grid.Row="0"
+                    Margin="12,6,0,24">
+            <TextBlock x:Name="PageTitle"
+                       Text="NEW TEAM MEMBER"
+                       Style="{StaticResource PhoneTextTitle2Style}" />
+        </StackPanel>
+
+        <phone:Pivot x:Name="DescriptionPivot"
+                     Margin="0,0,0,0"
+                     Grid.Row="1"
+                     HeaderTemplate="{StaticResource DescriptionPivotHeaderTemplate}"
+                     IsLocked="False">
+            <phone:PivotItem Header="POKEMON"
+                             Margin="12,12,12,0">
+                <StackPanel Margin="0,12,0,0">
+                    <TextBlock Text="What's the Pokemon"
+                               Style="{StaticResource PhoneTextNormalStyle}"
+                               Foreground="{StaticResource PhoneSubtleBrush}"
+                               Margin="12,0,12,-6" />
+                    <toolkit:AutoCompleteBox ItemsSource="{Binding CreatedMember.AllPokemon}"
+                                             Text="{Binding CreatedMember.Pokemon, Mode=TwoWay}"
+                                             FilterMode="Contains"
+                                             ValueMemberPath="Name"
+                                             IsTextCompletionEnabled="True"
+                                             MinimumPrefixLength="3"
+                                             PlaceholderText="gardevoir, hydreigon, scizor..."
+                                             Margin="0,0,0,24"
+                                             TabIndex="0"
+                                             KeyUp="UIElement_OnKeyUp" />
+
+                    <toolkit:PickerBox ItemsSource="{Binding CreatedMember.AllMovesets}"
+                                       DisplayMemberPath="Name"
+                                       Header="What's the base moveset?"
+                                       SelectedItem="{Binding CreatedMember.Moveset, Mode=TwoWay}"
+                                       Margin="0,0,0,24">
+                        <toolkit:PickerBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TargetNullValue='choose a moveset'}" />
+                            </DataTemplate>
+                        </toolkit:PickerBox.ItemTemplate>
+                    </toolkit:PickerBox>
+
+                    <toolkit:PhoneTextBox Header="What level is it?"
+                                          InputScope="Number"
+                                          PlaceholderText="1-100"
+                                          Text="{Binding CreatedMember.Level, Mode=TwoWay}" />
+                </StackPanel>
+            </phone:PivotItem>
+            <phone:PivotItem Header="ATTRIBUTES"
+                             Margin="12,12,12,0">
+                <StackPanel Margin="0,12,0,0">
+                    <toolkit:PickerBox ItemsSource="{Binding CreatedMember.AllAbilities}"
+                                       DisplayMemberPath="Name"
+                                       Header="What's its ability?"
+                                       SelectedItem="{Binding CreatedMember.Ability, Mode=TwoWay}"
+                                       Margin="0,0,0,24">
+                        <toolkit:PickerBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TargetNullValue='choose an ability'}" />
+                            </DataTemplate>
+                        </toolkit:PickerBox.ItemTemplate>
+                    </toolkit:PickerBox>
+
+                    <toolkit:PickerBox ItemsSource="{Binding CreatedMember.AllNatures}"
+                                       DisplayMemberPath="Name"
+                                       Header="Its nature?"
+                                       SelectedItem="{Binding CreatedMember.Nature, Mode=TwoWay}"
+                                       Margin="0,0,0,24">
+                        <toolkit:PickerBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TargetNullValue='choose a nature'}" />
+                            </DataTemplate>
+                        </toolkit:PickerBox.ItemTemplate>
+                    </toolkit:PickerBox>
+
+                    <toolkit:PickerBox ItemsSource="{Binding CreatedMember.AllItems}"
+                                       DisplayMemberPath="Name"
+                                       Header="The item its holding?"
+                                       SelectedItem="{Binding CreatedMember.Item, Mode=TwoWay}"
+                                       Margin="0,0,0,24">
+                        <toolkit:PickerBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TargetNullValue='choose an item'}" />
+                            </DataTemplate>
+                        </toolkit:PickerBox.ItemTemplate>
+                    </toolkit:PickerBox>
+                </StackPanel>
+            </phone:PivotItem>
+            <phone:PivotItem Header="MOVES"
+                             Margin="12,12,12,0">
+                <StackPanel Margin="0,12,0,0">
+                    <toolkit:PickerBox ItemsSource="{Binding CreatedMember.AllMoves}"
+                                       DisplayMemberPath="Name"
+                                       Header="What are its moves?"
+                                       FullModeHeader="what's its first move?"
+                                       SelectedItem="{Binding CreatedMember.Move1, Mode=TwoWay}"
+                                       Margin="0,0,0,0">
+                        <toolkit:PickerBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TargetNullValue='choose its first move'}" />
+                            </DataTemplate>
+                        </toolkit:PickerBox.ItemTemplate>
+                    </toolkit:PickerBox>
+
+                    <toolkit:PickerBox ItemsSource="{Binding CreatedMember.AllMoves}"
+                                       DisplayMemberPath="Name"
+                                       FullModeHeader="what's its second move?"
+                                       SelectedItem="{Binding CreatedMember.Move2, Mode=TwoWay}"
+                                       Margin="0,0,0,0">
+                        <toolkit:PickerBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TargetNullValue='choose its second move'}" />
+                            </DataTemplate>
+                        </toolkit:PickerBox.ItemTemplate>
+                    </toolkit:PickerBox>
+
+                    <toolkit:PickerBox ItemsSource="{Binding CreatedMember.AllMoves}"
+                                       DisplayMemberPath="Name"
+                                       FullModeHeader="what's its third move?"
+                                       SelectedItem="{Binding CreatedMember.Move3, Mode=TwoWay}"
+                                       Margin="0,0,0,0">
+                        <toolkit:PickerBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TargetNullValue='choose its third move'}" />
+                            </DataTemplate>
+                        </toolkit:PickerBox.ItemTemplate>
+                    </toolkit:PickerBox>
+
+                    <toolkit:PickerBox ItemsSource="{Binding CreatedMember.AllMoves}"
+                                       DisplayMemberPath="Name"
+                                       FullModeHeader="what's its fourth move?"
+                                       SelectedItem="{Binding CreatedMember.Move4, Mode=TwoWay}"
+                                       Margin="0,0,0,0">
+                        <toolkit:PickerBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TargetNullValue='choose its fourth move'}" />
+                            </DataTemplate>
+                        </toolkit:PickerBox.ItemTemplate>
+                    </toolkit:PickerBox>
+                </StackPanel>
+            </phone:PivotItem>
+            <phone:PivotItem Header="STATS"
+                             Margin="12,12,12,0">
+                <StackPanel Margin="0,12,0,0">
+                    <Grid Margin="0,0,0,12">
+                        <Grid.Resources>
+                            <Style TargetType="toolkit:PhoneTextBox">
+                                <Setter Property="Margin"
+                                        Value="0,0,0,12" />
+                            </Style>
+                        </Grid.Resources>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <toolkit:PhoneTextBox Grid.Row="0"
+                                              Grid.Column="0"
+                                              Header="HP EV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-252"
+                                              TabIndex="2"
+                                              Text="{Binding CreatedMember.EVSpread.HP, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="0"
+                                              Grid.Column="1"
+                                              Header="Attack EV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-252"
+                                              TabIndex="3"
+                                              Text="{Binding CreatedMember.EVSpread.Attack, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="1"
+                                              Grid.Column="0"
+                                              Header="Defense EV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-252"
+                                              TabIndex="4"
+                                              Text="{Binding CreatedMember.EVSpread.Defense, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="1"
+                                              Grid.Column="1"
+                                              Header="Special Attack EV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-252"
+                                              TabIndex="5"
+                                              Text="{Binding CreatedMember.EVSpread.SpecialAttack, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="2"
+                                              Grid.Column="0"
+                                              Header="Special Defense EV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-252"
+                                              TabIndex="6"
+                                              Text="{Binding CreatedMember.EVSpread.SpecialDefense, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="2"
+                                              Grid.Column="1"
+                                              Header="Speed EV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-252"
+                                              TabIndex="7"
+                                              Text="{Binding CreatedMember.EVSpread.Speed, Mode=TwoWay}" />
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.Resources>
+                            <Style TargetType="toolkit:PhoneTextBox">
+                                <Setter Property="Margin"
+                                        Value="0,0,0,12" />
+                            </Style>
+                        </Grid.Resources>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <toolkit:PhoneTextBox Grid.Row="0"
+                                              Grid.Column="0"
+                                              Header="HP IV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-31"
+                                              TabIndex="2"
+                                              Text="{Binding CreatedMember.IVSpread.HP, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="0"
+                                              Grid.Column="1"
+                                              Header="Attack IV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-31"
+                                              TabIndex="3"
+                                              Text="{Binding CreatedMember.IVSpread.Attack, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="1"
+                                              Grid.Column="0"
+                                              Header="Defense IV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-31"
+                                              TabIndex="4"
+                                              Text="{Binding CreatedMember.IVSpread.Defense, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="1"
+                                              Grid.Column="1"
+                                              Header="Special Attack IV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-31"
+                                              TabIndex="5"
+                                              Text="{Binding CreatedMember.IVSpread.SpecialAttack, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="2"
+                                              Grid.Column="0"
+                                              Header="Special Defense IV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-31"
+                                              TabIndex="6"
+                                              Text="{Binding CreatedMember.IVSpread.SpecialDefense, Mode=TwoWay}" />
+
+                        <toolkit:PhoneTextBox Grid.Row="2"
+                                              Grid.Column="1"
+                                              Header="Speed IV"
+                                              InputScope="Number"
+                                              PlaceholderText="0-31"
+                                              TabIndex="7"
+                                              Text="{Binding CreatedMember.IVSpread.Speed, Mode=TwoWay}" />
+                    </Grid>
+                </StackPanel>
+            </phone:PivotItem>
+        </phone:Pivot>
+    </Grid>
+</UserControl>

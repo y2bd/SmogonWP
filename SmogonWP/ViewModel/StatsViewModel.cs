@@ -54,7 +54,7 @@ namespace SmogonWP.ViewModel
 
     #region stats props
 
-    private int _level = 50;
+    private int _level = 100;
     public int Level
     {
       get
@@ -677,7 +677,7 @@ namespace SmogonWP.ViewModel
           StatUtils.GetShortName(effect.Increased).ToLower(),
           StatUtils.GetShortName(effect.Decreased).ToLower());
 
-        if (name != null) NatureChoices.Add(string.Format("{0} {1}", name.ToLower(), suffix));
+        if (name != null) NatureChoices.Add(string.Format("{0}\t{1}", name.ToLower(), suffix));
       }
 
       schedulePokemonListFetch();

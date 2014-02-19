@@ -429,7 +429,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
               TrayService.RemoveJob("rec");
             }
-            catch (Exception e)
+            catch (Exception)
             {
               Debugger.Break();
             }

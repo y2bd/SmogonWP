@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SchmogonDB.Model.Teams;
 using SchmogonDB.Model.Types;
 using Type = SchmogonDB.Model.Types.Type;
 
@@ -9,7 +10,7 @@ namespace SchmogonDB.Tools
   public partial class SchmogonToolset
   {
     private IEnumerable<TypeDefenseEffect> _defenseCache;
-    
+
     public IEnumerable<TypeOffenseEffect> GetAllTypeOffenseEffects()
     {
       return TypeOffenseEffect.TypeEffects;
@@ -160,6 +161,54 @@ namespace SchmogonDB.Tools
       }
 
       return new DualTypeDefenseEffect(type1, type2, strong, weak, full, veryStrong, veryWeak);
+    }
+
+    public IEnumerable<Type> GetTeamDefenseWeaknesses(Team team)
+    {
+      var members = team.TeamMembers;
+
+      // first get a set of all of the types
+      var types = new HashSet<Type>(members.SelectMany(m => m.Pokemon.Types));
+
+      // then get all of their defense effects
+      var defenseEffects = types.Select(GetTypeDefenseEffect).ToList();
+
+      var fullDefense = defenseEffects.SelectMany(d => d.FullDefenseAgainst).ToList();
+      var strongDefense = defenseEffects.SelectMany(d => d.StrongDefenseAgainst).ToList();
+
+      // what do they have a defense against
+      var strengths = new HashSet<Type>(fullDefense.Concat(strongDefense));
+
+      // gimme all the types
+      var allTypes = new HashSet<Type>(Enum.GetValues(typeof(Type)).Cast<Type>());
+
+      // now what types do they not have a resistance to
+      allTypes.ExceptWith(strengths);
+
+      return allTypes;
+    }
+
+    public IEnumerable<Type> GetTeamOffenseWeaknesses(Team team)
+    {
+      // get all of their moves
+      var moves = team.TeamMembers.SelectMany(m => m.Moves);
+
+      // get all the move types
+      var types = new HashSet<Type>(moves.Select(m => m.Type));
+
+      // then get all of the offense effects
+      var offenseEffects = types.Select(GetTypeOffenseEffect).ToList();
+
+      // what are they super effective against
+      var strengths = new HashSet<Type>(offenseEffects.SelectMany(o => o.SuperEffectiveAgainst));
+
+      // gimme all the types
+      var allTypes = new HashSet<Type>(Enum.GetValues(typeof(Type)).Cast<Type>());
+
+      // now what types do they not have a resistance to
+      allTypes.ExceptWith(strengths);
+
+      return allTypes;
     }
   }
 }

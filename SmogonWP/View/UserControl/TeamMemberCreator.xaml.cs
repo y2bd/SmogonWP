@@ -9,18 +9,18 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 
-namespace SmogonWP.View
+namespace SmogonWP.View.UserControl
 {
-  public partial class TeamBuilderView : PhoneApplicationPage
+  public partial class TeamMemberCreator : System.Windows.Controls.UserControl
   {
-    public TeamBuilderView()
+    public TeamMemberCreator()
     {
       InitializeComponent();
     }
-    
-    private void PanelClosed_Completed(object sender, EventArgs e)
+
+    private void UIElement_OnKeyUp(object sender, KeyEventArgs e)
     {
-      TeamSelector.Focus();
+      if (e.Key == Key.Enter) DescriptionPivot.Focus();
     }
   }
 }
