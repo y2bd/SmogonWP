@@ -57,11 +57,11 @@ namespace SmogonWP.Services
               contents = reader.ReadToEnd();
             }
           }
-          catch (IsolatedStorageException e)
+          catch (IsolatedStorageException)
           {
             contents = null;
           }
-          catch (IOException e)
+          catch (IOException)
           {
             contents = null;
           }

@@ -435,7 +435,7 @@ namespace SmogonWP.ViewModel
 
         LoadFailed = false;
       }
-      catch (Exception e)
+      catch (Exception)
       {
         MessageBox.Show(
           "Your pokemon data may be corrupted. Please restart the app and try again. If this is happening a lot, please contact the developer.",

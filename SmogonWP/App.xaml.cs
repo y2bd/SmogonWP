@@ -164,7 +164,7 @@ namespace SmogonWP
       {
         await writeDBToIsolatedStorage();
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         Debug.WriteLine("Failed to create/overwrite database.");
         Debugger.Break();
@@ -185,7 +185,7 @@ namespace SmogonWP
 
     // Code to execute when the application is deactivated (sent to background)
     // This code will not execute when the application is closing
-    private async void Application_Deactivated(object sender, DeactivatedEventArgs e)
+    private void Application_Deactivated(object sender, DeactivatedEventArgs e)
     {
     }
 

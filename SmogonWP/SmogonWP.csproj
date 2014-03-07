@@ -353,6 +353,7 @@
     <Content Include="Assets\Secret\braixen.png" />
     <Content Include="Assets\Secret\charizard.png" />
     <Content Include="Assets\Secret\duskull.png" />
+    <Content Include="Assets\Secret\eevee.png" />
     <Content Include="Assets\Secret\flareon.png" />
     <Content Include="Assets\Secret\furret.png" />
     <Content Include="Assets\Secret\gardevoir.png" />
@@ -362,10 +363,12 @@
     <Content Include="Assets\Secret\growlithe.png" />
     <Content Include="Assets\Secret\gyarados.png" />
     <Content Include="Assets\Secret\haunter.png" />
+    <Content Include="Assets\Secret\helix.png" />
     <Content Include="Assets\Secret\inkay.png" />
     <Content Include="Assets\Secret\jirachi.png" />
     <Content Include="Assets\Secret\jolteon.png" />
     <Content Include="Assets\Secret\koffing.png" />
+    <Content Include="Assets\Secret\lapras.png" />
     <Content Include="Assets\Secret\lilligant.png" />
     <Content Include="Assets\Secret\lopunny.png" />
     <Content Include="Assets\Secret\ludicolo.png" />
@@ -377,12 +380,15 @@
     <Content Include="Assets\Secret\murkrow.png" />
     <Content Include="Assets\Secret\m_absol.png" />
     <Content Include="Assets\Secret\m_ampharos.png" />
+    <Content Include="Assets\Secret\m_blastoise.png" />
     <Content Include="Assets\Secret\m_blaziken.png" />
     <Content Include="Assets\Secret\m_lucario.png" />
     <Content Include="Assets\Secret\m_mawile.png" />
+    <Content Include="Assets\Secret\nidoking.png" />
     <Content Include="Assets\Secret\oddish.png" />
     <Content Include="Assets\Secret\pancham.png" />
     <Content Include="Assets\Secret\pichu.png" />
+    <Content Include="Assets\Secret\pidgeot.png" />
     <Content Include="Assets\Secret\ralts.png" />
     <Content Include="Assets\Secret\rotom.png" />
     <Content Include="Assets\Secret\salamence.png" />
@@ -400,9 +406,11 @@
     <Content Include="Assets\Secret\typhlosion.png" />
     <Content Include="Assets\Secret\tyranitar.png" />
     <Content Include="Assets\Secret\vaporeon.png" />
+    <Content Include="Assets\Secret\venomoth.png" />
     <Content Include="Assets\Secret\wynaut.png" />
     <Content Include="Assets\Secret\xerneas.png" />
     <Content Include="Assets\Secret\yveltal.png" />
+    <Content Include="Assets\Secret\zapdos.png" />
     <Content Include="Assets\Secret\zoroark.png" />
     <Content Include="Assets\Secret\zweilous.png" />
     <Content Include="Assets\Tiles\Secondary\calc.png" />
@@ -471,6 +479,9 @@
     <Content Include="BaseVCD.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="SplashScreenImage.screen-720p.jpg" />
+    <Content Include="SplashScreenImage.screen-WVGA.jpg" />
+    <Content Include="SplashScreenImage.screen-WXGA.jpg" />
     <Content Include="Toolkit.Content\ApplicationBar.Add.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

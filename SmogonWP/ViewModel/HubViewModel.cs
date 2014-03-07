@@ -6,6 +6,7 @@ using Microsoft.Phone.Tasks;
 using Microsoft.WebAnalytics;
 using Microsoft.WebAnalytics.Data;
 using Nito.AsyncEx;
+using SchmogonDB;
 using SchmogonDB.Model;
 using SchmogonDB.Model.Abilities;
 using SchmogonDB.Model.Items;
@@ -33,7 +34,7 @@ namespace SmogonWP.ViewModel
 {
   public class HubViewModel : ViewModelBase
   {
-    public const string UpdateKey = "update_" + "1.1.5";
+    public const string UpdateKey = "update_" + "1.1.5.1";
 
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
@@ -502,7 +503,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
     private async Task fetchSearchData()
     {
-      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("fetchall", "Fetching search data..."));
+      //DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.AddJob("fetchall", "Fetching search data..."));
 
       var pokeTask = _dataService.FetchAllPokemonAsync();
       var moveTask = _dataService.FetchAllMovesAsync();
@@ -541,7 +542,7 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         Debugger.Break();
       }
 
-      DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("fetchall"));
+      //DispatcherHelper.CheckBeginInvokeOnUI(() => TrayService.RemoveJob("fetchall"));
     }
 
     private void onNavItemSelected(NavigationItemViewModel item)
@@ -768,12 +769,12 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       if (!_settingsService.SettingRegistered("haswelcomed")) return false;
 
       MessageBox.Show(
-        "Hey everyone! Just another little update.\n\n" +
-        "There are some more new live tiles! Remember to go check them out and reset your chosen tile if it changed (sorry about that). " +
-        "There's also an option to disable the tile from flipping if you don't like that (this was requested by a couple of you, thanks for the suggestion!).\n\n" +
-        "I also fixed some small but embarrassing bugs. If you noticed the app crashing a bit when closing or reopening it (especially if you have a low-memory device) " +
-        "that shouldn't happen any more.\n\n" +
-        "As always, if you need anything (like even more live tiles!) feel free to email me. Happy battling!",
+        "Hey everyone! Teensy update!\n\n" +
+        "First of all, you probably noticed that splash screen while coming in. Hold on, because that'll be more important " +
+        "a month from now.\n\n" +
+        "Besides that though, I added some more tiles! One is a request (keep sending them in) and the rest...well, if you've been " +
+        "following current events you should know what they're from.\n\n" +
+        "Until next time, happy battling, and praise the helix fossil!",
         "Update Notes (Please Read)",
         MessageBoxButton.OK);
 
