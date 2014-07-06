@@ -32,6 +32,7 @@ namespace SmogonWP.ViewModel
   public class PokemonDataViewModel : ViewModelBase
   {
     private const string SmogonPrefix = "http://www.smogon.com";
+    private const string SmogonDexPrefix = "http://www.smogon.com/dex/bw/pokemon/";
     private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
 
     private readonly IDataLoadingService _dataService;
@@ -98,6 +99,20 @@ namespace SmogonWP.ViewModel
         {
           _sprite = value;
           RaisePropertyChanged(() => Sprite);
+        }
+      }
+    }
+
+    private Uri _gifImageSource;
+    public Uri GifImageSource
+    {
+      get { return _gifImageSource; }
+      set
+      {
+        if (_gifImageSource != value)
+        {
+          _gifImageSource = value;
+          RaisePropertyChanged(() => GifImageSource);
         }
       }
     }			
@@ -317,7 +332,7 @@ namespace SmogonWP.ViewModel
     {
       var wbt = new WebBrowserTask
       {
-        Uri = new Uri(SmogonPrefix + _pageLocation)
+        Uri = new Uri(SmogonDexPrefix + SpritePathConstructor.ReplaceNameIfNecessary(PDVM.Data.Name.ToLower()))
       };
 
       wbt.Show();
@@ -376,6 +391,9 @@ namespace SmogonWP.ViewModel
 
       Sprite = null;
 
+      string gifPath = SpritePathConstructor.ConstructSpritePath(pokemon.Name);
+      GifImageSource = new Uri(gifPath);
+
       PokemonData pokemonData;
 
       try
@@ -398,7 +416,7 @@ namespace SmogonWP.ViewModel
       PDVM = new PokemonDataItemViewModel(pokemonData);
       Name = PDVM.Name;
 
-      await fetchThumbnailImage(PDVM.SpritePath);
+      //await fetchThumbnailImage(PDVM.SpritePath);
 
       _pageLocation = pokemon.PageLocation;
 

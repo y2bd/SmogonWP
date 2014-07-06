@@ -34,7 +34,7 @@ namespace SmogonWP.ViewModel
 {
   public class HubViewModel : ViewModelBase
   {
-    public const string UpdateKey = "update_" + "1.1.5.1";
+    public const string UpdateKey = "update_" + "1.1.6";
 
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
@@ -767,15 +767,12 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
       // if we're opening the app for the first time, don't do it either
       if (!_settingsService.SettingRegistered("haswelcomed")) return false;
-
+      
       MessageBox.Show(
-        "Hey everyone! Teensy update!\n\n" +
-        "First of all, you probably noticed that splash screen while coming in. Hold on, because that'll be more important " +
-        "a month from now.\n\n" +
-        "Besides that though, I added some more tiles! One is a request (keep sending them in) and the rest...well, if you've been " +
-        "following current events you should know what they're from.\n\n" +
-        "Until next time, happy battling, and praise the helix fossil!",
-        "Update Notes (Please Read)",
+        "Hey everyone, long time no see!\n\n" +
+        "The new Smogon dex broke sprites, so here's a quick fix. There's still some weirdness, but I think you'll all be pleasently surprised at the change.\n\n" +
+        "Smogon has also finally published some XY data (which is why it hadn't been added to the app yet), so be excited. It's finally coming! (in a couple of days)",
+        "Quick Fix",
         MessageBoxButton.OK);
 
       _settingsService.Save(UpdateKey, true);

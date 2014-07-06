@@ -2,6 +2,7 @@
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Messaging;
+using ImageTools.IO.Gif;
 using Microsoft.Phone.Controls;
 using SmogonWP.Messages;
 using SmogonWP.ViewModel;
@@ -16,6 +17,7 @@ namespace SmogonWP.View
     public PokemonDataView()
     {
       InitializeComponent();
+      ImageTools.IO.Decoders.AddDecoder<GifDecoder>();
 
       // this will only be set to true on creation of this page
       // revisiting this page while it is still in memory will not set it to true

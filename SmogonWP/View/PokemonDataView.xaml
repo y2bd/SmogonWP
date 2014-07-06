@@ -10,6 +10,7 @@
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                             xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+                            xmlns:imageTools="clr-namespace:ImageTools.Controls;assembly=ImageTools.Controls"
                             x:Class="SmogonWP.View.PokemonDataView"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
@@ -18,7 +19,7 @@
                             shell:SystemTray.Opacity="0">
 
     <phone:PhoneApplicationPage.Resources>
-
+        <imageTools:ImageConverter x:Key="ImageConverter" />
         <DataTemplate x:Key="DescriptionPivotHeaderTemplate">
             <Grid>
                 <TextBlock Text="{Binding}"
@@ -41,8 +42,8 @@
         <DataTemplate x:Key="MovesetItemTemplate">
             <StackPanel Margin="0,0,0,12">
                 <TextBlock Text="{Binding Name}"
-                           Style="{StaticResource PhoneTextTitle3Style}" 
-                           toolkit:SlideInEffect.LineIndex="0"/>
+                           Style="{StaticResource PhoneTextTitle3Style}"
+                           toolkit:SlideInEffect.LineIndex="0" />
                 <TextBlock Text="{Binding Preview}"
                            Style="{StaticResource PhoneTextNormalStyle}"
                            Foreground="{StaticResource PhoneSubtleBrush}"
@@ -59,14 +60,46 @@
                              To="0"
                              Storyboard.TargetProperty="(UIElement.Opacity)"
                              Storyboard.TargetName="grid" />
-            <DoubleAnimation Duration="0" To="-166" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="stackPanel" d:IsOptimized="True"/>
-            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="textBlock" d:IsOptimized="True"/>
-            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="textBlock1" d:IsOptimized="True"/>
-            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="textBlock2" d:IsOptimized="True"/>
-            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="textBlock3" d:IsOptimized="True"/>
-            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="textBlock4" d:IsOptimized="True"/>
-            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="textBlock5" d:IsOptimized="True"/>
-            <DoubleAnimation Duration="0" To="-165" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="StatGrid" d:IsOptimized="True"/>
+            <DoubleAnimation Duration="0"
+                             To="-166"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                             Storyboard.TargetName="stackPanel"
+                             d:IsOptimized="True" />
+            <DoubleAnimation Duration="0"
+                             To="0"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="textBlock"
+                             d:IsOptimized="True" />
+            <DoubleAnimation Duration="0"
+                             To="0"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="textBlock1"
+                             d:IsOptimized="True" />
+            <DoubleAnimation Duration="0"
+                             To="0"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="textBlock2"
+                             d:IsOptimized="True" />
+            <DoubleAnimation Duration="0"
+                             To="0"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="textBlock3"
+                             d:IsOptimized="True" />
+            <DoubleAnimation Duration="0"
+                             To="0"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="textBlock4"
+                             d:IsOptimized="True" />
+            <DoubleAnimation Duration="0"
+                             To="0"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="textBlock5"
+                             d:IsOptimized="True" />
+            <DoubleAnimation Duration="0"
+                             To="-165"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                             Storyboard.TargetName="StatGrid"
+                             d:IsOptimized="True" />
         </Storyboard>
         <Storyboard x:Name="AnimateIn">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
@@ -172,14 +205,17 @@
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="StatGrid">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="-165"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
-        			<EasingDoubleKeyFrame.EasingFunction>
-        				<CubicEase EasingMode="EaseInOut"/>
-        			</EasingDoubleKeyFrame.EasingFunction>
-        		</EasingDoubleKeyFrame>
-        	</DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                                           Storyboard.TargetName="StatGrid">
+                <EasingDoubleKeyFrame KeyTime="0"
+                                      Value="-165" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5"
+                                      Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </phone:PhoneApplicationPage.Resources>
 
@@ -284,11 +320,13 @@
                                         Background="#29808080"
                                         BorderBrush="#29808080"
                                         VerticalAlignment="Stretch">
-                                    <Image HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           Width="140"
-                                           Height="140"
-                                           Source="{Binding Sprite}" />
+                                    <imageTools:AnimatedImage x:Name="Image"
+                                                              HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"
+                                                              Width="140"
+                                                              Height="140"
+                                                              Stretch="Uniform"
+                                                              Source="{Binding Path=GifImageSource, Converter={StaticResource ImageConverter}}" />
                                 </Border>
 
                                 <StackPanel x:Name="stackPanel1"
