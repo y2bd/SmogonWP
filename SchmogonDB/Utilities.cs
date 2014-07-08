@@ -23,18 +23,11 @@ namespace SchmogonDB
     {
       var settings = IsolatedStorageSettings.ApplicationSettings;
 
-      var shouldConsolidate = true;
+      bool shouldNotConsolidate;
 
-      settings.TryGetValue("xymode", out shouldConsolidate);
+      settings.TryGetValue("xymode", out shouldNotConsolidate);
 
-      if (shouldConsolidate)
-      {
-        return "Hidden Power";
-      }
-      else
-      {
-        return hiddenPower;
-      }
+      return shouldNotConsolidate ? hiddenPower : "Hidden Power";
     }
   }
 }

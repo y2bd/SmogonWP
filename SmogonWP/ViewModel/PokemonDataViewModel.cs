@@ -392,8 +392,11 @@ namespace SmogonWP.ViewModel
 
       Sprite = null;
 
-      string gifPath = SpritePathConstructor.ConstructSpritePath(pokemon.Name);
-      GifImageSource = new Uri(gifPath);
+      if (NetUtilities.IsNetwork())
+      {
+        string gifPath = SpritePathConstructor.ConstructSpritePath(pokemon.Name);
+        GifImageSource = new Uri(gifPath);
+      }
 
       PokemonData pokemonData;
 
