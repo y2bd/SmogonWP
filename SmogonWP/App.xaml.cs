@@ -26,11 +26,13 @@ namespace SmogonWP
 
     // v3 - changed all pokemon, moves to gen VI forms (changed types, stats, etc), no analyses changes
     // v2 - fixed parsing errors with certain moves, abilities
-    private const string CurrentDB = "pokemon_v3.db";
+    private const string CurrentBWDB = "pokemon_v3.db";
+
+    private const string CurrentXYDB = "pokemon_xy_v1.db";
 
     // the name of the current DB in the application local storage
-    // this should never change
-    private const string IsoDB = "pokemon.db";
+    private const string IsoBWDB = "pokemonbw.db";
+    private const string IsoXYDB = "pokemonxy.db";
 
     /// <summary>
     /// Provides easy access to the root frame of the Phone Application.
@@ -87,44 +89,76 @@ namespace SmogonWP
       // so we have to copy it from the resource store to the right location
       // this works!
 
-      var dbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, IsoDB);
+      var bwdbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, IsoBWDB);
+      var xydbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, IsoXYDB);
 
       // check if we need to update the db
       var settings = new SettingsService();
-      var lastDBVersion = settings.Load<string>("dbversion", null);
+      var lastBWDBVersion = settings.Load<string>("bwdbversion", null);
+      var lastXYDBVersion = settings.Load<string>("xydbversion", null);
 
-      if (lastDBVersion != CurrentDB)
+      if (lastBWDBVersion != CurrentBWDB)
       {
-        Debug.WriteLine("Need to replace DB with new version!");
+        Debug.WriteLine("Need to replace BWDB with new version!");
 
         // delete old one
-        using (var iso = IsolatedStorageFile.GetUserStoreForApplication()) iso.DeleteFile(dbPath);
+        using (var iso = IsolatedStorageFile.GetUserStoreForApplication()) iso.DeleteFile(bwdbPath);
 
         // force an update
-        copyDBOver(dbPath, null);
+        copyDBOver(bwdbPath, null, CurrentBWDB);
 
         // update settings
-        settings.Save("dbversion", CurrentDB);
+        settings.Save("bwdbversion", CurrentBWDB);
+      }
+
+      if (lastXYDBVersion != CurrentXYDB)
+      {
+        Debug.WriteLine("Need to replace XYDB with new version!");
+
+        // delete old one
+        using (var iso = IsolatedStorageFile.GetUserStoreForApplication()) iso.DeleteFile(xydbPath);
+
+        // force an update
+        copyDBOver(xydbPath, null, CurrentXYDB);
+
+        // update settings
+        settings.Save("xydbversion", CurrentXYDB);
       }
 
       // otherwise check if it exists and only copy over if it doesn't
-      StorageFile dbFile = null;
+      StorageFile bwdbFile = null;
       try
       {
-        Debug.WriteLine("Trying to locate DB");
+        Debug.WriteLine("Trying to locate BWDB");
 
         // Try to get the db just in case it exists
-        dbFile = await StorageFile.GetFileFromPathAsync(dbPath);
+        bwdbFile = await StorageFile.GetFileFromPathAsync(bwdbPath);
       }
       catch (FileNotFoundException)
       {
         Debug.WriteLine("Need to copy DB to isolated");
 
-        copyDBOver(dbPath, dbFile); 
+        copyDBOver(bwdbPath, bwdbFile, CurrentBWDB); 
+      }
+
+      // otherwise check if it exists and only copy over if it doesn't
+      StorageFile xydbFile = null;
+      try
+      {
+        Debug.WriteLine("Trying to locate XYDB");
+
+        // Try to get the db just in case it exists
+        xydbFile = await StorageFile.GetFileFromPathAsync(xydbPath);
+      }
+      catch (FileNotFoundException)
+      {
+        Debug.WriteLine("Need to copy XYDB to isolated");
+
+        copyDBOver(xydbPath, xydbFile, CurrentXYDB);
       }
     }
 
-    private void copyDBOver(string dbPath, StorageFile dbFile)
+    private void copyDBOver(string dbPath, StorageFile dbFile, string toCopyDBPath)
     {
       if (dbFile == null)
       {
@@ -133,7 +167,7 @@ namespace SmogonWP
         var iso = IsolatedStorageFile.GetUserStoreForApplication();
 
         // Create a stream for the file in the installation folder.
-        using (var input = GetResourceStream(new Uri(CurrentDB, UriKind.Relative)).Stream)
+        using (var input = GetResourceStream(new Uri(toCopyDBPath, UriKind.Relative)).Stream)
         {
           // Create a stream for the new file in the local folder.
           using (var output = iso.CreateFile(dbPath))

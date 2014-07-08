@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO.IsolatedStorage;
+using System.Windows.Controls;
 using SchmogonDB.Model.Pokemon;
 
 namespace SmogonWP.Services
@@ -6,6 +8,7 @@ namespace SmogonWP.Services
   public static class SpritePathConstructor
   {
     private const string BwBasePath = "http://www.smogon.com/dex/media/sprites/bw/";
+    private const string XyBasePath = "http://www.smogon.com/dex/media/sprites/xy/";
 
     private static readonly IDictionary<string, string> NameReplacementTable =
       new Dictionary<string, string>
@@ -48,7 +51,13 @@ namespace SmogonWP.Services
 
       pokemonName = ReplaceNameIfNecessary(pokemonName);
 
-      var constructSpritePath = BwBasePath + pokemonName + ".gif";
+      var xyMode = false;
+      IsolatedStorageSettings.ApplicationSettings.TryGetValue("xymode", out xyMode);
+
+      string constructSpritePath;
+      if (xyMode) constructSpritePath = XyBasePath + pokemonName + ".gif";
+      else constructSpritePath = BwBasePath + pokemonName + ".gif";
+
       return constructSpritePath;
     }
 

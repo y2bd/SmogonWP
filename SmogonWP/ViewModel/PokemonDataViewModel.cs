@@ -32,7 +32,8 @@ namespace SmogonWP.ViewModel
   public class PokemonDataViewModel : ViewModelBase
   {
     private const string SmogonPrefix = "http://www.smogon.com";
-    private const string SmogonDexPrefix = "http://www.smogon.com/dex/bw/pokemon/";
+    private const string SmogonBWDexPrefix = "http://www.smogon.com/dex/bw/pokemon/";
+    private const string SmogonXYDexPrefix = "http://www.smogon.com/dex/xy/pokemon/";
     private const string BulbaPrefix = "http://bulbapedia.bulbagarden.net/wiki/";
 
     private readonly IDataLoadingService _dataService;
@@ -332,7 +333,7 @@ namespace SmogonWP.ViewModel
     {
       var wbt = new WebBrowserTask
       {
-        Uri = new Uri(SmogonDexPrefix + SpritePathConstructor.ReplaceNameIfNecessary(PDVM.Data.Name.ToLower()))
+        Uri = new Uri(SmogonBWDexPrefix + SpritePathConstructor.ReplaceNameIfNecessary(PDVM.Data.Name.ToLower()))
       };
 
       wbt.Show();

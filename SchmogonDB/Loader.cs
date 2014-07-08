@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,15 +15,15 @@ namespace SchmogonDB
 {
   internal class Loader
   {
-    private const string PokeSearchPath = "http://162.243.147.104/schmogon/pokemon.json";
-    private const string MoveSearchPath = "http://162.243.147.104/schmogon/moves.json";
-    private const string AbilSearchPath = "http://162.243.147.104/schmogon/abilities.json";
-    private const string ItemSearchPath = "http://162.243.147.104/schmogon/items.json";
+    private const string PokeSearchPath = "https://raw.githubusercontent.com/y2bd/SmogonWPData/master/pokemon.xy.json";
+    private const string MoveSearchPath = "https://raw.githubusercontent.com/y2bd/SmogonWPData/master/moves.xy.json";
+    private const string AbilSearchPath = "https://raw.githubusercontent.com/y2bd/SmogonWPData/master/abilities.xy.json";
+    private const string ItemSearchPath = "https://raw.githubusercontent.com/y2bd/SmogonWPData/master/items.xy.json";
 
-    private const string PokeDataPath = "http://162.243.147.104/schmogon/pokedata.json";
-    private const string MoveDataPath = "http://162.243.147.104/schmogon/movedata.json";
-    private const string AbilDataPath = "http://162.243.147.104/schmogon/abildata.json";
-    private const string ItemDataPath = "http://162.243.147.104/schmogon/itemdata.json";
+    private const string PokeDataPath = "https://raw.githubusercontent.com/y2bd/SmogonWPData/master/pokedata.xy.json";
+    private const string MoveDataPath = "https://raw.githubusercontent.com/y2bd/SmogonWPData/master/movedata.xy.json";
+    private const string AbilDataPath = "https://raw.githubusercontent.com/y2bd/SmogonWPData/master/abildata.xy.json";
+    private const string ItemDataPath = "https://raw.githubusercontent.com/y2bd/SmogonWPData/master/itemdata.xy.json";
 
     public async Task<LoaderData> LoadAllData()
     {
@@ -70,6 +71,7 @@ namespace SchmogonDB
         }
       };
 
+      Debug.WriteLine("Deserializing one!");
       return await JsonConvert.DeserializeObjectAsync<IEnumerable<T>>(serialized, settings);
     }
     

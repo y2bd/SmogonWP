@@ -74,7 +74,7 @@ namespace SchmogonDB
     public async Task<MoveData> FetchMoveDataAsync(Move move)
     {
       // that dang hidden power
-      var name = move.Name.Contains("Hidden Power") ? "Hidden Power" : move.Name;
+      var name = move.Name.Contains("Hidden Power") ? Utilities.ConsolidateHiddenPower(move.Name) : move.Name;
       var desc = await FetchTextElementsAsync(name, OwnerType.Move, ElementType.Description);
       var comp = await FetchTextElementsAsync(name, OwnerType.Move, ElementType.Competitive);
       var stat = await fetchMoveStats(move);
@@ -92,7 +92,7 @@ namespace SchmogonDB
     private async Task<MoveStats> fetchMoveStats(Move move)
     {
       // that dang hidden power
-      var name = move.Name.Contains("Hidden Power") ? "Hidden Power" : move.Name;
+      var name = move.Name.Contains("Hidden Power") ? Utilities.ConsolidateHiddenPower(move.Name) : move.Name;
 
       var statement = await _database.PrepareStatementAsync(FetchMoveStatsQuery);
       statement.BindTextParameterWithName("@name", name);
@@ -114,7 +114,7 @@ namespace SchmogonDB
     private async Task<IEnumerable<Move>> fetchRelatedMoves(Move move)
     {
       // that dang hidden power
-      var moveName = move.Name.Contains("Hidden Power") ? "Hidden Power" : move.Name;
+      var moveName = move.Name.Contains("Hidden Power") ? Utilities.ConsolidateHiddenPower(move.Name) : move.Name;
 
       var relatedMoves = new List<Move>();
 

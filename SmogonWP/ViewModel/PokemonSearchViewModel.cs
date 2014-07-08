@@ -379,7 +379,12 @@ namespace SmogonWP.ViewModel
     {
       if (FetchPokemonNotifier == null || !FetchPokemonNotifier.IsSuccessfullyCompleted) return;
 
-      var pokemon = _pokemon.First(p => p.Name.ToLower().Equals(_voicedPokemonName.ToLower()));
+      var pokemon = _pokemon.FirstOrDefault(p => p.Name.ToLower().Equals(_voicedPokemonName.ToLower()));
+
+      if (pokemon == null)
+      {
+        Application.Current.Terminate();
+      }
 
       onPokemonSelected(pokemon);
 

@@ -1,4 +1,6 @@
-﻿namespace SchmogonDB
+﻿using System.IO.IsolatedStorage;
+
+namespace SchmogonDB
 {
   internal static class Utilities
   {
@@ -15,6 +17,24 @@
       name = name.Replace("\'", "");
 
       return basePath + name;
+    }
+
+    public static string ConsolidateHiddenPower(string hiddenPower)
+    {
+      var settings = IsolatedStorageSettings.ApplicationSettings;
+
+      var shouldConsolidate = true;
+
+      settings.TryGetValue("xymode", out shouldConsolidate);
+
+      if (shouldConsolidate)
+      {
+        return "Hidden Power";
+      }
+      else
+      {
+        return hiddenPower;
+      }
     }
   }
 }

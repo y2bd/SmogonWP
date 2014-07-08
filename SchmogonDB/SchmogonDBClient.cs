@@ -1,4 +1,6 @@
-﻿using SchmogonDB.Population;
+﻿using System.Diagnostics;
+using System.IO.IsolatedStorage;
+using SchmogonDB.Population;
 using SQLiteWinRT;
 using System;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ namespace SchmogonDB
   public partial class SchmogonDBClient
   {
     private static readonly StorageFolder DbRootPath = ApplicationData.Current.LocalFolder;
-    private const string DbName = "pokemon.db";
+    private static string _dbName = "pokemonbw.db";
 
     private readonly Database _database;
 
@@ -19,7 +21,22 @@ namespace SchmogonDB
 
     public SchmogonDBClient()
     {
-      _database = new Database(DbRootPath, DbName);
+      try
+      {
+        var isXyMode = false;
+        IsolatedStorageSettings.ApplicationSettings.TryGetValue("xymode", out isXyMode);
+
+        if (isXyMode)
+        {
+          _dbName = "pokemonxy.db";
+        }
+      }
+      catch (Exception)
+      {
+        Debugger.Break();
+      }
+
+      _database = new Database(DbRootPath, _dbName);
 
       _populator = new Populator();
     }
@@ -40,7 +57,7 @@ namespace SchmogonDB
     {
       ensureDatabaseInitialized();
 
-      await _populator.PopulateDatabaseAsync(_database, false, true);
+      await _populator.PopulateDatabaseAsync(_database, false, false);
     }
     
     private async Task ensureForeignKeys()

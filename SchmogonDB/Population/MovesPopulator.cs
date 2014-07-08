@@ -59,7 +59,7 @@ namespace SchmogonDB.Population
         var shortName = relatedMove.Name;
 
         // sometimes they list explicit hidden powers, that doesn't help us
-        if (shortName.Contains("Hidden Power")) shortName = "Hidden Power";
+        // if (shortName.Contains("Hidden Power")) shortName = "Hidden Power";
 
         var statement = await database.PrepareStatementAsync(InsertMoveToMoveQuery);
         statement.BindTextParameterWithName("@reldesc", relatedMove.Description);

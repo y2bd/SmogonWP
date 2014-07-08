@@ -1,4 +1,5 @@
-﻿using Coding4Fun.Toolkit.Controls;
+﻿using Windows.ApplicationModel.Store;
+using Coding4Fun.Toolkit.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
@@ -34,7 +35,7 @@ namespace SmogonWP.ViewModel
 {
   public class HubViewModel : ViewModelBase
   {
-    public const string UpdateKey = "update_" + "1.1.6";
+    public const string UpdateKey = "update_" + "1.2";
 
     private readonly SimpleNavigationService _navigationService;
     private readonly IDataLoadingService _dataService;
@@ -206,7 +207,7 @@ namespace SmogonWP.ViewModel
           RaisePropertyChanged(() => MenuItems);
         }
       }
-    }			
+    }
 
     private string _filter;
     public string Filter
@@ -376,20 +377,37 @@ If you have any questions, sliding up the appbar at the bottom will give you the
       {
         new MenuButtonViewModel
         {
+          Text = "donate",
+          IconUri = new Uri("/Assets/AppBar/appbar.marketplace.png", UriKind.RelativeOrAbsolute),
+          Command = new RelayCommand(onDonateButtonClicked)
+        },
+        new MenuButtonViewModel
+        {
+          Text = "generation",
+          IconUri = new Uri("/Assets/AppBar/refresh.png", UriKind.RelativeOrAbsolute),
+          Command = new RelayCommand(onGenerationButtonClicked)
+        },
+        new MenuButtonViewModel
+        {
           Text = "quicksearch",
           IconUri = new Uri("/Assets/AppBar/feature.search.png", UriKind.RelativeOrAbsolute),
           Command = new RelayCommand(onSearchButtonClicked)
         },
       };
 
-      var rateButton = new MenuButtonViewModel
+      var generationButton = new MenuButtonViewModel
       {
         Text = "rate app",
         IconUri = new Uri("/Assets/AppBar/appbar.marketplace.png", UriKind.RelativeOrAbsolute),
         Command = new RelayCommand(onRateButtonClicked)
       };
 
-      if (!_rateService.HasRated()) MenuButtons.Add(rateButton);
+      var donateButton = new MenuButtonViewModel
+      {
+        Text = "rate app",
+        IconUri = new Uri("/Assets/AppBar/appbar.marketplace.png", UriKind.RelativeOrAbsolute),
+        Command = new RelayCommand(onRateButtonClicked)
+      };
 
       MenuItems = new ObservableCollection<MenuItemViewModel>
       {
@@ -484,10 +502,10 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         await Task.Delay(50);
 
         if (!showUpdatePrompt())
-        if (!_rateService.CheckForRateReminder())
-        {
-          TipService.ShowTipOfTheDay();
-        }
+          if (!_rateService.CheckForRateReminder())
+          {
+            TipService.ShowTipOfTheDay();
+          }
       }
       catch (Exception)
       {
@@ -569,6 +587,66 @@ If you have any questions, sliding up the appbar at the bottom will give you the
         HitType = HitType.Event,
         ObjectType = this.GetType().Name,
       });
+    }
+
+    private void onGenerationButtonClicked()
+    {
+      var xyMode = _settingsService.Load("xymode", false);
+
+      if (xyMode)
+      {
+        if (MessageBox.Show(
+          "You're currently viewing XY data. Do you wish to go back to BW data? This requires restarting the app.",
+          "Change Generation", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+
+        _settingsService.Save("xymode", false);
+        Application.Current.Terminate();
+      }
+      else
+      {
+        if (MessageBox.Show(
+          "You're currently viewing BW data. Do you wish to go forwards to XY data? This requires restarting the app.",
+          "Change Generation", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+
+        _settingsService.Save("xymode", true);
+        Application.Current.Terminate();
+      }
+    }
+
+    private async void onDonateButtonClicked()
+    {
+      if (MessageBox.Show(
+        "SmogonWP is free and ad-free, and it always will be, so donations from awesome people like you help support me as a developer.\n\n" +
+        "Due to Windows Phone restrictions, I cannot let you donate a custom amount, so instead you can just donate as many times as you want.\n\n" +
+        "Whether you donate once or a hundred times, I'll be eternally grateful.\n\n" +
+        "Press OK to continue, or cancel if you wish to donate at a later time.", "Thanks for donating!",
+        MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+
+      ProductListing listing;
+
+      try
+      {
+        var listingInfo = await CurrentApp.LoadListingInformationAsync();
+        listing = listingInfo.ProductListings["small.donate"];
+      }
+      catch (Exception e)
+      {
+        Debugger.Break();
+        MessageBox.Show("We couldn't load the donations page right now, please try again later.", "Oops!",
+          MessageBoxButton.OK);
+
+        return;
+      }
+
+      try
+      {
+        await CurrentApp.RequestProductPurchaseAsync(listing.ProductId, false);
+      }
+      catch (Exception)
+      {
+        // this means the user canceled the purchase
+        return;
+      }
     }
 
     private void onEmailDevClicked()
@@ -673,13 +751,13 @@ If you have any questions, sliding up the appbar at the bottom will give you the
     private void onPinToStart(NavigationItemViewModel nivm)
     {
       if (IsInDesignMode) return;
-      
+
       var name = TextUtils.ToTitleCase(nivm.Title);
       var navUri = new Uri(nivm.NavigationPath, UriKind.RelativeOrAbsolute);
 
       var iconName = Path.GetFileName(nivm.IconPath) ?? "pokeball2.png";
       var iconUri = new Uri(Path.Combine("/Assets/Tiles/Secondary/", iconName), UriKind.RelativeOrAbsolute);
-      
+
       // don't create a tile if we already have one
       if (!_tileService.CreateSecondaryTile(name, navUri, iconUri))
       {
@@ -767,12 +845,21 @@ If you have any questions, sliding up the appbar at the bottom will give you the
 
       // if we're opening the app for the first time, don't do it either
       if (!_settingsService.SettingRegistered("haswelcomed")) return false;
-      
+
       MessageBox.Show(
-        "Hey everyone, long time no see!\n\n" +
-        "The new Smogon dex broke sprites, so here's a quick fix. There's still some weirdness, but I think you'll all be pleasently surprised at the change.\n\n" +
-        "Smogon has also finally published some XY data (which is why it hadn't been added to the app yet), so be excited. It's finally coming! (in a couple of days)",
-        "Quick Fix",
+        "I have fantastic news and not so great news!\n\n" +
+        "The fantastic news is that Smogon *finally* published some XY data, which means that I've finally put XY data in the app, hurrah!\n\n" +
+        "The not so great news is that Smogon hasn't put *all* of the XY data up yet. That means missing Pokemon, as well as tons of missing descriptions " +
+        "and other stuff that you're used to. No more overviews at the moment :( \n\n" +
+        "To please people who want the incomplete data *now*, there's a new button on the appbar below that looks like a refresh icon. This will let you switch between the old " +
+        "BW data and the new XY data. Note that at the moment this requires an app restart. In the future, this'll be unnecessary (and you'll be able to switch between more things " +
+        "than just BW and XY, kekeke). Note that as this data is in-progress, app support is in-progress, so some things won't work perfectly with XY data (such as voice commands). Please " +
+        "bear with me in these crazy times.\n\n" +
+        "There's also another new button on the appbar (or if you haven't rated that app yet (D:) it replaces that button). I've gotten requests for adding a donation option, so that's " +
+        "what you can do now. SmogonWP is my pet project, and I'll never ever charge for it or muck it up with ads, but donations from people like you help me going. Don't feel obligated " +
+        "though, I'm not going to hide app features behind a paywall or anything like that. Only donate if you actually want to.\n\n" +
+        "I'm going to be on vacation for the next two weeks, so I won't be able to update the app for a while. Hopefully nothing bad happens, but feel free to email me if something does.",
+        "Super Update News Wow!",
         MessageBoxButton.OK);
 
       _settingsService.Save(UpdateKey, true);

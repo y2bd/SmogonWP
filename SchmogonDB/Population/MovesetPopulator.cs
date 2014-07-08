@@ -120,7 +120,7 @@ namespace SchmogonDB.Population
 
         // sometimes we get specific variants of hidden power instead of hidden power
         // kill em softly
-        if (shortName.Contains("Hidden Power")) shortName = "Hidden Power";
+        //if (shortName.Contains("Hidden Power")) shortName = "Hidden Power";
 
         var statement = await database.PrepareStatementAsync(InsertMoveToMoveCollectionQuery);
         statement.BindTextParameterWithName("@move", shortName);
